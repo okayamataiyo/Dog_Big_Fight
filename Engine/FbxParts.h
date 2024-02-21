@@ -25,7 +25,7 @@ class FbxParts
 
 	//【コンスタントバッファー】
 	// GPU(シェーダ側)へ送る数値をまとめた構造体
-	//Simple3D.hlslのグローバル変数と対応させる
+	// Simple3D.hlslのグローバル変数と対応させる
 	struct CONSTANT_BUFFER
 	{
 		XMMATRIX worldVewProj;	//ワールド、ビュー、プロジェクション行列の合成（頂点変換に使用）
@@ -67,8 +67,6 @@ class FbxParts
 		int*		pBoneIndex;		// 関連するボーンのID
 		float*		pBoneWeight;	// ボーンの重み
 	};
-
-
 
 	//各データの個数
 	DWORD vertexCount_;		//頂点数
