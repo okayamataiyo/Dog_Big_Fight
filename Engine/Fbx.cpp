@@ -113,8 +113,6 @@ XMFLOAT3 Fbx::GetBonePosition(std::string boneName)
 		if (parts_[i]->GetBonePosition(boneName, &position))
 			break;
 	}
-
-
 	return position;
 }
 
