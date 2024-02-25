@@ -89,7 +89,7 @@ void Player::UpdateGameOver()
     if (Input::IsKey(DIK_SPACE))
     {
         SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-//        pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
+        pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
     }
 }
 
