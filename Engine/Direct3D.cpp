@@ -16,6 +16,9 @@ namespace Direct3D
 	//描画したいものと、描画先（上でいう画用紙）の橋渡しをするもの
 	ID3D11RenderTargetView* pRenderTargetView_ = nullptr;
 
+	//分割ビューポート、これをモデルの描画前に設定する
+	D3D11_VIEWPORT vp[2];
+
 	//【デプスステンシル】
 	//Zバッファ法を用いて、3D物体の前後関係を正しく表示するためのもの
 	ID3D11Texture2D*		pDepthStencil;
@@ -40,6 +43,12 @@ namespace Direct3D
 	SHADER_BUNDLE			shaderBundle[SHADER_MAX] = { 0 };
 	int						screenWidth_ = 0;
 	int						screenHeight_ = 0;
+	int						screenWidthHaif_ = 0;
+	float					vPSize_[2] = { 2,2 };
+	float					vPMove_[2] = { 0,0 };
+	float					prevVP_ = 0;
+	int						isChangeView_ = 0;
+	bool					isFinishView_ = false;
 
 
 
@@ -92,7 +101,6 @@ namespace Direct3D
 		//失敗したら終了
 		if (FAILED(hr))	return hr;
 
-
 		///////////////////////////描画のための準備///////////////////////////////
 		//スワップチェーンからバックバッファを取得（バックバッファ ＝ 裏画面 ＝ 描画先）
 		ID3D11Texture2D* pBackBuffer;
@@ -110,27 +118,11 @@ namespace Direct3D
 		//一時的にバックバッファを取得しただけなので、解放
 		pBackBuffer->Release();
 
-
-
-
 		/////////////////////////////////////////////////////////////////////////////////////////////
-
-
-		// ビューポートの設定
-		//レンダリング結果を表示する範囲
-		D3D11_VIEWPORT vp;
-		vp.Width = (float)screenWidth;			//幅
-		vp.Height = (float)screenHeight;		//高さ
-		vp.MinDepth = 0.0f;		//手前
-		vp.MaxDepth = 1.0f;		//奥
-		vp.TopLeftX = 0;		//左
-		vp.TopLeftY = 0;		//上
-
 
 		//各パターンのシェーダーセット準備
 		InitShaderBundle();
 		Direct3D::SetShader(Direct3D::SHADER_3D);
-
 
 		//深度ステンシルビューの作成
 		D3D11_TEXTURE2D_DESC descDepth;
@@ -197,19 +189,14 @@ namespace Direct3D
 		//データを画面に描画するための一通りの設定
 		pContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);  // データの入力種類を指定
 		pContext_->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView);            // 描画先を設定（今後はレンダーターゲットビューを介して描画してね）
-		pContext_->RSSetViewports(1, &vp);                                      // ビューポートのセット
-
-
-
-
-
 
 		//コリジョン表示するか
 		isDrawCollision_ = GetPrivateProfileInt("DEBUG", "ViewCollider", 0, ".\\setup.ini") != 0;
 
-
+		screenWidthHaif_ = screenWidth / 2;
 		screenWidth_ = screenWidth;
 		screenHeight_ = screenHeight;
+		prevVP_ = vp[1].Width;
 
 		return S_OK;
 	}
@@ -357,6 +344,38 @@ namespace Direct3D
 			pDevice_->CreateRasterizerState(&rdc, &shaderBundle[SHADER_BILLBOARD].pRasterizerState);
 		}
 
+		//OutLine
+		{
+			// 頂点シェーダの作成（コンパイル）
+			ID3DBlob* pCompileVS = NULL;
+			D3DCompileFromFile(L"Shader/ToonOutLine.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+			pDevice_->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &(shaderBundle[SHADER_OUTLINE].pVertexShader));
+
+			//ピクセルシェーダの作成（コンパイル）
+			ID3DBlob* pCompilePS = NULL;
+			D3DCompileFromFile(L"Shader/ToonOutLine.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
+			pDevice_->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &(shaderBundle[SHADER_OUTLINE].pPixelShader));
+
+			//頂点インプットレイアウト
+			D3D11_INPUT_ELEMENT_DESC layout[] = {
+				{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },	//位置
+				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UV座標
+				{ "NORMAL",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,	D3D11_INPUT_PER_VERTEX_DATA, 0 },//法線
+			};
+			pDevice_->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),&(shaderBundle[SHADER_OUTLINE].pVertexLayout));
+
+			pCompileVS->Release();
+			pCompilePS->Release();
+
+			//ラスタライザ作成
+			D3D11_RASTERIZER_DESC rdc = {};
+			rdc.CullMode = D3D11_CULL_FRONT;
+			rdc.FillMode = D3D11_FILL_SOLID;
+			rdc.FrontCounterClockwise = FALSE;
+			rdc.ScissorEnable = false;
+			rdc.MultisampleEnable = false;
+			pDevice_->CreateRasterizerState(&rdc, &(shaderBundle[SHADER_OUTLINE].pRasterizerState));
+		}
 	}
 
 
@@ -380,6 +399,47 @@ namespace Direct3D
 		pContext_->OMSetDepthStencilState(pDepthStencilState[blendMode], 0);
 	}
 
+	void Update()
+	{
+		// ビューポートの設定
+		//レンダリング結果を表示する範囲
+		vp[0].Width = screenWidthHaif_ + vPSize_[0];
+		vp[0].Height = screenHeight_;
+		vp[0].TopLeftX = 0;			 //画面左上のx座標
+		vp[0].TopLeftY = 0;			 //画面左上のy座標
+		vp[0].MinDepth = 0.0f;		 //深度値の最小値
+		vp[0].MaxDepth = 1.0f;		 //深度値の最大値
+		vp[1].Width = screenWidthHaif_;
+		vp[1].Height = screenHeight_;
+		vp[1].TopLeftX = screenWidthHaif_ + vPSize_[1];	 //画面左上のx座標
+		vp[1].TopLeftY = 0;			 //画面左上のy座標
+		vp[1].MinDepth = 0.0f;		 //深度値の最小値
+		vp[1].MaxDepth = 1.0f;		 //深度値の最大値
+
+		switch (isChangeView_)
+		{
+		case 0:
+			prevVP_ = vp[1].Width;
+			break;
+		case 1:
+			if (vPSize_[0] <= screenWidthHaif_)
+			{
+				vPSize_[0] += 10;
+				vPSize_[1] += 10;
+			}
+			break;
+		case 2:
+			if (vPSize_[0] >= 10)
+			{
+				vPSize_[0] -= 10;
+				vPSize_[1] -= 10;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
 	//描画開始
 	void BeginDraw()
 	{
@@ -390,7 +450,7 @@ namespace Direct3D
 		if (NULL == pSwapChain_) return;
 
 		//背景の色
-		float clearColor[4] = { 0.1f, 0.2f, 0.2f, 1.0f };//R,G,B,A
+		float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
 
 		//画面をクリア
 		pContext_->ClearRenderTargetView(pRenderTargetView_, clearColor);
@@ -443,7 +503,6 @@ namespace Direct3D
 
 
 	//三角形と線分の衝突判定（衝突判定に使用）
-	//https://pheema.hatenablog.jp/entry/ray-triangle-intersection
 	bool Intersect(XMFLOAT3 & start, XMFLOAT3 & direction, XMFLOAT3 & v0, XMFLOAT3 & v1, XMFLOAT3 & v2, float* distance)
 	{
 		// 微小な定数([M?ller97] での値)
@@ -495,6 +554,15 @@ namespace Direct3D
 		return true;
 	}
 
+	void SetViewPort(int _VpType)
+	{
+		pContext_->RSSetViewports(1, &vp[_VpType]);	//ビューポートのセット
+	}
+
+	void SetIsChangeView(int _isChangeView)
+	{
+		isChangeView_ = _isChangeView;
+	}
 	//Zバッファへの書き込みON/OFF
 	void SetDepthBafferWriteEnable(bool isWrite)
 	{

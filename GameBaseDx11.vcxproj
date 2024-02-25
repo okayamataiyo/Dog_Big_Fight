@@ -94,6 +94,9 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
+    <FxCompile>
+      <EntryPointName>main</EntryPointName>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -123,6 +126,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <FxCompile>
+      <EntryPointName>main</EntryPointName>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Audio.cpp" />
@@ -137,6 +143,12 @@
     <ClCompile Include="Engine\FbxParts.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\Image.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Model.cpp" />
@@ -148,8 +160,11 @@
     <ClCompile Include="Engine\Text.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="Sky.cpp" />
+    <ClCompile Include="PlayScene.cpp" />
+    <ClCompile Include="Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Audio.h" />
@@ -165,6 +180,14 @@
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\Global.h" />
     <ClInclude Include="Engine\Image.h" />
+    <ClInclude Include="Engine\ImGui\imconfig.h" />
+    <ClInclude Include="Engine\ImGui\imgui.h" />
+    <ClInclude Include="Engine\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="Engine\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="Engine\ImGui\imgui_internal.h" />
+    <ClInclude Include="Engine\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="Engine\ImGui\imstb_textedit.h" />
+    <ClInclude Include="Engine\ImGui\imstb_truetype.h" />
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="Engine\Model.h" />
     <ClInclude Include="Engine\VFX.h" />
@@ -175,8 +198,11 @@
     <ClInclude Include="Engine\Text.h" />
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="TestScene.h" />
+    <ClInclude Include="Sky.h" />
+    <ClInclude Include="PlayScene.h" />
+    <ClInclude Include="Stage.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">
@@ -193,6 +219,10 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS</EntryPointName>
     </FxCompile>
     <FxCompile Include="Assets\Shader\Simple3D.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS</EntryPointName>
+    </FxCompile>
+    <FxCompile Include="Assets\Shader\ToonOutLine.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS</EntryPointName>
     </FxCompile>

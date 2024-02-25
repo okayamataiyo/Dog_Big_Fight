@@ -26,9 +26,17 @@ namespace Direct3D
 	//GPUに命令を出すためのやつ
 	extern ID3D11DeviceContext*    pContext_;
 
-
 	//■シェーダー関連で必要なセット
-	enum SHADER_TYPE{SHADER_3D, SHADER_2D, SHADER_UNLIT, SHADER_BILLBOARD, SHADER_MAX};	//3タイプ（3D用、2D用、当たり判定枠表示用）
+	enum SHADER_TYPE
+	{
+		SHADER_3D,
+		SHADER_2D,
+		SHADER_UNLIT,
+		SHADER_BILLBOARD,
+		SHADER_OUTLINE,
+		SHADER_MAX
+	};	//3タイプ（3D用、2D用、当たり判定枠表示用）
+
 	struct SHADER_BUNDLE
 	{
 		//【頂点入力レイアウト情報】
@@ -52,7 +60,9 @@ namespace Direct3D
 	//■ブレンドモード
 	enum BLEND_MODE
 	{
-		BLEND_DEFAULT, BLEND_ADD, BLEND_MAX
+		BLEND_DEFAULT, 
+		BLEND_ADD,
+		BLEND_MAX
 	};
 
 
@@ -87,6 +97,8 @@ namespace Direct3D
 	//					BLEND_ADD		加算合成（パーティクル用）
 	void SetBlendMode(BLEND_MODE blendMode);
 
+	void Update();
+
 	//描画開始
 	void BeginDraw();
 
@@ -104,6 +116,14 @@ namespace Direct3D
 	//引数：distance	衝突点までの距離を返す
 	//戻値：衝突したかどうか
 	bool Intersect(XMFLOAT3& start, XMFLOAT3& direction, XMFLOAT3 &v0, XMFLOAT3& v1, XMFLOAT3& v2, float* distance);
+
+	/// <summary>
+	/// ぴゅーポートに情報を入れる
+	/// </summary>
+	/// <param name="_VpType">ビューポート</param>
+	void SetViewPort(int _VpType);
+
+	void SetIsChangeView(int _isChangeView);
 
 	//Zバッファへの書き込みON/OFF
 	//引数：isWrite	  true=書き込みON／false=書き込みOFF

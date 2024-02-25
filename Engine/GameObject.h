@@ -148,6 +148,8 @@ public:
 	void SetScale(XMFLOAT3 scale) { transform_.scale_ = scale; }
 	void SetScale(float x, float y, float z) { SetScale(XMFLOAT3(x, y, z)); }
 
+	void SetObjectName(std::string _objectName) { objectName_ = _objectName; }
+
 private:
 
 	//オブジェクト削除（再帰）

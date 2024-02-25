@@ -1,15 +1,8 @@
-
-//
-//　最終更新日：2023/10/20
-//
-
-
-
+//インクルード
 #include <Windows.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <time.h>
-
 #include "global.h"
 #include "RootObject.h"
 #include "Model.h"
@@ -18,11 +11,14 @@
 #include "Input.h"
 #include "Audio.h"
 #include "VFX.h"
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_dx11.h"
+#include "ImGui/imgui_impl_win32.h"
 
 #pragma comment(lib,"Winmm.lib")
 
 //定数宣言
-const char* WIN_CLASS_NAME = "SampleGame";	//ウィンドウクラス名
+const char* WIN_CLASS_NAME = "Dog Big Run";	//ウィンドウクラス名
 
 
 //プロトタイプ宣言
@@ -52,8 +48,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//ウィンドウを作成
 	HWND hWnd = InitApp(hInstance, screenWidth, screenHeight, nCmdShow);
 
+
 	//Direct3D準備
 	Direct3D::Initialize(hWnd, screenWidth, screenHeight);
+
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.ScaleAllSizes(3.0f); // すべてのサイズをスケーリング
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(hWnd);
+	ImGui_ImplDX11_Init(Direct3D::pDevice_, Direct3D::pContext_);
 
 	//カメラを準備
 	Camera::Initialize();
@@ -69,6 +74,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//すべてのゲームオブジェクトの親となるオブジェクト
 	RootObject* pRootObject = new RootObject;
 	pRootObject->Initialize();
+
+	bool isPause = false;
 
 
 	//メッセージループ（何か起きるのを待つ）
@@ -122,29 +129,42 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				//入力（キーボード、マウス、コントローラー）情報を更新
 				Input::Update();
 
-				//全オブジェクトの更新処理
-				//ルートオブジェクトのUpdateを呼んだあと、自動的に子、孫のUpdateが呼ばれる
-				pRootObject->UpdateSub();
+				if (!isPause)
+				{
+					ImGui_ImplDX11_NewFrame();
+					ImGui_ImplWin32_NewFrame();
+					ImGui::NewFrame();
+					Direct3D::Update();
 
-				//カメラを更新
-				Camera::Update();
+					//このフレームの描画開始
+					Direct3D::BeginDraw();
+					//全オブジェクトの更新処理
+					//ルートオブジェクトのUpdateを呼んだあと、自動的に子、孫のUpdateが呼ばれる
+					pRootObject->UpdateSub();
+				}
+				for (int i = 0u; i <= 1; i++) {
+					Direct3D::SetViewPort(i);	//ビューポートにセット
+					Camera::Update(i);			//カメラを更新
+
+					//全オブジェクトを描画
+					//ルートオブジェクトのDrawを呼んだあと、自動的に子、孫のUpdateが呼ばれる
+					pRootObject->DrawSub();
+				}
 
 				//エフェクトの更新
 				VFX::Update();
 
-
-				//このフレームの描画開始
-				Direct3D::BeginDraw();
-
-				//全オブジェクトを描画
-				//ルートオブジェクトのDrawを呼んだあと、自動的に子、孫のUpdateが呼ばれる
-				pRootObject->DrawSub();
-
 				//エフェクトの描画
 				VFX::Draw();
-
+				ImGui::Render();
+				ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 				//描画終了
 				Direct3D::EndDraw();
+
+				if (Input::IsKeyUp(DIK_ESCAPE))
+				{
+					PostQuitMessage(0);
+				}
 
 
 
@@ -165,10 +185,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Image::AllRelease();
 	pRootObject->ReleaseSub();
 	SAFE_DELETE(pRootObject);
+	Input::Release();
+	ImGui_ImplDX11_Shutdown();
+	ImGui::DestroyContext();
 	Direct3D::Release();
 
 	return 0;
 }
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 
 
 //ウィンドウの作成
@@ -235,5 +259,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		Input::SetMousePosition(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	}
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+		return true;
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
