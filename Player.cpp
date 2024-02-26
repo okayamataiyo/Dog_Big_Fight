@@ -134,91 +134,95 @@ void Player::PlayerMove()
     //transform_.position_.x += velocity_.x;
     //transform_.position_.z += velocity_.z;
     transform_.position_.y = posY_;
-    XMVECTOR vecCam = -Camera::VecGetPosition(0) - Camera::VecGetTarget(0);
-    vecCam = XMVector3Normalize(vecCam);
-    //vecMove_ = XMLoadFloat3(&velocity_);
-    //vecMove_ = XMVector3Normalize(vecMove_);
-    vecMove_ = vecCam;
-    vecMove_ *= 0.005f;
-
-    //向き変更
-    vecLength_ = XMVector3Length(vecMove_);
-    length_ = XMVectorGetX(vecLength_);
-
-    if (length_ != 0)
+    for (int i = 0u; i <= 1; i++)
     {
-        //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
-        vecFront_ = { 0,0,1,0 };
-        vecMove_ = XMVector3Normalize(vecMove_);
+        XMVECTOR vecCam[2] = {};
+        vecCam[i] = -(Camera::VecGetPosition(i) - Camera::VecGetTarget(i));
+        vecCam[i] = XMVector3Normalize(vecCam[i]);
+        //vecMove_ = XMLoadFloat3(&velocity_);
+        //vecMove_ = XMVector3Normalize(vecMove_);
+        vecMove_ = vecCam[i];
+        vecMove_ *= 0.005f;
 
-        vecDot_ = XMVector3Dot(vecFront_, vecMove_);
-        dot_ = XMVectorGetX(vecDot_);
-        angle_ = acos(dot_);
+        //向き変更
+        vecLength_ = XMVector3Length(vecMove_);
+        length_ = XMVectorGetX(vecLength_);
 
-        //右向きにしか向けなかったものを左向きにする事ができる
-        vecCross_ = XMVector3Cross(vecFront_, vecMove_);
-        if (XMVectorGetY(vecCross_) < 0)
+        if (length_ != 0)
         {
-            angle_ *= -1;
+            //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
+            vecFront_ = { 0,0,1,0 };
+            vecMove_ = XMVector3Normalize(vecMove_);
 
+            vecDot_ = XMVector3Dot(vecFront_, vecMove_);
+            dot_ = XMVectorGetX(vecDot_);
+            angle_ = acos(dot_);
+
+            //右向きにしか向けなかったものを左向きにする事ができる
+            vecCross_ = XMVector3Cross(vecFront_, vecMove_);
+            if (XMVectorGetY(vecCross_) < 0)
+            {
+                angle_ *= -1;
+
+            }
+
+            transform_.rotate_.y = XMConvertToDegrees(angle_);
         }
 
-        transform_.rotate_.y = XMConvertToDegrees(angle_);
-    }
-
-    if (Input::IsKey(DIK_LSHIFT))
-    {
-        if (jumpFlg_ == false)
+        if (Input::IsKey(DIK_LSHIFT))
         {
-            //            velocity_.x = velocity_.x * 1.1;
-            //            velocity_.z = velocity_.z * 1.1;
-            GameSta_ = RUN;
-        }
-    }
-
-    if (this->GetObjectName() == "PlayerSeconds")
-    {
-        if (Input::IsKey(DIK_W))
-        {
-            XMVECTOR vectorMove = vecMove_ + XMLoadFloat3(&transform_.position_);
-
-            XMStoreFloat3(&transform_.position_, vectorMove);
-        }
-        if (Input::IsKey(DIK_S))
-        {
-            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - vecMove_;
-
-            XMStoreFloat3(&transform_.position_, vectorMove);
+            if (jumpFlg_ == false)
+            {
+                //            velocity_.x = velocity_.x * 1.1;
+                //            velocity_.z = velocity_.z * 1.1;
+                GameSta_ = RUN;
+            }
         }
 
-        if (Input::IsKey(DIK_D))
+        if (this->GetObjectName() == "PlayerSeconds")
         {
-            //XMMatrixRotationY = Y座標を中心に回転させる行列を作る関数
-            //XMConvertToRadians = degree角をradian角に(ただ)変換する
-            XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-            XMVECTOR tempvec = XMVector3Transform(vecMove_, rotmat);
-            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
-            XMStoreFloat3(&transform_.position_, vectorMove);
+            if (Input::IsKey(DIK_W))
+            {
+                XMVECTOR vectorMove = vecMove_ + XMLoadFloat3(&transform_.position_);
+
+                XMStoreFloat3(&transform_.position_, vectorMove);
+            }
+            if (Input::IsKey(DIK_S))
+            {
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - vecMove_;
+
+                XMStoreFloat3(&transform_.position_, vectorMove);
+            }
+
+            if (Input::IsKey(DIK_D))
+            {
+                //XMMatrixRotationY = Y座標を中心に回転させる行列を作る関数
+                //XMConvertToRadians = degree角をradian角に(ただ)変換する
+                XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
+                XMVECTOR tempvec = XMVector3Transform(vecMove_, rotmat);
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
+                XMStoreFloat3(&transform_.position_, vectorMove);
+            }
+            if (Input::IsKey(DIK_A))
+            {
+                XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
+                XMVECTOR tempvec = XMVector3Transform(vecMove_, -rotmat);
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
+                XMStoreFloat3(&transform_.position_, vectorMove);
+            }
+            if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
+            {
+                PlayerJump();
+            }
         }
-        if (Input::IsKey(DIK_A))
+        if (this->GetObjectName() == "PlayerFirst")
         {
-            XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-            XMVECTOR tempvec = XMVector3Transform(vecMove_, -rotmat);
-            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
-            XMStoreFloat3(&transform_.position_, vectorMove);
-        }
-        if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
-        {
-            PlayerJump();
-        }
-    }
-    if (this->GetObjectName() == "PlayerFirst")
-    {
-        transform_.position_.x += Input::GetPadStickL().x / 2;
-        transform_.position_.z += Input::GetPadStickL().y / 2;
-        if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A) && jumpFlg_ == false)
-        {
-            PlayerJump();
+            transform_.position_.x += Input::GetPadStickL().x / 2;
+            transform_.position_.z += Input::GetPadStickL().y / 2;
+            if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A) && jumpFlg_ == false)
+            {
+                PlayerJump();
+            }
         }
     }
 }
