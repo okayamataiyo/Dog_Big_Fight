@@ -1,9 +1,10 @@
 #include "Engine/Input.h"
 #include "Engine/SceneManager.h"
+#include "Engine/ImGui/imgui.h"
 #include "PlayScene.h"
 #include "Stage.h"
 #include "Item.h"
-#include "Engine/ImGui/imgui.h"
+#include "Floor.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
 	:GameObject(_pParent, "PlayScene")
@@ -15,6 +16,7 @@ void PlayScene::Initialize()
 {
 	Instantiate<Item>(this);
 	Instantiate<Stage>(this);
+	Instantiate<Floor>(this);
 	for (int i = 0u; i <= 1; i++)
 	{
 		pPlayer_[i] = Instantiate<Player>(this);
@@ -24,8 +26,8 @@ void PlayScene::Initialize()
 	}
 	pPlayer_[0]->SetObjectName("PlayerFirst");
 	pPlayer_[1]->SetObjectName("PlayerSeconds");
-	//pSky_ = Instantiate<Sky>(this);
-	//pSky_->SetObjectName("SkyFirst");
+	pSky_ = Instantiate<Sky>(this);
+	pSky_->SetObjectName("SkyFirst");
 	//pCamera_ = new Camera;
 	XMFLOAT3 firstPPos = { -3,0,0 };
 	XMFLOAT3 secondsPPos = { 3,0,0 };

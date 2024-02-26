@@ -2,35 +2,35 @@
 #include "Engine/Camera.h"
 #include "Engine/Input.h"
 #include "Engine/Fbx.h"
-#include "Stage.h"
+#include "Floor.h"
 
-Stage::Stage(GameObject* _parent)
-    :GameObject(_parent, "Stage"), hModel_(-1)
+Floor::Floor(GameObject* _parent)
+    :GameObject(_parent, "Floor"), hModel_(-1)
 {
 
 }
 
-Stage::~Stage()
+Floor::~Floor()
 {
 
 }
 
-void Stage::Initialize()
+void Floor::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("Ground.fbx");
+    hModel_ = Model::Load("Floor.fbx");
     assert(hModel_ >= 0);
     transform_.position_.y = -5;
     transform_.rotate_.y = 90;
     transform_.scale_ = { 4,1,4 };
 }
 
-void Stage::Update()
+void Floor::Update()
 {
 
 }
 
-void Stage::Draw()
+void Floor::Draw()
 {
     for (int i = 0u; i <= 1; i++)
     {
@@ -45,6 +45,6 @@ void Stage::Draw()
     }
 }
 
-void Stage::Release()
+void Floor::Release()
 {
 }

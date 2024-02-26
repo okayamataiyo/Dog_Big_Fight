@@ -123,6 +123,7 @@
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="GameOverText.cpp" />
+    <ClCompile Include="Floor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -225,6 +226,7 @@
     </ClInclude>
     <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="GameOverText.h" />
+    <ClInclude Include="Floor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

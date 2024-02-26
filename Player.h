@@ -31,17 +31,15 @@ public:
 		PLAY,
 		GAMEOVER,
 	}state_;
-
-	int playerNum_;
 	int hModel_;	//モデル番号
 	int camType_;	//画面分割の左右どっちのカメラか(右、左)
-	float posY_;	//プレイヤーのY座標に代入する値
 
-	Transform transPlayer_;
 	SphereCollider* pCollision_;
 	//▼ゲームの演出で使うメンバ関数
 	int TimeCounter_;
 
+	//▼移動で使うメンバ変数
+	float posY_;	//プレイヤーのY座標に代入する値
 	//▼向き変えで使うメンバ変数
 	XMVECTOR vecMove_[2];
 	XMVECTOR vecLength_;
@@ -53,7 +51,6 @@ public:
 	float angle_[2];
 	//▼ジャンプで使うメンバ変数
 	bool  jumpFlg_;				//ジャンプしてるかしていないか
-	int hStageModel_[2];
 	float rayGravityDist_;		//地面とプレイヤーの差分
 	float moveYTemp_;	//y座標をPrevに保存する
 	float moveYPrev_;	//y座標を保存しておく
@@ -62,7 +59,7 @@ public:
 	int isFloor_;		//すり抜け床にレイを飛ばしているかどうか
 	int prevIsFloor_;	//1フレーム前にisFloorフラグがどうなっていたか
 	float rayUpDist_;	//上の物体とプレイヤーの差分
-	float rayDownDist_;	//下のすり抜けたい物体とプレイヤーの差分
+	float rayFloorDist_;	//下のすり抜けたい物体とプレイヤーの差分
 
 	//▼慣性で使うメンバ変数
 

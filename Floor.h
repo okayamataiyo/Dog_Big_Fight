@@ -5,17 +5,17 @@
 #include "Engine/Direct3D.h"
 
 using std::string;
-//Stageを管理するクラス
-class Stage : public GameObject
+//Floorを管理するクラス
+class Floor : public GameObject
 {
     int hModel_;    //モデル番号
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)
-    Stage(GameObject* _parent);
+    Floor(GameObject* _parent);
 
     //デストラクタ
-    ~Stage();
+    ~Floor();
 
     //初期化
     void Initialize() override;

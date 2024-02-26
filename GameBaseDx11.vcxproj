@@ -160,6 +160,7 @@
     <ClCompile Include="Engine\Text.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
+    <ClCompile Include="Floor.cpp" />
     <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="GameOverText.cpp" />
     <ClCompile Include="Item.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Engine\Text.h" />
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
+    <ClInclude Include="Floor.h" />
     <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="GameOverText.h" />
     <ClInclude Include="Item.h" />

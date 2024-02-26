@@ -29,20 +29,17 @@ void Item::Update()
 {
 	RayCastData data;
 	Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
-	int hStageModel[2];
-	for (int i = 0u; i <= 1; i++)
-	{
-		hStageModel[i] = pStage->GetModelHandle(i);   //モデル番号を取得
-		data.start = transform_.position_;  //レイの発射位置
-		data.start.y = 0;
-		data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-		Model::RayCast(hStageModel[i], &data);  //レイを発射
-		rayDist_ = data.dist;
+	int hStageModel;
+	hStageModel = pStage->GetModelHandle();   //モデル番号を取得
+	data.start = transform_.position_;  //レイの発射位置
+	data.start.y = 0;
+	data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
+	Model::RayCast(hStageModel, &data);  //レイを発射
+	rayDist_ = data.dist;
 
-		if (data.hit == true)
-		{
-			transform_.position_.y = -data.dist + 0.6;
-		}
+	if (data.hit == true)
+	{
+		transform_.position_.y = -data.dist + 0.6;
 	}
 }
 
