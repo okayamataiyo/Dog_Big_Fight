@@ -7,7 +7,7 @@
 #include "Engine/ImGui/imgui.h"
 
 Player::Player(GameObject* _pParent)
-    :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_(false), State_(READY), isFloor_(0)
+    :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_(false), state_(READY),gameState_(WAIT), isFloor_(0)
 {
 }
 
@@ -20,10 +20,10 @@ void Player::Initialize()
     //モデルデータのロード
     hModel_ = Model::Load("DogWalk.fbx");
     assert(hModel_ >= 0);
-    Model::SetAnimFrame(hModel_, 1, 60, 1);
     transform_.scale_ = { 0.5,0.5,0.5 };
     posY_ = transform_.position_.y;
     prevPosition_ = transform_.position_;
+    Model::SetAnimFrame(hModel_, 1, 60, 1);
     for (int i = 0u; i <= 1; i++)
     {
         pCollision_ = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
@@ -35,7 +35,7 @@ void Player::Initialize()
 
 void Player::Update()
 {
-    switch (State_)
+    switch (state_)
     {
     case STATE::READY:     UpdateReady();    break;
     case STATE::PLAY:      UpdatePlay();     break;
@@ -59,15 +59,22 @@ void Player::UpdateReady()
     ++TimeCounter_;
     if (TimeCounter_ >= 60)
     {
-        State_ = STATE::PLAY;
+        state_ = STATE::PLAY;
         TimeCounter_ = 0;
     }
 }
 
 void Player::UpdatePlay()
 {
+    switch (gameState_)
+    {
+    case GAMESTATE::WAIT:       Model::SetOnceAnimFrame(hModel_, 0, 0, 1); break;
+    case GAMESTATE::WALK:       Model::SetOnceAnimFrame(hModel_, 20, 60, 0.5); break;
+    }
+
     PlayerGravity();
     PlayerMove();
+    ImGui::Text("gameState_=%i", gameState_);
     ImGui::Text("AnimFrame = %i", Model::GetAnimFrame(hModel_));
     ImGui::Text("moveYPrev_=%f", moveYPrev_);
     ImGui::Text("moveYTemp_=%f", moveYTemp_);
@@ -102,10 +109,10 @@ void Player::OnCollision(GameObject* _pTarget)
 
     if (_pTarget->GetObjectName() == "PlayerSeconds")
     {
-        if (State_ != STATE::GAMEOVER)
+        if (state_ != STATE::GAMEOVER)
         {
             Direct3D::SetIsChangeView(1);
-            State_ = STATE::GAMEOVER;
+            state_ = STATE::GAMEOVER;
         }
     }
 }
@@ -122,11 +129,6 @@ void Player::PlayerMove()
         //        velocity_.x *= 0.97f;
         //        velocity_.z *= 0.97f;
     }
-
-
-    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-    XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
-
     XMVECTOR vecPos = XMLoadFloat3(&transform_.position_);
     //XMVECTOR vecMove = camera_.GetPosition(0);
     //vecMove = XMVector3TransformCoord(vecMove, mRotY);
@@ -141,55 +143,88 @@ void Player::PlayerMove()
         vecCam[i] = XMVector3Normalize(vecCam[i]);
         //vecMove_ = XMLoadFloat3(&velocity_);
         //vecMove_ = XMVector3Normalize(vecMove_);
-        vecMove_ = vecCam[i];
-        vecMove_ *= 0.005f;
+        vecMove_[i] = vecCam[i];
+        vecMove_[i] *= 0.005f;
 
         //向き変更
-        vecLength_ = XMVector3Length(vecMove_);
+        vecLength_ = XMVector3Length(vecMove_[i]);
         length_ = XMVectorGetX(vecLength_);
 
         if (length_ != 0)
         {
             //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
             vecFront_ = { 0,0,1,0 };
-            vecMove_ = XMVector3Normalize(vecMove_);
+            vecMove_[i] = XMVector3Normalize(vecMove_[i]);
 
-            vecDot_ = XMVector3Dot(vecFront_, vecMove_);
-            dot_ = XMVectorGetX(vecDot_);
-            angle_ = acos(dot_);
+            vecDot_[i] = XMVector3Dot(vecFront_, vecMove_[i]);
+            dot_ = XMVectorGetX(vecDot_[i]);
+            angle_[i] = acos(dot_);
 
             //右向きにしか向けなかったものを左向きにする事ができる
-            vecCross_ = XMVector3Cross(vecFront_, vecMove_);
+            vecCross_ = XMVector3Cross(vecFront_, vecMove_[i]);
             if (XMVectorGetY(vecCross_) < 0)
             {
-                angle_ *= -1;
-
+                angle_[i] *= -1;
             }
-
-            transform_.rotate_.y = XMConvertToDegrees(angle_);
         }
 
-        if (Input::IsKey(DIK_LSHIFT))
+        if (this->GetObjectName() == "PlayerFirst")
         {
-            if (jumpFlg_ == false)
+            transform_.rotate_.y = XMConvertToDegrees(angle_[0]);
+            if (Input::GetPadStickL().x > 0.3)
             {
-                //            velocity_.x = velocity_.x * 1.1;
-                //            velocity_.z = velocity_.z * 1.1;
-                GameSta_ = RUN;
+                XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
+                XMVECTOR tempvec = XMVector3Transform((vecMove_[0] / 3), rotmat);
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
+                XMStoreFloat3(&transform_.position_, vectorMove);
+                gameState_ = WALK;
+            }
+            if (Input::GetPadStickL().x < -0.3)
+            {
+                XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
+                XMVECTOR tempvec = XMVector3Transform((vecMove_[0] / 3), -rotmat);
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
+                XMStoreFloat3(&transform_.position_, vectorMove);
+                gameState_ = WALK;
+            }
+            if (Input::GetPadStickL().y > 0.3)
+            {
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecMove_[0] / 3);
+                XMStoreFloat3(&transform_.position_, vectorMove);
+                gameState_ = WALK;
+            }
+            if (Input::GetPadStickL().y < -0.3)
+            {
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - (vecMove_[0] / 3);
+                XMStoreFloat3(&transform_.position_, vectorMove);
+                gameState_ = WALK;
+            }
+            if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A) && jumpFlg_ == false)
+            {
+                PlayerJump();
+            }
+            if (Input::IsKey(DIK_LSHIFT))
+            {
+                if (jumpFlg_ == false)
+                {
+                    //            velocity_.x = velocity_.x * 1.1;
+                    //            velocity_.z = velocity_.z * 1.1;
+                    gameState_ = RUN;
+                }
             }
         }
-
         if (this->GetObjectName() == "PlayerSeconds")
         {
+            transform_.rotate_.y = XMConvertToDegrees(angle_[1]);
             if (Input::IsKey(DIK_W))
             {
-                XMVECTOR vectorMove = vecMove_ + XMLoadFloat3(&transform_.position_);
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + vecMove_[1];
 
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
             if (Input::IsKey(DIK_S))
             {
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - vecMove_;
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - vecMove_[1];
 
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
@@ -199,14 +234,14 @@ void Player::PlayerMove()
                 //XMMatrixRotationY = Y座標を中心に回転させる行列を作る関数
                 //XMConvertToRadians = degree角をradian角に(ただ)変換する
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-                XMVECTOR tempvec = XMVector3Transform(vecMove_, rotmat);
+                XMVECTOR tempvec = XMVector3Transform(vecMove_[1], rotmat);
                 XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
             if (Input::IsKey(DIK_A))
             {
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-                XMVECTOR tempvec = XMVector3Transform(vecMove_, -rotmat);
+                XMVECTOR tempvec = XMVector3Transform(vecMove_[1], -rotmat);
                 XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
@@ -214,14 +249,14 @@ void Player::PlayerMove()
             {
                 PlayerJump();
             }
-        }
-        if (this->GetObjectName() == "PlayerFirst")
-        {
-            transform_.position_.x += Input::GetPadStickL().x / 2;
-            transform_.position_.z += Input::GetPadStickL().y / 2;
-            if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A) && jumpFlg_ == false)
+            if (Input::IsKey(DIK_LSHIFT))
             {
-                PlayerJump();
+                if (jumpFlg_ == false)
+                {
+                    //            velocity_.x = velocity_.x * 1.1;
+                    //            velocity_.z = velocity_.z * 1.1;
+                    gameState_ = RUN;
+                }
             }
         }
     }

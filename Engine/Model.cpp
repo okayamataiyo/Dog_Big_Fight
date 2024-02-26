@@ -11,6 +11,7 @@ namespace Model
 	void Initialize()
 	{
 		AllRelease();
+		isOnce = false;
 	}
 
 	//ƒ‚ƒfƒ‹‚ðƒ[ƒh
@@ -139,6 +140,15 @@ namespace Model
 	void SetAnimFrame(int handle, int startFrame, int endFrame, float animSpeed)
 	{
 		_datas[handle]->SetAnimFrame(startFrame, endFrame, animSpeed);
+	}
+
+	void SetOnceAnimFrame(int _handle, int _startFrame, int _endFrame, float _animSpeed)
+	{
+		if (isOnce == false)
+		{
+			SetAnimFrame(_handle, _startFrame, _endFrame, _animSpeed);
+			isOnce = true;
+		}
 	}
 
 

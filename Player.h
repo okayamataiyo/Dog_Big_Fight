@@ -22,14 +22,14 @@ public:
 		RUN,
 		JUNMP,
 
-	}GameSta_;
+	}gameState_;
 
 	enum STATE
 	{
 		READY = 0,
 		PLAY,
 		GAMEOVER,
-	}State_;
+	}state_;
 
 	int playerNum_;
 	int hModel_;	//モデル番号
@@ -42,14 +42,14 @@ public:
 	int TimeCounter_;
 
 	//▼向き変えで使うメンバ変数
-	XMVECTOR vecMove_;
+	XMVECTOR vecMove_[2];
 	XMVECTOR vecLength_;
 	XMVECTOR vecFront_;
-	XMVECTOR vecDot_;
+	XMVECTOR vecDot_[2];
 	XMVECTOR vecCross_;
 	float length_;
 	float dot_;
-	float angle_;
+	float angle_[2];
 	//▼ジャンプで使うメンバ変数
 	bool  jumpFlg_;				//ジャンプしてるかしていないか
 	int hStageModel_[2];
