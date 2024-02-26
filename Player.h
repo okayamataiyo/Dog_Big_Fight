@@ -20,9 +20,10 @@ public:
 		WAIT = 0,
 		WALK,
 		RUN,
-		JUNMP,
+		JUMP,
 
 	}gameState_;
+	GAMESTATE prevState_;
 
 	enum STATE
 	{
@@ -64,15 +65,13 @@ public:
 	float rayDownDist_;	//下のすり抜けたい物体とプレイヤーの差分
 
 	//▼慣性で使うメンバ変数
-	float mv;			//加速度
-	XMFLOAT3 velocity_;	//速度
 
 	//▼壁判定で使うメンバ変数
 	float rayFrontDist_;		//前壁の位置と自分の位置の差距離
 	float rayBackDist_;			//後ろ壁の位置と自分の位置の差距離
 	float rayLeftDist_;			//左壁の位置と自分の位置の差距離
 	float rayRightDist_;		//右壁の位置と自分の位置の差距離
-	XMFLOAT3 prevPosition_;	//1フレーム前の位置座標
+	XMFLOAT3 prevPosition_;		//1フレーム前の位置座標
 
 public:
 
@@ -128,15 +127,12 @@ public:
 	void PlayerJump();
 
 	/// <summary>
-	/// プレイヤーの壁めり込み防止関数
+	/// プレイヤーのレイ関数
 	/// </summary>
-	void PlayerWall();
-
-	/// <summary>
-	/// プレイヤーの重力関数
-	/// </summary>
-	void PlayerGravity();
+	void PlayerRayCast();
 
 	XMVECTOR GetVecPos() { return XMLoadFloat3(&transform_.position_); }
+
+	bool IsMoving();
 };
 

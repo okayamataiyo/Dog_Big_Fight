@@ -7,11 +7,12 @@ namespace Model
 	//ロード済みのモデルデータ一覧
 	std::vector<ModelData*>	_datas;
 
+	int prevNum = 0;
+
 	//初期化
 	void Initialize()
 	{
 		AllRelease();
-		isOnce = false;
 	}
 
 	//モデルをロード
@@ -142,15 +143,14 @@ namespace Model
 		_datas[handle]->SetAnimFrame(startFrame, endFrame, animSpeed);
 	}
 
-	void SetOnceAnimFrame(int _handle, int _startFrame, int _endFrame, float _animSpeed)
+	void SetOnceAnimFrame(int _handle, int _startFrame, int _endFrame, float _animSpeed,int _num)
 	{
-		if (isOnce == false)
+		if (prevNum != _num)
 		{
 			SetAnimFrame(_handle, _startFrame, _endFrame, _animSpeed);
-			isOnce = true;
 		}
+		prevNum = _num;
 	}
-
 
 	//現在のアニメーションのフレームを取得
 	int GetAnimFrame(int handle)

@@ -45,7 +45,6 @@ namespace Model
 			animSpeed = speed;
 		}
 	};
-	bool isOnce;
 
 	//初期化
 	void Initialize();
@@ -75,7 +74,7 @@ namespace Model
 	//引数：animSpeed	アニメーション速度
 	void SetAnimFrame(int handle, int startFrame, int endFrame, float animSpeed);
 
-	void SetOnceAnimFrame(int _handle, int _startFrame, int _endFrame, float _animSpeed);
+	void SetOnceAnimFrame(int _handle, int _startFrame, int _endFrame, float _animSpeed,int _num);
 
 	//現在のアニメーションのフレームを取得
 	int GetAnimFrame(int handle);

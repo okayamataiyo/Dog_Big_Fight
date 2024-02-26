@@ -3,11 +3,12 @@
 #include "Engine/Input.h"
 #include "Engine/Model.h"
 #include "Engine/Direct3D.h"
-#include "Stage.h"
 #include "Engine/ImGui/imgui.h"
+#include "Stage.h"
 
 Player::Player(GameObject* _pParent)
-    :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_(false), state_(READY),gameState_(WAIT), isFloor_(0)
+    :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 }, camType_(0), playerNum_(0), jumpFlg_(false), 
+    state_(READY),gameState_(WAIT), isFloor_(0)
 {
 }
 
@@ -23,7 +24,6 @@ void Player::Initialize()
     transform_.scale_ = { 0.5,0.5,0.5 };
     posY_ = transform_.position_.y;
     prevPosition_ = transform_.position_;
-    Model::SetAnimFrame(hModel_, 1, 60, 1);
     for (int i = 0u; i <= 1; i++)
     {
         pCollision_ = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
@@ -66,28 +66,29 @@ void Player::UpdateReady()
 
 void Player::UpdatePlay()
 {
-    switch (gameState_)
+    if (prevState_ != gameState_)
     {
-    case GAMESTATE::WAIT:       Model::SetOnceAnimFrame(hModel_, 0, 0, 1); break;
-    case GAMESTATE::WALK:       Model::SetOnceAnimFrame(hModel_, 20, 60, 0.5); break;
+        switch (gameState_)
+        {
+        case GAMESTATE::WAIT:       Model::SetAnimFrame(hModel_, 0, 0, 1); break;
+        case GAMESTATE::WALK:       Model::SetAnimFrame(hModel_, 20, 60, 0.5); break;
+        case GAMESTATE::RUN:        Model::SetAnimFrame(hModel_, 80, 120, 0.5); break;
+        case GAMESTATE::JUMP:       Model::SetAnimFrame(hModel_, 120, 120, 1); break;
+        }
     }
+    prevState_ = gameState_;
 
-    PlayerGravity();
     PlayerMove();
+    PlayerRayCast();
     ImGui::Text("gameState_=%i", gameState_);
-    ImGui::Text("AnimFrame = %i", Model::GetAnimFrame(hModel_));
-    ImGui::Text("moveYPrev_=%f", moveYPrev_);
-    ImGui::Text("moveYTemp_=%f", moveYTemp_);
+    //ImGui::Text("moveYPrev_=%f", moveYPrev_);
+    //ImGui::Text("moveYTemp_=%f", moveYTemp_);
     ImGui::Text("Transform_.position_.x=%f", transform_.position_.x);
     ImGui::Text("Transform_.position_.y=%f", transform_.position_.y);
     ImGui::Text("Transform_.position_.z=%f", transform_.position_.z);
     ImGui::Text("prevPosition_.x=%f", prevPosition_.x);
     ImGui::Text("prevPosition_.y=%f", prevPosition_.y);
     ImGui::Text("prevPosition_.z=%f", prevPosition_.z);
-    ImGui::Text("posY_=%f", posY_);
-    ImGui::Text("jumpFlg_=%s", jumpFlg_ ? "true" : "false");
-    ImGui::Text("angle_=%f", angle_);
-    PlayerWall();
 }
 
 void Player::UpdateGameOver()
@@ -119,30 +120,21 @@ void Player::OnCollision(GameObject* _pTarget)
 
 void Player::PlayerMove()
 {
-    if (jumpFlg_ == false)
+    if (IsMoving())
     {
-        //        velocity_.x *= 0.9f;    //Xé≤ï˚å¸ÇÃäµê´
-        //        velocity_.z *= 0.9f;    //Zé≤ï˚å¸ÇÃäµê´
+        gameState_ = WALK;
     }
-    else
+    else if (jumpFlg_ == false)
     {
-        //        velocity_.x *= 0.97f;
-        //        velocity_.z *= 0.97f;
+        gameState_ = WAIT;
     }
     XMVECTOR vecPos = XMLoadFloat3(&transform_.position_);
-    //XMVECTOR vecMove = camera_.GetPosition(0);
-    //vecMove = XMVector3TransformCoord(vecMove, mRotY);
-
-    //transform_.position_.x += velocity_.x;
-    //transform_.position_.z += velocity_.z;
     transform_.position_.y = posY_;
     for (int i = 0u; i <= 1; i++)
     {
         XMVECTOR vecCam[2] = {};
         vecCam[i] = -(Camera::VecGetPosition(i) - Camera::VecGetTarget(i));
         vecCam[i] = XMVector3Normalize(vecCam[i]);
-        //vecMove_ = XMLoadFloat3(&velocity_);
-        //vecMove_ = XMVector3Normalize(vecMove_);
         vecMove_[i] = vecCam[i];
         vecMove_[i] *= 0.005f;
 
@@ -171,44 +163,38 @@ void Player::PlayerMove()
         if (this->GetObjectName() == "PlayerFirst")
         {
             transform_.rotate_.y = XMConvertToDegrees(angle_[0]);
+            if (Input::GetPadStickL().y > 0.3)
+            {
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecMove_[0] / 4);
+                XMStoreFloat3(&transform_.position_, vectorMove);
+            }
+            if (Input::GetPadStickL().y < -0.3)
+            {
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - (vecMove_[0] / 4);
+                XMStoreFloat3(&transform_.position_, vectorMove);
+            }
             if (Input::GetPadStickL().x > 0.3)
             {
-                XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-                XMVECTOR tempvec = XMVector3Transform((vecMove_[0] / 3), rotmat);
+                XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);                          //XMMatrixRotationY = Yç¿ïWÇíÜêSÇ…âÒì]Ç≥ÇπÇÈçsóÒÇçÏÇÈä÷êî
+                XMVECTOR tempvec = XMVector3Transform((vecMove_[0] / 4), rotmat);       //XMConvertToRadians = degreeäpÇradianäpÇ…(ÇΩÇæ)ïœä∑Ç∑ÇÈ
                 XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
                 XMStoreFloat3(&transform_.position_, vectorMove);
-                gameState_ = WALK;
             }
             if (Input::GetPadStickL().x < -0.3)
             {
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-                XMVECTOR tempvec = XMVector3Transform((vecMove_[0] / 3), -rotmat);
+                XMVECTOR tempvec = XMVector3Transform((vecMove_[0] / 4), -rotmat);
                 XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
                 XMStoreFloat3(&transform_.position_, vectorMove);
-                gameState_ = WALK;
-            }
-            if (Input::GetPadStickL().y > 0.3)
-            {
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecMove_[0] / 3);
-                XMStoreFloat3(&transform_.position_, vectorMove);
-                gameState_ = WALK;
-            }
-            if (Input::GetPadStickL().y < -0.3)
-            {
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - (vecMove_[0] / 3);
-                XMStoreFloat3(&transform_.position_, vectorMove);
-                gameState_ = WALK;
             }
             if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A) && jumpFlg_ == false)
             {
                 PlayerJump();
             }
-            if (Input::IsKey(DIK_LSHIFT))
+            if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER))
             {
                 if (jumpFlg_ == false)
                 {
-                    //            velocity_.x = velocity_.x * 1.1;
-                    //            velocity_.z = velocity_.z * 1.1;
                     gameState_ = RUN;
                 }
             }
@@ -218,30 +204,25 @@ void Player::PlayerMove()
             transform_.rotate_.y = XMConvertToDegrees(angle_[1]);
             if (Input::IsKey(DIK_W))
             {
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + vecMove_[1];
-
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecMove_[1] / 4);
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
             if (Input::IsKey(DIK_S))
             {
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - vecMove_[1];
-
+                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - (vecMove_[1] / 4);
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
-
             if (Input::IsKey(DIK_D))
             {
-                //XMMatrixRotationY = Yç¿ïWÇíÜêSÇ…âÒì]Ç≥ÇπÇÈçsóÒÇçÏÇÈä÷êî
-                //XMConvertToRadians = degreeäpÇradianäpÇ…(ÇΩÇæ)ïœä∑Ç∑ÇÈ
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-                XMVECTOR tempvec = XMVector3Transform(vecMove_[1], rotmat);
+                XMVECTOR tempvec = XMVector3Transform((vecMove_[1] / 4), rotmat);
                 XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
             if (Input::IsKey(DIK_A))
             {
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-                XMVECTOR tempvec = XMVector3Transform(vecMove_[1], -rotmat);
+                XMVECTOR tempvec = XMVector3Transform((vecMove_[1] / 4), -rotmat);
                 XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
@@ -253,12 +234,15 @@ void Player::PlayerMove()
             {
                 if (jumpFlg_ == false)
                 {
-                    //            velocity_.x = velocity_.x * 1.1;
-                    //            velocity_.z = velocity_.z * 1.1;
                     gameState_ = RUN;
                 }
             }
         }
+    }
+
+    if (jumpFlg_ == true)
+    {
+        gameState_ = JUMP;
     }
 }
 
@@ -270,12 +254,7 @@ void Player::PlayerJump()
     posY_ = posY_ + 0.3;
 }
 
-void Player::PlayerWall()
-{
-
-}
-
-void Player::PlayerGravity()
+void Player::PlayerRayCast()
 {
     prevPosition_ = transform_.position_;
     prevIsFloor_ = isFloor_;
@@ -393,4 +372,9 @@ void Player::PlayerGravity()
     {
         transform_.position_.x = (float)((int)prevPosition_.x) - 0.00001f;
     }
+}
+
+bool Player::IsMoving()
+{
+    return (transform_.position_.x != prevPosition_.x || transform_.position_.z != prevPosition_.z);
 }
