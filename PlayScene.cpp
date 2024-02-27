@@ -17,14 +17,12 @@ void PlayScene::Initialize()
 	Instantiate<Stage>(this);
 	floorPos_[0].position_ = { 30.0f,0.8f,3.0f };
 	floorPos_[1].position_ = { 6.0f,0.5f,20.0f };
-	floorPos_[2].rotate_.z += 1;
 	floorPos_[2].position_ = { -5.0f, 0.3f,9.0f };
 	for (int i = 0u; i <= 2; i++)
 	{
 		pFloor_[i] = Instantiate<Floor>(this);
 		pFloor_[i]->SetPosition(floorPos_[i].position_);
 	}
-	pFloor_[2]->SetRotateY(floorPos_[2].rotate_.z);
 	for (int i = 0u; i <= 1; i++)
 	{
 		pPlayer_[i] = Instantiate<Player>(this);
@@ -48,21 +46,21 @@ void PlayScene::Update()
 {
 	for (int i = 0u; i <= 1; i++)
 	{
-		XMVECTOR vPos[2] = {};
-		XMFLOAT3 mouse = {};
-		XMFLOAT3 controller = {};
-		XMFLOAT3 rDir = { 0,0,1 };
-		XMVECTOR Dir[2] = {};
-		float sigmaRotY[2] = {};
-		float sigmaRotX[2] = {};
-		XMMATRIX mxRotX[2] = {};
-		XMMATRIX mxRotY[2] = {};
-		XMMATRIX rot[2] = {};
-		XMFLOAT3 playerPos[2] = {};
-		XMFLOAT3 floatDir[2] = {};
-		vPos[i] = pPlayer_[i]->GetVecPos();
-		mouse = Input::GetMouseMove();
-		controller = Input::GetPadStickR();
+		XMVECTOR vPos[2]			= {};
+		XMFLOAT3 mouse				= {};
+		XMFLOAT3 controller			= {};
+		XMFLOAT3 rDir				= { 0,0,1 };
+		XMVECTOR Dir[2]				= {};
+		float sigmaRotY[2]			= {};
+		float sigmaRotX[2]			= {};
+		XMMATRIX mxRotX[2]			= {};
+		XMMATRIX mxRotY[2]			= {};
+		XMMATRIX rot[2]				= {};
+		XMFLOAT3 playerPos[2]		= {};
+		XMFLOAT3 floatDir[2]		= {};
+		vPos[i]						= pPlayer_[i]->GetVecPos();
+		mouse						= Input::GetMouseMove();
+		controller					= Input::GetPadStickR();
 		//ImGui::Text("mouse.x=%f", mouse.x);
 		//ImGui::Text("mouse.y=%f", mouse.y);
 		//ImGui::Text("mouse.z=%f", mouse.z);
@@ -70,43 +68,43 @@ void PlayScene::Update()
 		//ImGui::Text("controller.y=%f", controller.y);
 		//ImGui::Text("controller.z=%f", controller.z);
 
-		const float mouseSens = 400;
-		const float controllerSens = 100;
-		static float RotationX[2] = {};
-		static float RotationY[2] = {};
-		static float vecLength[2] = {};
-		static float prevLen[2] = {};
-		static float prevRotX[2] = {};
+		const float mouseSens		= 400;
+		const float controllerSens	= 100;
+		static float RotationX[2]	= {};
+		static float RotationY[2]	= {};
+		static float vecLength[2]	= {};
+		static float prevLen[2]		= {};
+		static float prevRotX[2]	= {};
 
-		RotationX[0] = controller.x;
-		RotationY[0] = -controller.y;
-		RotationX[1] = mouse.x;
-		RotationY[1] = mouse.y;
-		vecLength[1] -= (mouse.z) / 50;
+		RotationX[0]				= controller.x;
+		RotationY[0]				= -controller.y;
+		RotationX[1]				= mouse.x;
+		RotationY[1]				= mouse.y;
+		vecLength[1]			   -= (mouse.z) / 50;
 
 		Dir[i] = XMLoadFloat3(&rDir);
 
 		//Dir = Dir * (pPlayer_[i]->GetRotate().x + RotationX[i]) * (pPlayer_[i]->GetRotate().y + RotationY[i]);
 		//Dir = Dir + (vecLength * 2);
-		camVec_[0].x += RotationY[0] / controllerSens;
-		camVec_[0].y += RotationX[0] / controllerSens;
-		camVec_[1].x += RotationY[1] / mouseSens;
-		camVec_[1].y += RotationX[1] / mouseSens;
+		camVec_[0].x			   += RotationY[0] / controllerSens;
+		camVec_[0].y			   += RotationX[0] / controllerSens;
+		camVec_[1].x			   += RotationY[1] / mouseSens;
+		camVec_[1].y			   += RotationX[1] / mouseSens;
 
-		sigmaRotY[i] = camVec_[i].y;// +pPlayer_[i]->GetRotate().y;
-		sigmaRotX[i] = -camVec_[i].x;// + EasingX[i]; +pPlayer_[i]->GetRotate().x;
+		sigmaRotY[i]				= camVec_[i].y;// +pPlayer_[i]->GetRotate().y;
+		sigmaRotX[i]				= -camVec_[i].x;// + EasingX[i]; +pPlayer_[i]->GetRotate().x;
 
 		if (sigmaRotX[i] > 0 * (3.14 / 180))
 		{
-			sigmaRotX[i] = 0;
-			camVec_[1].x -= RotationY[1] / mouseSens;
-			camVec_[0].x = RotationY[0];// / mouseSens;
+			sigmaRotX[i]			= 0;
+			camVec_[1].x		   -= RotationY[1] / mouseSens;
+			camVec_[0].x		   -= RotationY[0] / controllerSens;
 		}
 		if (sigmaRotX[i] < -88 * (3.14 / 180))
 		{
 			sigmaRotX[i] = -87.9 * (3.14 / 180);
-			camVec_[1].x -= RotationY[1] / mouseSens;
-			camVec_[0].x = RotationY[0];// / mouseSens;
+			camVec_[1].x		   -= RotationY[1] / mouseSens;
+			camVec_[0].x		   -= RotationY[0] / controllerSens;
 		}
 
 		prevRotX[i] = sigmaRotX[i];

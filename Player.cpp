@@ -20,7 +20,7 @@ Player::~Player()
 void Player::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("innu.fbx");
+    hModel_ = Model::Load("DogWalk.fbx");
     assert(hModel_ >= 0);
     transform_.scale_ = { 0.5,0.5,0.5 };
     posY_ = transform_.position_.y;
@@ -153,7 +153,7 @@ void Player::PlayerMove()
             }
             else
             {
-                vecMove_[1] *= 1.1f;
+                vecMove_[1] *= 1.4f;
             }
             if (!(Input::IsKey(DIK_F)))
             {
@@ -285,7 +285,6 @@ void Player::PlayerMove()
     {
         playerState_ = JUMP;
     }
-    ImGui::Text("isDash_=%s", isDash_ ? "true" : "false");
 }
 
 void Player::PlayerJump()
@@ -305,12 +304,12 @@ void Player::PlayerRayCast()
     RayCastData backData;
     RayCastData leftData;
     RayCastData rightData;
-    Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
-    int hStageModel_ = pStage->GetModelHandle();    //モデル番号を取得
+    float playerFling           = 1.0f;  //プレイヤーが地面からどのくらい離れていたら浮いている判定にするか
+    Stage* pStage               = (Stage*)FindObject("Stage");    //ステージオブジェクト
+    int hStageModel_            = pStage->GetModelHandle();    //モデル番号を取得
 
     Floor* pFloor = (Floor*)FindObject("Floor");
     int hFloorModel_ = pFloor->GetModelHandle();
-
     if (jumpFlg_ == true || transform_.position_.y >= 10)
     {
         //放物線に下がる処理
@@ -327,46 +326,48 @@ void Player::PlayerRayCast()
         }
     }
 
-    //▼上の法線(すり抜け床のため)
-    upData.start = transform_.position_;       //レイの発射位置
-    upData.dir = XMFLOAT3(0, 1, 0);            //レイの方向
-    Model::RayCast(hFloorModel_, &upData);  //レイを発射
-    rayUpDist_ = upData.dist;
-    //ImGui::Text("rayUpDist_=%f", rayUpDist_);
-
-    //▼下の法線(すり抜け床)
-    downFloorData.start = transform_.position_;    //レイの発射位置
-    downFloorData.start.y = 0.0f;
-    downFloorData.dir = XMFLOAT3(0, -1, 0);        //レイの方向
-    if (upData.dist == 99999)
+    for (int i = 0; i <= 2; i++)
     {
-        Model::RayCast(hFloorModel_, &downFloorData);  //レイを発射
-    }
-    rayFloorDist_ = downFloorData.dist;
-    //ImGui::Text("rayFloorDist_=%f", rayFloorDist_);
 
-    if (downFloorData.hit == true)
-    {
-        if (jumpFlg_ == false)
+        //▼上の法線(すり抜け床のため)
+        upData.start = transform_.position_;           //レイの発射位置
+        upData.dir = XMFLOAT3(0, 1, 0);                //レイの方向
+        Model::RayCast(hFloorModel_ + i, &upData);         //レイを発射
+        rayUpDist_ = upData.dist;
+        ImGui::Text("rayUpDist_=%f", rayUpDist_);
+
+        //▼下の法線(すり抜け床)
+        downFloorData.start = transform_.position_;    //レイの発射位置
+        downFloorData.start.y = 0.0f;
+        downFloorData.dir = XMFLOAT3(0, -1, 0);        //レイの方向
+        if (upData.dist == 99999)
         {
-            posY_ = -downFloorData.dist + 0.6f;
-            isFloor_ = 1;
-            moveYTemp_ = posY_;
-            moveYPrev_ = moveYTemp_;
+            Model::RayCast(hFloorModel_ + i, &downFloorData);  //レイを発射
         }
-    }
-    else
-    {
-        isFloor_ = 0;
-    }
+        rayFloorDist_ = downFloorData.dist;
+        //ImGui::Text("rayFloorDist_=%f", rayFloorDist_);
+        if (rayFloorDist_ + posY_ <= playerFling)
+        {
+            if (jumpFlg_ == false)
+            {
+                posY_ = -downFloorData.dist + 0.6f;
+                isFloor_ = 1;
+                moveYTemp_ = posY_;
+                moveYPrev_ = moveYTemp_;
+            }
+        }
+        else
+        {
+            isFloor_ = 0;
+        }
 
+    }
     //▼下の法線(床に張り付き)
     downData.start = transform_.position_;  //レイの発射位置
     downData.start.y = 0;
     downData.dir = XMFLOAT3(0, -1, 0);       //レイの方向
     Model::RayCast(hStageModel_, &downData);  //レイを発射
     rayGravityDist_ = downData.dist;
-    float playerFling = 1;
     //プレイヤーが浮いていないとき
     //ImGui::Text("rayGravityDist_=%f", rayGravityDist_);
     if (rayGravityDist_ + posY_ <= playerFling)
@@ -392,7 +393,8 @@ void Player::PlayerRayCast()
     //ImGui::Text("rayFrontDist_=%f", rayFrontDist_);
     if (rayFrontDist_ <= 1.5f)
     {
-        transform_.position_.z = (float)((int)prevPosition_.z) - 0.00001f;
+        //transform_.position_.z = (float)((int)prevPosition_.z) - 0.00001f;
+        transform_.position_.z = prevPosition_.z;
     }
     //▼後ろの法線(壁の当たり判定)
     backData.start = transform_.position_;       //レイの発射位置
@@ -402,7 +404,8 @@ void Player::PlayerRayCast()
     //ImGui::Text("rayBackDist_=%f", rayBackDist_);
     if (rayBackDist_ <= 1.5f)
     {
-        transform_.position_.z = (float)((int)prevPosition_.z) + 0.00001f;
+        //transform_.position_.z = (float)((int)prevPosition_.z) + 0.00001f;
+        transform_.position_.z = prevPosition_.z;
     }
     //▼左の法線(壁の当たり判定)
     leftData.start = transform_.position_;       //レイの発射位置
@@ -412,7 +415,8 @@ void Player::PlayerRayCast()
     //ImGui::Text("rayLeftDist_=%f", rayLeftDist_);
     if (rayLeftDist_ <= 1.5f)
     {
-        transform_.position_.x = (float)((int)prevPosition_.x) + 0.00001f;
+        //transform_.position_.x = (float)((int)prevPosition_.x) + 0.00001f;
+        transform_.position_.x = prevPosition_.x;
     }
     //▼右の法線(壁の当たり判定)
     rightData.start = transform_.position_;       //レイの発射位置
@@ -422,7 +426,8 @@ void Player::PlayerRayCast()
     //ImGui::Text("rayRightDist_=%f", rayRightDist_);
     if (rayRightDist_ <= 1.5f)
     {
-        transform_.position_.x = (float)((int)prevPosition_.x) - 0.00001f;
+        //transform_.position_.x = (float)((int)prevPosition_.x) - 0.00001f;
+        transform_.position_.x = prevPosition_.x;
     }
     prevPosition_ = transform_.position_;
     prevIsFloor_ = isFloor_;
