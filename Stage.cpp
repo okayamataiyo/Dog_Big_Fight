@@ -21,8 +21,8 @@ void Stage::Initialize()
     hModel_ = Model::Load("Ground.fbx");
     assert(hModel_ >= 0);
     transform_.position_.y = -5;
-    transform_.rotate_.y = 90;
-    transform_.scale_ = { 4,1,4 };
+    //transform_.rotate_.x= 90;
+    transform_.scale_ = { 25,15,25 };
 }
 
 void Stage::Update()
@@ -34,12 +34,12 @@ void Stage::Draw()
 {
     Model::SetTransform(hModel_, transform_);
     //ç≈èâÇ…3DÇ≈ï`âÊå„ÅAògÇ√ÇØÇ‡ï`âÊ
-    for (int j = 0; j <= 4; j += 4)
-    {
-        Direct3D::SetShader(static_cast<Direct3D::SHADER_TYPE>(j));
-        Model::Draw(hModel_);
-    }
-    //Model::Draw(hModel_);
+    //for (int j = 0; j <= 4; j += 4)
+    //{
+    //    Direct3D::SetShader(static_cast<Direct3D::SHADER_TYPE>(j));
+    //    Model::Draw(hModel_);
+    //}
+    Model::Draw(hModel_);
 }
 
 void Stage::Release()

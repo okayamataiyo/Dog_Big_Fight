@@ -34,6 +34,8 @@ namespace Direct3D
 		SHADER_UNLIT,
 		SHADER_BILLBOARD,
 		SHADER_OUTLINE,
+		SHADER_NORMALMAP,
+		SHADER_SKY,
 		SHADER_MAX
 	};	//3タイプ（3D用、2D用、当たり判定枠表示用）
 

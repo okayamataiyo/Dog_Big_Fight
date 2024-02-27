@@ -10,7 +10,7 @@ namespace Direct3D
 	//画用紙を2枚用紙しておき、片方を画面に映している間にもう一方に描画。
 	//1フレーム分の絵が出来上がったら画用紙を交換。これにより画面がちらつかない。
 	//その辺を司るのがスワップチェーン
-	IDXGISwapChain*         pSwapChain_ = nullptr;
+	IDXGISwapChain* pSwapChain_ = nullptr;
 
 	//【レンダーターゲットビュー】
 	//描画したいものと、描画先（上でいう画用紙）の橋渡しをするもの
@@ -21,7 +21,7 @@ namespace Direct3D
 
 	//【デプスステンシル】
 	//Zバッファ法を用いて、3D物体の前後関係を正しく表示するためのもの
-	ID3D11Texture2D*		pDepthStencil;
+	ID3D11Texture2D* pDepthStencil;
 
 	//【デプスステンシルビュー】
 	//デプスステンシルの情報をシェーダーに渡すためのもの
@@ -30,7 +30,7 @@ namespace Direct3D
 
 	//【ブレンドステート】
 	//半透明のものをどのように表現するか
-	ID3D11BlendState*	pBlendState[BLEND_MAX];
+	ID3D11BlendState* pBlendState[BLEND_MAX];
 
 	bool		isDrawCollision_ = true;	//コリジョンを表示するか
 	bool		_isLighting = false;		//ライティングするか
@@ -38,8 +38,8 @@ namespace Direct3D
 
 
 	//extern宣言した変数の初期化
-	ID3D11Device*           pDevice_ = nullptr;
-	ID3D11DeviceContext*    pContext_ = nullptr;
+	ID3D11Device* pDevice_ = nullptr;
+	ID3D11DeviceContext* pContext_ = nullptr;
 	SHADER_BUNDLE			shaderBundle[SHADER_MAX] = { 0 };
 	int						screenWidth_ = 0;
 	int						screenHeight_ = 0;
@@ -210,13 +210,13 @@ namespace Direct3D
 		//3D
 		{
 			// 頂点シェーダの作成（コンパイル）
-			ID3DBlob *pCompileVS = NULL;
+			ID3DBlob* pCompileVS = NULL;
 			D3DCompileFromFile(L"Shader/Simple3D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
 			pDevice_->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shaderBundle[SHADER_3D].pVertexShader);
 
 
 			// ピクセルシェーダの作成（コンパイル）
-			ID3DBlob *pCompilePS = NULL;
+			ID3DBlob* pCompilePS = NULL;
 			D3DCompileFromFile(L"Shader/Simple3D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
 			pDevice_->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &shaderBundle[SHADER_3D].pPixelShader);
 
@@ -246,13 +246,13 @@ namespace Direct3D
 		//2D
 		{
 			// 頂点シェーダの作成（コンパイル）
-			ID3DBlob *pCompileVS = NULL;
+			ID3DBlob* pCompileVS = NULL;
 			D3DCompileFromFile(L"Shader/Simple2D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
 			pDevice_->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shaderBundle[SHADER_2D].pVertexShader);
 
 
 			// ピクセルシェーダの作成（コンパイル）
-			ID3DBlob *pCompilePS = NULL;
+			ID3DBlob* pCompilePS = NULL;
 			D3DCompileFromFile(L"Shader/Simple2D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
 			pDevice_->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &shaderBundle[SHADER_2D].pPixelShader);
 
@@ -280,13 +280,13 @@ namespace Direct3D
 		//DEBUG用
 		{
 			// 頂点シェーダの作成（コンパイル）
-			ID3DBlob *pCompileVS = NULL;
+			ID3DBlob* pCompileVS = NULL;
 			D3DCompileFromFile(L"Shader/Debug3D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
 			pDevice_->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shaderBundle[SHADER_UNLIT].pVertexShader);
 
 
 			// ピクセルシェーダの作成（コンパイル）
-			ID3DBlob *pCompilePS = NULL;
+			ID3DBlob* pCompilePS = NULL;
 			D3DCompileFromFile(L"Shader/Debug3D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
 			pDevice_->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &shaderBundle[SHADER_UNLIT].pPixelShader);
 
@@ -362,7 +362,7 @@ namespace Direct3D
 				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UV座標
 				{ "NORMAL",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,	D3D11_INPUT_PER_VERTEX_DATA, 0 },//法線
 			};
-			pDevice_->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),&(shaderBundle[SHADER_OUTLINE].pVertexLayout));
+			pDevice_->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &(shaderBundle[SHADER_OUTLINE].pVertexLayout));
 
 			pCompileVS->Release();
 			pCompilePS->Release();
@@ -376,8 +376,42 @@ namespace Direct3D
 			rdc.MultisampleEnable = false;
 			pDevice_->CreateRasterizerState(&rdc, &(shaderBundle[SHADER_OUTLINE].pRasterizerState));
 		}
-	}
 
+		//Sky
+		{
+			// 頂点シェーダの作成（コンパイル）
+			ID3DBlob* pCompileVS = NULL;
+			D3DCompileFromFile(L"Shader/Sky.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+			pDevice_->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shaderBundle[SHADER_SKY].pVertexShader);
+
+
+			// ピクセルシェーダの作成（コンパイル）
+			ID3DBlob* pCompilePS = NULL;
+			D3DCompileFromFile(L"Shader/Sky.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
+			pDevice_->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &shaderBundle[SHADER_SKY].pPixelShader);
+
+
+			// 頂点レイアウトの作成（1頂点の情報が何のデータをどんな順番で持っているか）
+			D3D11_INPUT_ELEMENT_DESC layout[] = {
+				{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, vectorSize * 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },	//頂点位置
+				{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, vectorSize * 1, D3D11_INPUT_PER_VERTEX_DATA, 0 },	//法線
+				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, vectorSize * 2, D3D11_INPUT_PER_VERTEX_DATA, 0 },	//テクスチャ（UV）座標
+			};
+			pDevice_->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shaderBundle[SHADER_SKY].pVertexLayout);
+
+
+			//シェーダーが無事作成できたので、コンパイルしたやつはいらない
+			pCompileVS->Release();
+			pCompilePS->Release();
+
+			//ラスタライザ作成
+			D3D11_RASTERIZER_DESC rdc = {};
+			rdc.CullMode = D3D11_CULL_BACK;
+			rdc.FillMode = D3D11_FILL_SOLID;
+			rdc.FrontCounterClockwise = FALSE;	//反時計回りは表面じゃない
+			pDevice_->CreateRasterizerState(&rdc, &shaderBundle[SHADER_SKY].pRasterizerState);
+		}
+	}
 
 	//今から描画するShaderBundleを設定
 	void SetShader(SHADER_TYPE type)
