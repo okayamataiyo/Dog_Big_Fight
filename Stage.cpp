@@ -32,17 +32,14 @@ void Stage::Update()
 
 void Stage::Draw()
 {
-    for (int i = 0u; i <= 1; i++)
+    Model::SetTransform(hModel_, transform_);
+    //Å‰‚É3D‚Å•`‰æŒãA˜g‚Ã‚¯‚à•`‰æ
+    for (int j = 0; j <= 4; j += 4)
     {
-        Model::SetTransform(hModel_, transform_);
-        //Å‰‚É3D‚Å•`‰æŒãA˜g‚Ã‚¯‚à•`‰æ
-        /*for (int j = 0; j <= 4; j += 4)
-        {
-            Direct3D::SetShader(static_cast<Direct3D::SHADER_TYPE>(j));
-            Model::Draw(hModel_[i]);
-        }*/
+        Direct3D::SetShader(static_cast<Direct3D::SHADER_TYPE>(j));
         Model::Draw(hModel_);
     }
+    //Model::Draw(hModel_);
 }
 
 void Stage::Release()
