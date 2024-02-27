@@ -304,12 +304,11 @@ void Player::PlayerRayCast()
     RayCastData backData;
     RayCastData leftData;
     RayCastData rightData;
-    float playerFling           = 1.0f;  //プレイヤーが地面からどのくらい離れていたら浮いている判定にするか
-    Stage* pStage               = (Stage*)FindObject("Stage");    //ステージオブジェクト
-    int hStageModel_            = pStage->GetModelHandle();    //モデル番号を取得
-
-    Floor* pFloor = (Floor*)FindObject("Floor");
-    int hFloorModel_ = pFloor->GetModelHandle();
+    float playerFling           = 1.0f;                             //プレイヤーが地面からどのくらい離れていたら浮いている判定にするか
+    Stage* pStage               = (Stage*)FindObject("Stage");      //ステージオブジェクト
+    int hStageModel_            = pStage->GetModelHandle();         //モデル番号を取得
+    Floor* pFloor               = (Floor*)FindObject("Floor");
+    int hFloorModel_            = pFloor->GetModelHandle();
     if (jumpFlg_ == true || transform_.position_.y >= 10)
     {
         //放物線に下がる処理

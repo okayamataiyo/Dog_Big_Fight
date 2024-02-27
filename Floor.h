@@ -1,12 +1,12 @@
 #pragma once
 //インクルード
 #include <string>
-#include "Engine/GameObject.h"
 #include "Engine/Direct3D.h"
+#include "ObjectBase.h"
 
 using std::string;
 //Floorを管理するクラス
-class Floor : public GameObject
+class Floor : public ObjectBase
 {
     int hModel_;    //モデル番号
 public:

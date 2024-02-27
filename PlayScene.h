@@ -2,9 +2,10 @@
 //インクルード
 #include "Engine/GameObject.h"
 #include "Engine/Camera.h"
-#include "Player.h"
-#include "Sky.h"
-#include "Floor.h"
+class Player;
+class Sky;
+class Floor;
+class ObjectManager;
 /// <summary>
 /// 遊べるシーン
 /// </summary>
@@ -15,7 +16,9 @@ private:
     Player* pPlayer_[2];
     Sky* pSky_;
     Floor* pFloor_[3];
+    ObjectManager* pObjectManager;
     XMFLOAT3 camVec_[2];
+    XMFLOAT3 rotate_;
     Transform floorPos_[3];
 public:
     /// <summary>

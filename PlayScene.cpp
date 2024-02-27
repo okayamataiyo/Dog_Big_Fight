@@ -1,27 +1,36 @@
 #include "Engine/Input.h"
 #include "Engine/SceneManager.h"
 #include "Engine/ImGui/imgui.h"
+#include "ObjectManager.h"
 #include "PlayScene.h"
+#include "Player.h"
+#include "Sky.h"
+#include "Floor.h"
 #include "Stage.h"
 #include "Item.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
-	:GameObject(_pParent, "PlayScene")
+	:GameObject(_pParent, "PlayScene"),pObjectManager(nullptr)
 {
 
 }
 
 void PlayScene::Initialize()
 {
+	pObjectManager = new ObjectManager(this);
 	Instantiate<Item>(this);
 	Instantiate<Stage>(this);
 	floorPos_[0].position_ = { 30.0f,0.8f,3.0f };
 	floorPos_[1].position_ = { 6.0f,0.5f,20.0f };
 	floorPos_[2].position_ = { -5.0f, 0.3f,9.0f };
+	XMFLOAT3 NoData		   = {};
+	XMFLOAT3 OnceData	   = { 1.0f,1.0f,1.0f };
+	XMFLOAT3 scale		   = { 3.0f,1.0f,3.0f };
 	for (int i = 0u; i <= 2; i++)
 	{
-		pFloor_[i] = Instantiate<Floor>(this);
-		pFloor_[i]->SetPosition(floorPos_[i].position_);
+		//pFloor_[i] = Instantiate<Floor>(this);
+		//pFloor_[i]->SetPosition(floorPos_[i].position_);
+		pObjectManager->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0,90,0), scale);
 	}
 	for (int i = 0u; i <= 1; i++)
 	{
@@ -37,6 +46,7 @@ void PlayScene::Initialize()
 	//pCamera_ = new Camera;
 	XMFLOAT3 firstPPos = { -3,0,0 };
 	XMFLOAT3 secondsPPos = { 3,0,0 };
+	rotate_ = { 0,0,0 };
 	pPlayer_[0]->SetPosition(firstPPos);
 	pPlayer_[1]->SetPosition(secondsPPos);
 
@@ -44,6 +54,8 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
+	rotate_.y += 1;
+	pObjectManager->RotateObject(rotate_);
 	for (int i = 0u; i <= 1; i++)
 	{
 		XMVECTOR vPos[2]			= {};
@@ -146,4 +158,5 @@ void PlayScene::Draw()
 
 void PlayScene::Release()
 {
+	SAFE_DELETE(pObjectManager);
 }

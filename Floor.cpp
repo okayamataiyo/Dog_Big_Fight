@@ -3,9 +3,10 @@
 #include "Engine/Input.h"
 #include "Engine/Fbx.h"
 #include "Floor.h"
+#include "ObjectBase.h"
 
 Floor::Floor(GameObject* _parent)
-    :GameObject(_parent, "Floor"), hModel_(-1)
+    :ObjectBase(_parent, "Floor"), hModel_(-1)
 {
 
 }
@@ -20,14 +21,12 @@ void Floor::Initialize()
     //モデルデータのロード
     hModel_ = Model::Load("Floor.fbx");
     assert(hModel_ >= 0);
-    transform_.position_.y = -5;
-    transform_.rotate_.y = 90;
     transform_.scale_ = { 4,1,4 };
 }
 
 void Floor::Update()
 {
-
+    //transform_.rotate_.y += 1;
 }
 
 void Floor::Draw()
@@ -48,3 +47,4 @@ void Floor::Draw()
 void Floor::Release()
 {
 }
+
