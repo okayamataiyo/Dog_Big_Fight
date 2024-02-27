@@ -12,7 +12,7 @@ SelectScene::SelectScene(GameObject* _pParent)
 void SelectScene::Initialize()
 {
 	Direct3D::SetIsChangeView(1);
-	pText_ = Instantiate<Text>(this);
+	pText_ = Instantiate<SolidText>(this);
 	pText_->SetMode(1);
 	buttonStart_ = Instantiate<Button>(this);
 	Instantiate<Sky>(this);

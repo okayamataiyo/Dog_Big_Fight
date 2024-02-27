@@ -122,7 +122,7 @@
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="GameOverScene.cpp" />
-    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="SolidText.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="SelectScene.cpp" />
     <ClCompile Include="Button.cpp" />
@@ -227,7 +227,7 @@
       <Filter>01Engine</Filter>
     </ClInclude>
     <ClInclude Include="GameOverScene.h" />
-    <ClInclude Include="Text.h" />
+    <ClInclude Include="SolidText.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="SelectScene.h" />
     <ClInclude Include="Button.h" />

@@ -32,13 +32,14 @@ public:
 
 	//▼移動で使うメンバ変数
 	float posY_;	//プレイヤーのY座標に代入する値
+	bool isDash_;	//ダッシュしているかどうか
 	//▼向き変えで使うメンバ変数
 	XMVECTOR vecMove_[2];
-	XMVECTOR vecLength_;
+	XMVECTOR vecLength_[2];
 	XMVECTOR vecFront_;
 	XMVECTOR vecDot_[2];
 	XMVECTOR vecCross_;
-	float length_;
+	float length_[2];
 	float dot_;
 	float angle_[2];
 	//▼ジャンプで使うメンバ変数

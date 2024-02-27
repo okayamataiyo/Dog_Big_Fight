@@ -1,11 +1,11 @@
-#include "Text.h"
+#include "SolidText.h"
 
-Text::Text(GameObject* _pParent)
+SolidText::SolidText(GameObject* _pParent)
 	:GameObject(_pParent, "Text"), hModel_{ -1,-1 },textState_(Select)
 {
 }
 
-void Text::Initialize()
+void SolidText::Initialize()
 {
 	hModel_[0] = Model::Load("GameOverText.fbx");
 	assert(hModel_[0] >= 0);
@@ -14,11 +14,11 @@ void Text::Initialize()
 	transform_.rotate_.y = 180;
 }
 
-void Text::Update()
+void SolidText::Update()
 {
 }
 
-void Text::Draw()
+void SolidText::Draw()
 {
 	switch (textState_)
 	{
@@ -33,11 +33,11 @@ void Text::Draw()
 	}
 }
 
-void Text::Release()
+void SolidText::Release()
 {
 }
 
-void Text::SetMode(int _mode)
+void SolidText::SetMode(int _mode)
 {
 	textState_ = static_cast<TEXTSTATE>(_mode);
 }

@@ -9,7 +9,7 @@
 
 Player::Player(GameObject* _pParent)
     :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 },jumpFlg_(false), 
-    gameState_(READY),playerState_(WAIT), isFloor_(0)
+    gameState_(READY),playerState_(WAIT), isFloor_(0),isDash_(false)
 {
 }
 
@@ -119,20 +119,57 @@ void Player::OnCollision(GameObject* _pTarget)
 
 void Player::PlayerMove()
 {
-    XMVECTOR vecPos = XMLoadFloat3(&transform_.position_);
     transform_.position_.y = posY_;
     for (int i = 0u; i <= 1; i++)
     {
-        XMVECTOR vecCam[2] = {};
-        vecCam[i] = -(Camera::VecGetPosition(i) - Camera::VecGetTarget(i));
-        vecCam[i] = XMVector3Normalize(vecCam[i]);
-        vecMove_[i] = vecCam[i];
-        vecMove_[i] *= 0.005f;
+        if (this->GetObjectName() == "PlayerFirst")
+        {
+            if (isDash_ == false)
+            {
+                vecMove_[0] *= 0.9f;
+            }
+            else
+            {
+                vecMove_[0] *= 1.1f;
+            }
+            if (!(Input::IsPadButton(XINPUT_GAMEPAD_X)))
+            {
+                XMVECTOR vecCam = {};
+                vecCam = -(Camera::VecGetPosition(0) - Camera::VecGetTarget(0));
+                XMFLOAT3 camRot = {};
+                XMStoreFloat3(&camRot, vecCam);
+                camRot.y = 0;
+                vecCam = XMLoadFloat3(&camRot);
+                vecCam = XMVector3Normalize(vecCam);
+                vecMove_[0] = vecCam;
+            }
+        }
 
+        if (this->GetObjectName() == "PlayerSeconds")
+        {
+            if (isDash_ == false)
+            {
+                vecMove_[1] *= 0.9f;
+            }
+            else
+            {
+                vecMove_[1] *= 1.1f;
+            }
+            if (!(Input::IsKey(DIK_F)))
+            {
+                XMVECTOR vecCam = {};
+                vecCam = -(Camera::VecGetPosition(1) - Camera::VecGetTarget(1));
+                XMFLOAT3 camRot = {};
+                XMStoreFloat3(&camRot, vecCam);
+                camRot.y = 0;
+                vecCam = XMLoadFloat3(&camRot);
+                vecCam = XMVector3Normalize(vecCam);
+                vecMove_[1] = vecCam;
+            }
+        }
         //向き変更
-        vecLength_ = XMVector3Length(vecMove_[i]);
-        length_ = XMVectorGetX(vecLength_);
-
+        vecLength_[1] = XMVector3Length(vecMove_[1]);
+        length_[1] = XMVectorGetX(vecLength_[1]);
         if (length_ != 0)
         {
             //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
@@ -194,6 +231,11 @@ void Player::PlayerMove()
             if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && jumpFlg_ == false)
             {
                 playerState_ = RUN;
+                isDash_ = true;
+            }
+            else
+            {
+                isDash_ = false;
             }
         }
         if (this->GetObjectName() == "PlayerSeconds")
@@ -230,14 +272,20 @@ void Player::PlayerMove()
             if (Input::IsKey(DIK_LSHIFT) && jumpFlg_ == false)
             {
                 playerState_ = RUN;
+                isDash_ = true;
+            }
+            else
+            {
+                isDash_ = false;
             }
         }
     }
 
-    if (jumpFlg_ == true)
+    if(jumpFlg_ == true)
     {
         playerState_ = JUMP;
     }
+    ImGui::Text("isDash_=%s", isDash_ ? "true" : "false");
 }
 
 void Player::PlayerJump()

@@ -2,11 +2,11 @@
 //インクルード
 #include "Engine/GameObject.h"
 #include "Engine/Camera.h"
-#include "Text.h"
+#include "SolidText.h"
 #include "Button.h"
 class SelectScene : public GameObject
 {
-	Text* pText_;
+	SolidText* pText_;
 	Button* buttonStart_;
 	Button* buttonBack_;
 	XMFLOAT3 camPos_;

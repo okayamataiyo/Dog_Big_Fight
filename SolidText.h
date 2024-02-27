@@ -3,7 +3,7 @@
 #include "Engine/Model.h"
 #include "Engine/GameObject.h"
 
-class Text : public GameObject
+class SolidText : public GameObject
 {
 private:
 
@@ -14,7 +14,7 @@ private:
 	}textState_;
 	int hModel_[2];
 public:
-	Text(GameObject* _pParent);
+	SolidText(GameObject* _pParent);
 	void Initialize() override;
 	void Update() override;
 	void Draw() override;

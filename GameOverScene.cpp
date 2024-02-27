@@ -11,7 +11,7 @@ GameOverScene::GameOverScene(GameObject* _pParent)
 
 void GameOverScene::Initialize()
 {
-	pText_ = Instantiate<Text>(this);
+	pText_ = Instantiate<SolidText>(this);
 	pText_->SetMode(0);
 	Instantiate<Sky>(this);
 }

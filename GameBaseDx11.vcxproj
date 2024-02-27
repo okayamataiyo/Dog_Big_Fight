@@ -163,7 +163,7 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="GameOverScene.cpp" />
-    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="SolidText.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SelectScene.cpp" />
@@ -206,7 +206,7 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="GameOverScene.h" />
-    <ClInclude Include="Text.h" />
+    <ClInclude Include="SolidText.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SelectScene.h" />

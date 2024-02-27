@@ -2,10 +2,10 @@
 //インクルード
 #include "Engine/GameObject.h"
 #include "Engine/Camera.h"
-#include "Text.h"
+#include "SolidText.h"
 class GameOverScene : public GameObject
 {
-	Text* pText_;
+	SolidText* pText_;
 	XMFLOAT3 camPos_;
 public:
 	GameOverScene(GameObject* _pParent);
