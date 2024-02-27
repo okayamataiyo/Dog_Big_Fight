@@ -4,7 +4,6 @@
 #include "PlayScene.h"
 #include "Stage.h"
 #include "Item.h"
-#include "Floor.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
 	:GameObject(_pParent, "PlayScene")
@@ -16,7 +15,16 @@ void PlayScene::Initialize()
 {
 	Instantiate<Item>(this);
 	Instantiate<Stage>(this);
-	Instantiate<Floor>(this);
+	floorPos_[0].position_ = { 30.0f,0.8f,3.0f };
+	floorPos_[1].position_ = { 6.0f,0.5f,20.0f };
+	floorPos_[2].rotate_.z += 1;
+	floorPos_[2].position_ = { -5.0f, 0.3f,9.0f };
+	for (int i = 0u; i <= 2; i++)
+	{
+		pFloor_[i] = Instantiate<Floor>(this);
+		pFloor_[i]->SetPosition(floorPos_[i].position_);
+	}
+	pFloor_[2]->SetRotateY(floorPos_[2].rotate_.z);
 	for (int i = 0u; i <= 1; i++)
 	{
 		pPlayer_[i] = Instantiate<Player>(this);
@@ -31,10 +39,6 @@ void PlayScene::Initialize()
 	//pCamera_ = new Camera;
 	XMFLOAT3 firstPPos = { -3,0,0 };
 	XMFLOAT3 secondsPPos = { 3,0,0 };
-	XMFLOAT3 skyRot = { 0,150,90 };
-	XMFLOAT3 skyPos = { 0, -100, 0 };
-	//pSky_->SetRotate(skyRot);
-	//pSky_->SetPosition(skyPos);
 	pPlayer_[0]->SetPosition(firstPPos);
 	pPlayer_[1]->SetPosition(secondsPPos);
 

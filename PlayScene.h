@@ -4,6 +4,7 @@
 #include "Engine/Camera.h"
 #include "Player.h"
 #include "Sky.h"
+#include "Floor.h"
 /// <summary>
 /// 遊べるシーン
 /// </summary>
@@ -13,9 +14,9 @@ private:
     //メンバ変数
     Player* pPlayer_[2];
     Sky* pSky_;
-    //Camera* pCamera_;
-
+    Floor* pFloor_[3];
     XMFLOAT3 camVec_[2];
+    Transform floorPos_[3];
 public:
     /// <summary>
     /// コンストラクタ

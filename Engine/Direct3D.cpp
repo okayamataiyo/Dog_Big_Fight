@@ -44,7 +44,7 @@ namespace Direct3D
 	int						screenWidth_ = 0;
 	int						screenHeight_ = 0;
 	int						screenWidthHaif_ = 0;
-	float					vPSize_[2] = { 0,0 };
+	float					vPSize_[4] = { 0,0,0,0 };
 	float					prevVP_ = 0;
 	int						isChangeView_ = 0;
 	bool					isFinishView_ = false;
@@ -405,11 +405,11 @@ namespace Direct3D
 		//レンダリング結果を表示する範囲
 		vp[0].Width = screenWidthHaif_ + vPSize_[0];
 		vp[0].Height = screenHeight_;
-		vp[0].TopLeftX = 0;			 //画面左上のx座標
+		vp[0].TopLeftX = vPSize_[2];			 //画面左上のx座標
 		vp[0].TopLeftY = 0;			 //画面左上のy座標
 		vp[0].MinDepth = 0.0f;		 //深度値の最小値
 		vp[0].MaxDepth = 1.0f;		 //深度値の最大値
-		vp[1].Width = screenWidthHaif_;
+		vp[1].Width = screenWidthHaif_ + vPSize_[3];
 		vp[1].Height = screenHeight_;
 		vp[1].TopLeftX = screenWidth_ + vPSize_[1];	 //画面左上のx座標
 		vp[1].TopLeftY = 0;			 //画面左上のy座標
@@ -433,6 +433,22 @@ namespace Direct3D
 			{
 				vPSize_[0] -= 10;
 				vPSize_[1] -= 10;
+			}
+			break;
+		case 3:
+			if (vPSize_[3] <= screenWidthHaif_)
+			{
+				vPSize_[1] -= 10;
+				vPSize_[2] -= 10;
+				vPSize_[3] += 10;
+			}
+			break;
+		case 4:
+			if (vPSize_[3] >= 10)
+			{
+				vPSize_[1] += 10;
+				vPSize_[2] += 10;
+				vPSize_[3] -= 10;
 			}
 			break;
 		default:

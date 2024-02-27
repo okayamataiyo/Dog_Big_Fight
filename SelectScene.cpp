@@ -36,6 +36,22 @@ void SelectScene::Update()
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_PLAY);
 	}
+	if (Input::IsKeyDown(DIK_R))
+	{
+		Direct3D::SetIsChangeView(4);
+	}
+	if (Input::IsKeyDown(DIK_T))
+	{
+		Direct3D::SetIsChangeView(3);
+	}
+	if (Input::IsKeyDown(DIK_Y))
+	{
+		Direct3D::SetIsChangeView(2);
+	}
+	if (Input::IsKeyDown(DIK_U))
+	{
+		Direct3D::SetIsChangeView(1);
+	}
 }
 
 void SelectScene::Draw()

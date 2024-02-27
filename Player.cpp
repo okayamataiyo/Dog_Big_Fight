@@ -20,7 +20,7 @@ Player::~Player()
 void Player::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("DogWalk.fbx");
+    hModel_ = Model::Load("innu.fbx");
     assert(hModel_ >= 0);
     transform_.scale_ = { 0.5,0.5,0.5 };
     posY_ = transform_.position_.y;
@@ -132,7 +132,7 @@ void Player::PlayerMove()
             {
                 vecMove_[0] *= 1.1f;
             }
-            if (!(Input::IsPadButton(XINPUT_GAMEPAD_X)))
+            if (!(Input::IsPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER)))
             {
                 XMVECTOR vecCam = {};
                 vecCam = -(Camera::VecGetPosition(0) - Camera::VecGetTarget(0));
@@ -224,7 +224,7 @@ void Player::PlayerMove()
                 XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
-            if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A) && jumpFlg_ == false)
+            if (Input::IsPadButton(XINPUT_GAMEPAD_A) && jumpFlg_ == false)
             {
                 PlayerJump();
             }
@@ -351,6 +351,8 @@ void Player::PlayerRayCast()
         {
             posY_ = -downFloorData.dist + 0.6f;
             isFloor_ = 1;
+            moveYTemp_ = posY_;
+            moveYPrev_ = moveYTemp_;
         }
     }
     else
