@@ -8,8 +8,8 @@
 #include "Floor.h"
 
 Player::Player(GameObject* _pParent)
-    :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 }, camType_(0),jumpFlg_(false), 
-    state_(READY),gameState_(WAIT), isFloor_(0)
+    :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 },jumpFlg_(false), 
+    gameState_(READY),playerState_(WAIT), isFloor_(0)
 {
 }
 
@@ -34,11 +34,11 @@ void Player::Initialize()
 
 void Player::Update()
 {
-    switch (state_)
+    switch (gameState_)
     {
-    case STATE::READY:     UpdateReady();    break;
-    case STATE::PLAY:      UpdatePlay();     break;
-    case STATE::GAMEOVER:  UpdateGameOver(); break;
+    case GAMESTATE::READY:     UpdateReady();    break;
+    case GAMESTATE::PLAY:      UpdatePlay();     break;
+    case GAMESTATE::GAMEOVER:  UpdateGameOver(); break;
     }
 }
 
@@ -58,36 +58,36 @@ void Player::UpdateReady()
     ++TimeCounter_;
     if (TimeCounter_ >= 60)
     {
-        state_ = STATE::PLAY;
+        gameState_ = GAMESTATE::PLAY;
         TimeCounter_ = 0;
     }
 }
 
 void Player::UpdatePlay()
 {
-    if (prevState_ != gameState_)
+    if (prevState_ != playerState_)
     {
-        switch (gameState_)
+        switch (playerState_)
         {
-        case GAMESTATE::WAIT:       Model::SetAnimFrame(hModel_, 0, 0, 1); break;
-        case GAMESTATE::WALK:       Model::SetAnimFrame(hModel_, 20, 60, 0.5); break;
-        case GAMESTATE::RUN:        Model::SetAnimFrame(hModel_, 80, 120, 0.5); break;
-        case GAMESTATE::JUMP:       Model::SetAnimFrame(hModel_, 120, 120, 1); break;
+        case PLAYERSTATE::WAIT:       Model::SetAnimFrame(hModel_, 0, 0, 1); break;
+        case PLAYERSTATE::WALK:       Model::SetAnimFrame(hModel_, 20, 60, 0.5); break;
+        case PLAYERSTATE::RUN:        Model::SetAnimFrame(hModel_, 80, 120, 0.5); break;
+        case PLAYERSTATE::JUMP:       Model::SetAnimFrame(hModel_, 120, 120, 1); break;
         }
     }
-    prevState_ = gameState_;
+    prevState_ = playerState_;
 
-    PlayerMove();
     PlayerRayCast();
-    ImGui::Text("gameState_=%i", gameState_);
+    PlayerMove();
+    //ImGui::Text("playerState_=%i", playerState_);
     //ImGui::Text("moveYPrev_=%f", moveYPrev_);
     //ImGui::Text("moveYTemp_=%f", moveYTemp_);
-    ImGui::Text("Transform_.position_.x=%f", transform_.position_.x);
+    /*ImGui::Text("Transform_.position_.x=%f", transform_.position_.x);
     ImGui::Text("Transform_.position_.y=%f", transform_.position_.y);
     ImGui::Text("Transform_.position_.z=%f", transform_.position_.z);
     ImGui::Text("prevPosition_.x=%f", prevPosition_.x);
     ImGui::Text("prevPosition_.y=%f", prevPosition_.y);
-    ImGui::Text("prevPosition_.z=%f", prevPosition_.z);
+    ImGui::Text("prevPosition_.z=%f", prevPosition_.z);*/
 }
 
 void Player::UpdateGameOver()
@@ -109,24 +109,16 @@ void Player::OnCollision(GameObject* _pTarget)
 
     if (_pTarget->GetObjectName() == "PlayerSeconds")
     {
-        if (state_ != STATE::GAMEOVER)
+        if (gameState_ != GAMESTATE::GAMEOVER)
         {
             Direct3D::SetIsChangeView(1);
-            state_ = STATE::GAMEOVER;
+            gameState_ = GAMESTATE::GAMEOVER;
         }
     }
 }
 
 void Player::PlayerMove()
 {
-    if (IsMoving())
-    {
-        gameState_ = WALK;
-    }
-    else if (jumpFlg_ == false)
-    {
-        gameState_ = WAIT;
-    }
     XMVECTOR vecPos = XMLoadFloat3(&transform_.position_);
     transform_.position_.y = posY_;
     for (int i = 0u; i <= 1; i++)
@@ -157,6 +149,15 @@ void Player::PlayerMove()
             {
                 angle_[i] *= -1;
             }
+        }
+
+        if (IsMoving())
+        {
+            playerState_ = WALK;
+        }
+        else if (jumpFlg_ == false)
+        {
+            playerState_ = WAIT;
         }
 
         if (this->GetObjectName() == "PlayerFirst")
@@ -192,7 +193,7 @@ void Player::PlayerMove()
             }
             if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && jumpFlg_ == false)
             {
-                gameState_ = RUN;
+                playerState_ = RUN;
             }
         }
         if (this->GetObjectName() == "PlayerSeconds")
@@ -222,20 +223,20 @@ void Player::PlayerMove()
                 XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
-            if (Input::IsKey(DIK_SPACE) && jumpFlg_ == false)
+            if (Input::IsKeyDown(DIK_SPACE) && jumpFlg_ == false)
             {
-                PlayerJump();
+               PlayerJump();
             }
             if (Input::IsKey(DIK_LSHIFT) && jumpFlg_ == false)
             {
-                gameState_ = RUN;
+                playerState_ = RUN;
             }
         }
     }
 
     if (jumpFlg_ == true)
     {
-        gameState_ = JUMP;
+        playerState_ = JUMP;
     }
 }
 
@@ -262,7 +263,7 @@ void Player::PlayerRayCast()
     Floor* pFloor = (Floor*)FindObject("Floor");
     int hFloorModel_ = pFloor->GetModelHandle();
 
-    if (jumpFlg_ == true)
+    if (jumpFlg_ == true || transform_.position_.y >= 10)
     {
         //放物線に下がる処理
         moveYTemp_ = posY_;
@@ -283,7 +284,7 @@ void Player::PlayerRayCast()
     upData.dir = XMFLOAT3(0, 1, 0);            //レイの方向
     Model::RayCast(hFloorModel_, &upData);  //レイを発射
     rayUpDist_ = upData.dist;
-    ImGui::Text("rayUpDist_=%f", rayUpDist_);
+    //ImGui::Text("rayUpDist_=%f", rayUpDist_);
 
     //▼下の法線(すり抜け床)
     downFloorData.start = transform_.position_;    //レイの発射位置
@@ -294,7 +295,7 @@ void Player::PlayerRayCast()
         Model::RayCast(hFloorModel_, &downFloorData);  //レイを発射
     }
     rayFloorDist_ = downFloorData.dist;
-    ImGui::Text("rayFloorDist_=%f", rayFloorDist_);
+    //ImGui::Text("rayFloorDist_=%f", rayFloorDist_);
 
     if (downFloorData.hit == true)
     {
@@ -317,7 +318,7 @@ void Player::PlayerRayCast()
     rayGravityDist_ = downData.dist;
     float playerFling = 1;
     //プレイヤーが浮いていないとき
-    ImGui::Text("rayGravityDist_=%f", rayGravityDist_);
+    //ImGui::Text("rayGravityDist_=%f", rayGravityDist_);
     if (rayGravityDist_ + posY_ <= playerFling)
     {
         //ジャンプしてない＆すり抜け床の上にいない
@@ -325,6 +326,8 @@ void Player::PlayerRayCast()
         {
             //地面に張り付き
             posY_ = -downData.dist + 0.6;
+            moveYTemp_ = posY_;
+            moveYPrev_ = moveYTemp_;
         }
     }
     else if (isFloor_ == 0)
@@ -336,7 +339,7 @@ void Player::PlayerRayCast()
     frontData.dir = XMFLOAT3(0, 1, 1);            //レイの方向
     Model::RayCast(hStageModel_, &frontData);  //レイを発射
     rayFrontDist_ = frontData.dist;
-    ImGui::Text("rayFrontDist_=%f", rayFrontDist_);
+    //ImGui::Text("rayFrontDist_=%f", rayFrontDist_);
     if (rayFrontDist_ <= 1.5f)
     {
         transform_.position_.z = (float)((int)prevPosition_.z) - 0.00001f;
@@ -346,7 +349,7 @@ void Player::PlayerRayCast()
     backData.dir = XMFLOAT3(0, 1, -1);           //レイの方向
     Model::RayCast(hStageModel_, &backData);  //レイを発射
     rayBackDist_ = backData.dist;
-    ImGui::Text("rayBackDist_=%f", rayBackDist_);
+    //ImGui::Text("rayBackDist_=%f", rayBackDist_);
     if (rayBackDist_ <= 1.5f)
     {
         transform_.position_.z = (float)((int)prevPosition_.z) + 0.00001f;
@@ -356,7 +359,7 @@ void Player::PlayerRayCast()
     leftData.dir = XMFLOAT3(-1, 1, 0);           //レイの方向
     Model::RayCast(hStageModel_, &leftData);  //レイを発射
     rayLeftDist_ = leftData.dist;
-    ImGui::Text("rayLeftDist_=%f", rayLeftDist_);
+    //ImGui::Text("rayLeftDist_=%f", rayLeftDist_);
     if (rayLeftDist_ <= 1.5f)
     {
         transform_.position_.x = (float)((int)prevPosition_.x) + 0.00001f;
@@ -366,7 +369,7 @@ void Player::PlayerRayCast()
     rightData.dir = XMFLOAT3(1, 1, 0);           //レイの方向
     Model::RayCast(hStageModel_, &rightData);  //レイを発射
     rayRightDist_ = rightData.dist;
-    ImGui::Text("rayRightDist_=%f", rayRightDist_);
+    //ImGui::Text("rayRightDist_=%f", rayRightDist_);
     if (rayRightDist_ <= 1.5f)
     {
         transform_.position_.x = (float)((int)prevPosition_.x) - 0.00001f;

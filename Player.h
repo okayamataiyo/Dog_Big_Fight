@@ -9,30 +9,22 @@
 class Player : public GameObject
 {
 public:
-	enum PLYAERS
-	{
-		PlayerFirst = 0,
-		PlayerSeconds
-	};
-
-	enum GAMESTATE
+	enum PLAYERSTATE
 	{
 		WAIT = 0,
 		WALK,
 		RUN,
 		JUMP,
+	}playerState_;
+	PLAYERSTATE prevState_;	//前のプレイヤーの状態
 
-	}gameState_;
-	GAMESTATE prevState_;
-
-	enum STATE
+	enum GAMESTATE
 	{
 		READY = 0,
 		PLAY,
 		GAMEOVER,
-	}state_;
+	}gameState_;
 	int hModel_;	//モデル番号
-	int camType_;	//画面分割の左右どっちのカメラか(右、左)
 
 	SphereCollider* pCollision_;
 	//▼ゲームの演出で使うメンバ関数

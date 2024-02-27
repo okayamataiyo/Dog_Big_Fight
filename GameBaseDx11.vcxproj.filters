@@ -122,8 +122,10 @@
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="GameOverScene.cpp" />
-    <ClCompile Include="GameOverText.cpp" />
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="SelectScene.cpp" />
+    <ClCompile Include="Button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -225,8 +227,10 @@
       <Filter>01Engine</Filter>
     </ClInclude>
     <ClInclude Include="GameOverScene.h" />
-    <ClInclude Include="GameOverText.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Floor.h" />
+    <ClInclude Include="SelectScene.h" />
+    <ClInclude Include="Button.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

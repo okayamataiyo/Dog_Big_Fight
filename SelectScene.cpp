@@ -1,29 +1,36 @@
 #include "Engine/Input.h"
 #include "Engine/SceneManager.h"
 #include "Engine/Direct3D.h"
-#include "GameOverScene.h"
+#include "SelectScene.h"
 #include "Sky.h"
-GameOverScene::GameOverScene(GameObject* _pParent)
-	:GameObject(_pParent, "GameOverScene")
+SelectScene::SelectScene(GameObject* _pParent)
+	:GameObject(_pParent, "SelectScene")
 {
 
 }
 
-void GameOverScene::Initialize()
+void SelectScene::Initialize()
 {
+	Direct3D::SetIsChangeView(1);
 	pText_ = Instantiate<Text>(this);
-	pText_->SetMode(0);
+	pText_->SetMode(1);
+	buttonStart_ = Instantiate<Button>(this);
 	Instantiate<Sky>(this);
 }
 
-void GameOverScene::Update()
+void SelectScene::Update()
 {
 	camPos_ = pText_->GetPosition();
 	camPos_.y += 2;
 	camPos_.z -= 15;
 	Camera::SetPosition(camPos_, 0);
 	Camera::SetTarget(pText_->GetPosition(), 0);
-	if (Input::IsKeyDown(DIK_B))
+	XMFLOAT3 pos = Input::GetMousePosition();
+	if (buttonStart_->MouseInArea(pos))
+	{
+
+	}
+	if (Input::IsKeyDown(DIK_G))
 	{
 		Direct3D::SetIsChangeView(2);
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
@@ -31,11 +38,11 @@ void GameOverScene::Update()
 	}
 }
 
-void GameOverScene::Draw()
+void SelectScene::Draw()
 {
 
 }
 
-void GameOverScene::Release()
+void SelectScene::Release()
 {
 }

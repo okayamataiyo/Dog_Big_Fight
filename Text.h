@@ -3,15 +3,22 @@
 #include "Engine/Model.h"
 #include "Engine/GameObject.h"
 
-class GameOverText : public GameObject
+class Text : public GameObject
 {
 private:
-	int hModel_;
+
+	enum TEXTSTATE
+	{
+		GameOver = 0,
+		Select,
+	}textState_;
+	int hModel_[2];
 public:
-	GameOverText(GameObject* _pParent);
+	Text(GameObject* _pParent);
 	void Initialize() override;
 	void Update() override;
 	void Draw() override;
 	void Release() override;
+	void SetMode(int _mode);
 };
 

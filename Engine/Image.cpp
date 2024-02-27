@@ -191,5 +191,9 @@ namespace Image
 		}
 		return _datas[handle]->transform.GetWorldMatrix();
 	}
+	XMFLOAT3 GetSize(int _handle)
+	{
+		return _datas[_handle]->pSprite->GetTextureSize();
+	}
 }
 

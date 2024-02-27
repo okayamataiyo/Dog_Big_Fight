@@ -88,4 +88,6 @@ namespace Image
 	//引数：handle	知りたい画像の番号
 	//戻値：ワールド行列
 	XMMATRIX GetMatrix(int handle);
+
+	XMFLOAT3 GetSize(int _handle);
 }
