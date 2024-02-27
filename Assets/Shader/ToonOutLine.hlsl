@@ -40,11 +40,11 @@ SamplerState g_sampler : register(s0); //サンプラー
 //───────────────────────────────────────
 struct VS_OUT
 {
-    float4 pos : SV_POSITION; //位置
-    float2 uv : TEXCOORD0; //UV座標
-    float4 color : COLOR1; //色（明るさ）
-    float4 eyev : TEXCOORD1; //視点ベクトル
-    float4 normal : TEXCOORD2;
+    float4 pos      : SV_POSITION; //位置
+    float2 uv       : TEXCOORD0; //UV座標
+    float4 color    : COLOR1; //色（明るさ）
+    float4 eyev     : TEXCOORD1; //視点ベクトル
+    float4 normal   : TEXCOORD2;
 };
 
 //───────────────────────────────────────
@@ -58,7 +58,7 @@ float4 VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL) :
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
 	//スクリーン座標に変換し、ピクセルシェーダーへ
     normal.w = 0;
-    pos = pos + normal * 0.01f;
+    pos = pos + normal * 0.03f;
     pos = mul(pos, matWVP);
 
     return pos;

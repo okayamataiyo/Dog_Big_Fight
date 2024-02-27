@@ -107,6 +107,12 @@ void Player::OnCollision(GameObject* _pTarget)
         PlayerJump();
     }
 
+    //Itemという名前を持つ全てのオブジェクトの機能を実装
+    //if (_pTarget->GetObjectName().find("Item") != std::string::npos)
+    //{
+
+    //}
+
     if (_pTarget->GetObjectName() == "PlayerSeconds")
     {
         if (gameState_ != GAMESTATE::GAMEOVER)

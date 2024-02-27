@@ -1,6 +1,6 @@
 #include "gameObject.h"
 #include <assert.h>
-#include "global.h"
+#include "Global.h"
 
 //コンストラクタ（親も名前もなし）
 GameObject::GameObject(void) :

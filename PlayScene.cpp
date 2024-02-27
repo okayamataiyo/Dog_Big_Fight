@@ -58,10 +58,11 @@ void PlayScene::Update()
 	pObjectManager->RotateObject(rotate_);
 	for (int i = 0u; i <= 1; i++)
 	{
+		XMFLOAT3 Init				= { 0.0f,0.0f,0.0f };
 		XMVECTOR vPos[2]			= {};
-		XMFLOAT3 mouse				= {};
+		XMFLOAT3 mouse				= Init;
 		XMFLOAT3 controller			= {};
-		XMFLOAT3 rDir				= { 0,0,1 };
+		XMFLOAT3 rDir				= { 0.0f,0.0f,1.0f };
 		XMVECTOR Dir[2]				= {};
 		float sigmaRotY[2]			= {};
 		float sigmaRotX[2]			= {};
@@ -73,12 +74,6 @@ void PlayScene::Update()
 		vPos[i]						= pPlayer_[i]->GetVecPos();
 		mouse						= Input::GetMouseMove();
 		controller					= Input::GetPadStickR();
-		//ImGui::Text("mouse.x=%f", mouse.x);
-		//ImGui::Text("mouse.y=%f", mouse.y);
-		//ImGui::Text("mouse.z=%f", mouse.z);
-		//ImGui::Text("controller.x=%f", controller.x);
-		//ImGui::Text("controller.y=%f", controller.y);
-		//ImGui::Text("controller.z=%f", controller.z);
 
 		const float mouseSens		= 400;
 		const float controllerSens	= 100;
@@ -138,12 +133,6 @@ void PlayScene::Update()
 		//pCamera_->SetPosition(Dir, i);
 		//pCamera_->SetTarget(pPlayer_[i]->GetPosition(), i)
 		XMStoreFloat3(&floatDir[i], Dir[i]);
-		/*ImGui::Text("floatDir[0].x=%f", floatDir[0].x);
-		ImGui::Text("floatDir[0].y=%f", floatDir[0].y);
-		ImGui::Text("floatDir[0].z=%f", floatDir[0].z);
-		ImGui::Text("floatDir[1].x=%f", floatDir[1].x);
-		ImGui::Text("floatDir[1].y=%f", floatDir[1].y);
-		ImGui::Text("floatDir[1].z=%f", floatDir[1].z);*/
 		Camera::SetPosition(floatDir[i], i);
 		Camera::SetTarget(pPlayer_[i]->GetPosition(), i);
 
