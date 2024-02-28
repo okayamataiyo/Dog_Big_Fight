@@ -28,7 +28,7 @@ class Player : public GameObject
 private:
 	int hModel_;	//モデル番号
 
-	BoxCollider* pCollision_;
+	SphereCollider* pCollision_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE prevState_;	//前のプレイヤーの状態
 	GAMESTATE gameState_;

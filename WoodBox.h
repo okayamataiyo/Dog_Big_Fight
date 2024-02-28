@@ -8,8 +8,9 @@ using std::string;
 //WoodBoxを管理するクラス
 class WoodBox : public ObjectBase
 {
-    int hModel_;    //モデル番号
-    float rayDist_;
+    int hModel_;            //モデル番号
+    float rayWoodBoxDist_;  //木箱のディスト
+    float rayStageDist_;    //ステージのディスト
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)

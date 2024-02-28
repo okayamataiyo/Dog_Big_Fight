@@ -27,13 +27,18 @@ void PlayScene::Initialize()
 	XMFLOAT3 NoData		   = {};
 	XMFLOAT3 OnceData	   = { 1.0f,1.0f,1.0f };
 	XMFLOAT3 scale		   = { 3.0f,1.0f,3.0f };
+	XMFLOAT3 WoodBox[3];
+	WoodBox[0]			   = { 30.0f,-0.0f,40.0f };
+	WoodBox[1]			   = { 30.0f,-10.0f,40.0f };
+	WoodBox[2]			   = { 30.0f,-20.0f,40.0f };
 	for (int i = 0u; i <= 2; i++)
 	{
-		//pFloor_[i] = Instantiate<Floor>(this);
-		//pFloor_[i]->SetPosition(floorPos_[i].position_);
-		pObjectManager->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0,90,0), scale);
+		pObjectManager->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), scale);
 	}
-	pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, XMFLOAT3(30, 0, 20), XMFLOAT3(0, 0, 0), XMFLOAT3(0.3, 0.3, 0.3));
+	for (int i = 0u; i <= 2; i++)
+	{
+		pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[i], XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
+	}
 	for (int i = 0u; i <= 1; i++)
 	{
 		pPlayer_[i] = Instantiate<Player>(this);

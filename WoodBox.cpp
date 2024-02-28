@@ -29,20 +29,34 @@ void WoodBox::Initialize()
 
 void WoodBox::Update()
 {
-    //transform_.rotate_.y += 1;
-    RayCastData data;
-    Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
-    int hStageModel;
-    hStageModel = pStage->GetModelHandle();   //モデル番号を取得
-    data.start = transform_.position_;  //レイの発射位置
-    data.start.y = 0;
-    data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-    Model::RayCast(hStageModel, &data);  //レイを発射
-    rayDist_ = data.dist;
-
-    if (data.hit == true)
+    for (int i = 0u; i <= 1; i++)
     {
-        transform_.position_.y = -data.dist + 0.6;
+
+        RayCastData woodBoxData;
+        WoodBox* pWoodBox = (WoodBox*)FindObject("WoodBox");
+        int hWoodBoxModel = pWoodBox->GetModelHandle();
+        woodBoxData.start = transform_.position_;
+        woodBoxData.start.y = 0;
+        woodBoxData.dir = XMFLOAT3(0, -1, 0);
+        Model::RayCast(hWoodBoxModel + i, &woodBoxData);
+        rayWoodBoxDist_ = woodBoxData.dist;
+        ImGui::Text("rayWoodBoxDist_=%f", rayWoodBoxDist_);
+        if (woodBoxData.hit == true)
+        {
+            transform_.position_.y = -woodBoxData.dist + 0.6;
+        }
+        RayCastData stageData;
+        Stage* pStage = (Stage*)FindObject("Stage");      //ステージオブジェクト
+        int hStageModel = pStage->GetModelHandle();         //モデル番号を取得
+        stageData.start = transform_.position_;             //レイの発射位置
+        stageData.start.y = 0;
+        stageData.dir = XMFLOAT3(0, -1, 0);               //レイの方向
+        Model::RayCast(hStageModel, &stageData);                //レイを発射
+        rayStageDist_ = stageData.dist;
+        if (stageData.hit == true && !(woodBoxData.hit == true))
+        {
+            transform_.position_.y = -stageData.dist + 0.6;
+        }
     }
 }
 

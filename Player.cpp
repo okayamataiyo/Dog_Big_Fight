@@ -28,7 +28,7 @@ void Player::Initialize()
     prevPosition_ = transform_.position_;
     for (int i = 0u; i <= 1; i++)
     {
-        pCollision_ = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f,1.0f,2.0f));
+        pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
         AddCollider(pCollision_);
     }
 }
@@ -77,7 +77,6 @@ void Player::UpdatePlay()
         }
     }
     prevState_ = playerState_;
-    pCollision_->
     PlayerRayCast();
     PlayerMove();
     //ImGui::Text("playerState_=%i", playerState_);
@@ -119,9 +118,10 @@ void Player::OnCollision(GameObject* _pTarget)
         dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos,vecUp));
         float angleRadians = acosf(dotProduct_);
         angleDegrees_ = XMConvertToDegrees(angleRadians);
-        if (angleDegrees_ <= 30)
+        if (angleDegrees_ <= 50)
         {
             PlayerJump();
+            pWoodBox_->KillMe();
         }
         else
         {

@@ -6,7 +6,7 @@
 
 //コンストラクタ
 Collider::Collider():
-	pGameObject_(nullptr)
+	pGameObject_(nullptr),center_(XMFLOAT3(0.0f,0.0f,0.0f))
 {
 }
 
