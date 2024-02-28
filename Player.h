@@ -3,30 +3,35 @@
 #include "Engine/GameObject.h"
 #include "Engine/Camera.h"
 
+class WoodBox;
+
+enum class PLAYERSTATE
+{
+	WAIT = 0,
+	WALK,
+	RUN,
+	JUMP,
+};
+
+enum class GAMESTATE
+{
+	READY = 0,
+	PLAY,
+	GAMEOVER,
+};
+
 /// <summary>
 /// プレイヤーを管理するクラス
 /// </summary>
 class Player : public GameObject
 {
-public:
-	enum PLAYERSTATE
-	{
-		WAIT = 0,
-		WALK,
-		RUN,
-		JUMP,
-	}playerState_;
-	PLAYERSTATE prevState_;	//前のプレイヤーの状態
-
-	enum GAMESTATE
-	{
-		READY = 0,
-		PLAY,
-		GAMEOVER,
-	}gameState_;
+private:
 	int hModel_;	//モデル番号
 
-	SphereCollider* pCollision_;
+	BoxCollider* pCollision_;
+	PLAYERSTATE playerState_;
+	PLAYERSTATE prevState_;	//前のプレイヤーの状態
+	GAMESTATE gameState_;
 	//▼ゲームの演出で使うメンバ関数
 	int TimeCounter_;
 
@@ -53,6 +58,13 @@ public:
 	int prevIsFloor_;	//1フレーム前にisFloorフラグがどうなっていたか
 	float rayUpDist_;	//上の物体とプレイヤーの差分
 	float rayFloorDist_;	//下のすり抜けたい物体とプレイヤーの差分
+
+	//▼木箱で使うメンバ変数
+	float dotProduct_;
+	float angleDegrees_;
+	WoodBox* pWoodBox_;
+	//▼ノックバックで使うメンバ変数
+	Player* pPlayer_;
 
 	//▼慣性で使うメンバ変数
 
@@ -122,6 +134,8 @@ public:
 	void PlayerRayCast();
 
 	XMVECTOR GetVecPos() { return XMLoadFloat3(&transform_.position_); }
+
+	PLAYERSTATE GetPlayerState() { return playerState_; }
 
 	bool IsMoving();
 };

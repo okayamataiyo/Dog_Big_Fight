@@ -126,6 +126,8 @@
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="SelectScene.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="WoodBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -231,6 +233,9 @@
     <ClInclude Include="Floor.h" />
     <ClInclude Include="SelectScene.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="ObjectBase.h" />
+    <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="WoodBox.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">
@@ -246,6 +251,12 @@
       <Filter>02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\ToonOutLine.hlsl">
+      <Filter>02Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Assets\Shader\Sky.hlsl">
+      <Filter>02Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalMapping.hlsl">
       <Filter>02Shader</Filter>
     </FxCompile>
   </ItemGroup>

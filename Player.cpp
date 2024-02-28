@@ -6,10 +6,11 @@
 #include "Player.h"
 #include "Stage.h"
 #include "Floor.h"
+#include "WoodBox.h"
 
 Player::Player(GameObject* _pParent)
     :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 },jumpFlg_(false), 
-    gameState_(READY),playerState_(WAIT), isFloor_(0),isDash_(false)
+    gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isFloor_(0),isDash_(false)
 {
 }
 
@@ -27,7 +28,7 @@ void Player::Initialize()
     prevPosition_ = transform_.position_;
     for (int i = 0u; i <= 1; i++)
     {
-        pCollision_ = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
+        pCollision_ = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f,1.0f,2.0f));
         AddCollider(pCollision_);
     }
 }
@@ -76,7 +77,7 @@ void Player::UpdatePlay()
         }
     }
     prevState_ = playerState_;
-
+    pCollision_->
     PlayerRayCast();
     PlayerMove();
     //ImGui::Text("playerState_=%i", playerState_);
@@ -88,6 +89,7 @@ void Player::UpdatePlay()
     ImGui::Text("prevPosition_.x=%f", prevPosition_.x);
     ImGui::Text("prevPosition_.y=%f", prevPosition_.y);
     ImGui::Text("prevPosition_.z=%f", prevPosition_.z);*/
+    ImGui::Text("angleDegrees=%f", angleDegrees_);
 }
 
 void Player::UpdateGameOver()
@@ -107,20 +109,40 @@ void Player::OnCollision(GameObject* _pTarget)
         PlayerJump();
     }
 
-    //Itemという名前を持つ全てのオブジェクトの機能を実装
-    //if (_pTarget->GetObjectName().find("Item") != std::string::npos)
-    //{
+    if (_pTarget->GetObjectName() == "WoodBox")
+    {
 
-    //}
+        pWoodBox_ = (WoodBox*)FindObject("WoodBox");
+        XMVECTOR vecPos = XMLoadFloat3(&transform_.position_) - pWoodBox_->GetVecPos();
+        vecPos = XMVector3Normalize(vecPos);
+        XMVECTOR vecUp = { 0,1,0,0 };
+        dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos,vecUp));
+        float angleRadians = acosf(dotProduct_);
+        angleDegrees_ = XMConvertToDegrees(angleRadians);
+        if (angleDegrees_ <= 30)
+        {
+            PlayerJump();
+        }
+        else
+        {
+            transform_.position_ = prevPosition_;
+        }
+    }
 
     if (_pTarget->GetObjectName() == "PlayerSeconds")
     {
         if (gameState_ != GAMESTATE::GAMEOVER)
         {
-            Direct3D::SetIsChangeView(1);
-            gameState_ = GAMESTATE::GAMEOVER;
+            pPlayer_ = (Player*)FindObject("PlayerFirst");
+
         }
     }
+
+    //Itemという名前を持つ全てのオブジェクトの機能を実装
+//if (_pTarget->GetObjectName().find("Item") != std::string::npos)
+//{
+
+//}
 }
 
 void Player::PlayerMove()
@@ -196,11 +218,11 @@ void Player::PlayerMove()
 
         if (IsMoving())
         {
-            playerState_ = WALK;
+            playerState_ = PLAYERSTATE::WALK;
         }
         else if (jumpFlg_ == false)
         {
-            playerState_ = WAIT;
+            playerState_ = PLAYERSTATE::WAIT;
         }
 
         if (this->GetObjectName() == "PlayerFirst")
@@ -236,7 +258,7 @@ void Player::PlayerMove()
             }
             if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && jumpFlg_ == false)
             {
-                playerState_ = RUN;
+                playerState_ = PLAYERSTATE::RUN;
                 isDash_ = true;
             }
             else
@@ -277,7 +299,7 @@ void Player::PlayerMove()
             }
             if (Input::IsKey(DIK_LSHIFT) && jumpFlg_ == false)
             {
-                playerState_ = RUN;
+                playerState_ = PLAYERSTATE::RUN;
                 isDash_ = true;
             }
             else
@@ -289,7 +311,7 @@ void Player::PlayerMove()
 
     if(jumpFlg_ == true)
     {
-        playerState_ = JUMP;
+        playerState_ = PLAYERSTATE::JUMP;
     }
 }
 
@@ -339,7 +361,7 @@ void Player::PlayerRayCast()
         upData.dir = XMFLOAT3(0, 1, 0);                //レイの方向
         Model::RayCast(hFloorModel_ + i, &upData);         //レイを発射
         rayUpDist_ = upData.dist;
-        ImGui::Text("rayUpDist_=%f", rayUpDist_);
+        //ImGui::Text("rayUpDist_=%f", rayUpDist_);
 
         //▼下の法線(すり抜け床)
         downFloorData.start = transform_.position_;    //レイの発射位置

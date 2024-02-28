@@ -8,6 +8,10 @@ Button::Button(GameObject* _pParent)
 {
 }
 
+Button::~Button()
+{
+}
+
 void Button::Initialize()
 {
 	center_ = { 0,0,0 };
@@ -51,4 +55,13 @@ bool Button::MouseInArea(XMFLOAT3 _mousePos)
 	if (abs(_mousePos.y - center_.y) > size_.y / 2)
 		return false;
 	return true;
+}
+
+void Button::ForceMoveEnd()
+{
+	if (IsMoving())
+	{
+		SetPosition(endPos_.x, endPos_.y);
+		currentTime_ = totalTime_;
+	}
 }

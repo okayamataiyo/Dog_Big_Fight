@@ -18,7 +18,7 @@ void Item::Initialize()
 	hModel_ = Model::Load("Bone.fbx");
 	assert(hModel_ >= 0);
 
-	SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0, 0.0, 0.0), 1);
+	SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
 	AddCollider(pCollision);
 
 	transform_.scale_ = { 0.2,0.2,0.2 };

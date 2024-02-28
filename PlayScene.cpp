@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Sky.h"
 #include "Floor.h"
+#include "WoodBox.h"
 #include "Stage.h"
 #include "Item.h"
 
@@ -32,6 +33,7 @@ void PlayScene::Initialize()
 		//pFloor_[i]->SetPosition(floorPos_[i].position_);
 		pObjectManager->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0,90,0), scale);
 	}
+	pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, XMFLOAT3(30, 0, 20), XMFLOAT3(0, 0, 0), XMFLOAT3(0.3, 0.3, 0.3));
 	for (int i = 0u; i <= 1; i++)
 	{
 		pPlayer_[i] = Instantiate<Player>(this);
@@ -54,8 +56,6 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
-	rotate_.y += 1;
-	pObjectManager->RotateObject(rotate_);
 	for (int i = 0u; i <= 1; i++)
 	{
 		XMFLOAT3 Init				= { 0.0f,0.0f,0.0f };

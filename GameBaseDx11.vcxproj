@@ -172,6 +172,7 @@
     <ClCompile Include="Sky.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="WoodBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
@@ -217,6 +218,7 @@
     <ClInclude Include="Sky.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Stage.h" />
+    <ClInclude Include="WoodBox.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">

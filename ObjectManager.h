@@ -4,7 +4,8 @@
 
 enum class OBJECTSTATE
 {
-    FLOOR = 0
+    FLOOR = 0,
+    WOODBOX,
 };
 
 class ObjectManager

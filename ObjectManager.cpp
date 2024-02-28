@@ -1,5 +1,6 @@
 #include "ObjectManager.h"
 #include "Floor.h"
+#include "WoodBox.h"
 void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT3 _rotate, XMFLOAT3 _scale)
 {
 	pObjectBase_ = nullptr;
@@ -8,6 +9,8 @@ void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT
 	case OBJECTSTATE::FLOOR:
 		pObjectBase_ = Instantiate<Floor>(pParent_);
 		break;
+	case OBJECTSTATE::WOODBOX:
+		pObjectBase_ = Instantiate<WoodBox>(pParent_);
 	}
 	pObjectBase_->SetPosition(_pos);
 	pObjectBase_->SetRotate(_rotate);
