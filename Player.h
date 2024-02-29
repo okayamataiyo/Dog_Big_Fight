@@ -26,11 +26,11 @@ enum class GAMESTATE
 class Player : public GameObject
 {
 private:
-	int hModel_;	//モデル番号
+	int hModel_;					//モデル番号
 
 	SphereCollider* pCollision_;
 	PLAYERSTATE playerState_;
-	PLAYERSTATE prevState_;	//前のプレイヤーの状態
+	PLAYERSTATE prevState_;			//前のプレイヤーの状態
 	GAMESTATE gameState_;
 	//▼ゲームの演出で使うメンバ関数
 	int TimeCounter_;
@@ -48,14 +48,13 @@ private:
 	float dot_;
 	float angle_[2];
 	//▼ジャンプで使うメンバ変数
-	bool  jumpFlg_;				//ジャンプしてるかしていないか
-	float rayGravityDist_;		//地面とプレイヤーの差分
-	float moveYTemp_;	//y座標をPrevに保存する
-	float moveYPrev_;	//y座標を保存しておく
+	bool  isJump_;				//ジャンプしてるかしていないか
+	float rayStageDist_;		//地面とプレイヤーの差分
+	float posYTemp_;	//y座標をPrevに保存する
+	float posYPrev_;	//1時的にy座標を保存しておく
 
 	//▼すり抜け床で使うメンバ変数
-	int isFloor_;		//すり抜け床にレイを飛ばしているかどうか
-	int prevIsFloor_;	//1フレーム前にisFloorフラグがどうなっていたか
+	int isOnFloor_;		//すり抜け床にレイを飛ばしているかどうか
 	float rayUpDist_;	//上の物体とプレイヤーの差分
 	float rayFloorDist_;	//下のすり抜けたい物体とプレイヤーの差分
 

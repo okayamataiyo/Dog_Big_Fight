@@ -28,16 +28,16 @@ void PlayScene::Initialize()
 	XMFLOAT3 OnceData	   = { 1.0f,1.0f,1.0f };
 	XMFLOAT3 scale		   = { 3.0f,1.0f,3.0f };
 	XMFLOAT3 WoodBox[3];
-	WoodBox[0]			   = { 30.0f,-0.0f,40.0f };
+	WoodBox[0]			   = { 30.0f,0.0f,40.0f };
 	WoodBox[1]			   = { 30.0f,-10.0f,40.0f };
 	WoodBox[2]			   = { 30.0f,-20.0f,40.0f };
 	for (int i = 0u; i <= 2; i++)
 	{
 		pObjectManager->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), scale);
 	}
-	for (int i = 0u; i <= 2; i++)
+	//for (int i = 0u; i <= 2; i++)
 	{
-		pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[i], XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
+		pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[1], XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
 	}
 	for (int i = 0u; i <= 1; i++)
 	{
@@ -61,6 +61,10 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
+	if (Input::IsKeyDown(DIK_E))
+	{
+		pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[1]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
+	}
 	for (int i = 0u; i <= 1; i++)
 	{
 		XMFLOAT3 Init				= { 0.0f,0.0f,0.0f };

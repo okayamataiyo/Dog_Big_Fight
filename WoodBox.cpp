@@ -29,35 +29,7 @@ void WoodBox::Initialize()
 
 void WoodBox::Update()
 {
-    for (int i = 0u; i <= 1; i++)
-    {
-
-        RayCastData woodBoxData;
-        WoodBox* pWoodBox = (WoodBox*)FindObject("WoodBox");
-        int hWoodBoxModel = pWoodBox->GetModelHandle();
-        woodBoxData.start = transform_.position_;
-        woodBoxData.start.y = 0;
-        woodBoxData.dir = XMFLOAT3(0, -1, 0);
-        Model::RayCast(hWoodBoxModel + i, &woodBoxData);
-        rayWoodBoxDist_ = woodBoxData.dist;
-        ImGui::Text("rayWoodBoxDist_=%f", rayWoodBoxDist_);
-        if (woodBoxData.hit == true)
-        {
-            transform_.position_.y = -woodBoxData.dist + 0.6;
-        }
-        RayCastData stageData;
-        Stage* pStage = (Stage*)FindObject("Stage");      //ステージオブジェクト
-        int hStageModel = pStage->GetModelHandle();         //モデル番号を取得
-        stageData.start = transform_.position_;             //レイの発射位置
-        stageData.start.y = 0;
-        stageData.dir = XMFLOAT3(0, -1, 0);               //レイの方向
-        Model::RayCast(hStageModel, &stageData);                //レイを発射
-        rayStageDist_ = stageData.dist;
-        if (stageData.hit == true && !(woodBoxData.hit == true))
-        {
-            transform_.position_.y = -stageData.dist + 0.6;
-        }
-    }
+    RayCast();
 }
 
 void WoodBox::Draw()
@@ -77,6 +49,82 @@ void WoodBox::Draw()
 
 void WoodBox::Release()
 {
+}
+
+void WoodBox::Move()
+{
+}
+
+void WoodBox::RayCast()
+{
+    transform_.position_.y = posY_;
+    RayCastData woodBoxData;
+    RayCastData stageData;
+    float woodBoxFling = 1.0f;
+    WoodBox* pWoodBox = (WoodBox*)FindObject("WoodBox");
+    int hWoodBoxModel = pWoodBox->GetModelHandle();
+    Stage* pStage = (Stage*)FindObject("Stage");      //ステージオブジェクト
+    int hStageModel = pStage->GetModelHandle();         //モデル番号を取得
+    if (isJump_ == true)
+    {
+        //放物線に下がる処理
+        posYTemp_ = posY_;
+        posY_ += (posY_ - posYPrev_) - 0.007;
+        posYPrev_ = posYTemp_;
+        if (posY_ <= -rayWoodBoxDist_ + 0.6)
+        {
+            isJump_ = false;
+        }
+        if (posY_ <= -rayStageDist_ + 0.6)
+        {
+            isJump_ = false;
+        }
+    }
+
+    for (int i = 0u; i <= 1; i++)
+    {
+        //▼木箱の法線(木箱の上に木箱が乗るため)
+        woodBoxData.start       = transform_.position_;
+        woodBoxData.start.y     = 0;
+        woodBoxData.dir         = XMFLOAT3(0, -1, 0);
+        Model::RayCast(hWoodBoxModel + i, &woodBoxData);
+        rayWoodBoxDist_         = woodBoxData.dist;
+        if (rayWoodBoxDist_ + posY_ <= woodBoxFling)
+        {
+            if (isJump_ == false)
+            {
+                posY_ = -woodBoxData.dist + 0.6;
+                isOnWoodBox_ = 1;
+                posYTemp_ = posY_;
+                posYPrev_ = posYTemp_;
+            }
+        }
+        else
+        {
+            isOnWoodBox_ = 0;
+        }
+        //▼ステージの法線(地面の張り付き)
+        stageData.start = transform_.position_;             //レイの発射位置
+        stageData.start.y = 0;
+        stageData.dir = XMFLOAT3(0, -1, 0);               //レイの方向
+        Model::RayCast(hStageModel, &stageData);                //レイを発射
+        rayStageDist_ = stageData.dist;
+        if (rayStageDist_ + posY_ <= woodBoxFling)
+        {
+            if (isJump_ == false && isOnWoodBox_ == 0)
+            {
+                posY_ = -stageData.dist + 0.6;
+                posYTemp_ = posY_;
+                posYPrev_ = posYTemp_;
+            }
+        }
+        else if (isOnWoodBox_ == 0)
+        {
+            isJump_ = true;
+        }
+    }
+    ImGui::Text("rayWoodBoxDist_=%f", rayWoodBoxDist_);
+    ImGui::Text("isJum_p=%s", isJump_ ? "true" : "false");
 }
 
 void WoodBox::OnCollision(GameObject* _pTarget)

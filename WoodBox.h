@@ -8,7 +8,15 @@ using std::string;
 //WoodBoxを管理するクラス
 class WoodBox : public ObjectBase
 {
-    int hModel_;            //モデル番号
+private:
+    int hModel_;            //モデル
+
+    //▼レイキャストで使うメンバ変数
+    float posY_;            //木箱のY座標に代入する値
+    float posYPrev_;        //1フレーム前のY座標
+    float posYTemp_;        //1時的に座標を保存
+    bool isJump_;           //飛んでいるか
+    int  isOnWoodBox_;      //木箱の上にいるか
     float rayWoodBoxDist_;  //木箱のディスト
     float rayStageDist_;    //ステージのディスト
 public:
@@ -30,6 +38,10 @@ public:
 
     //開放
     void Release() override;
+
+    void Move();
+
+    void RayCast();
 
     void OnCollision(GameObject* _pTarget);
 

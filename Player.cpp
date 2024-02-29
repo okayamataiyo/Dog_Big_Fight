@@ -9,8 +9,8 @@
 #include "WoodBox.h"
 
 Player::Player(GameObject* _pParent)
-    :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 },jumpFlg_(false), 
-    gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isFloor_(0),isDash_(false)
+    :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 },isJump_(false), 
+    gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isOnFloor_(0),isDash_(false)
 {
 }
 
@@ -80,8 +80,8 @@ void Player::UpdatePlay()
     PlayerRayCast();
     PlayerMove();
     //ImGui::Text("playerState_=%i", playerState_);
-    //ImGui::Text("moveYPrev_=%f", moveYPrev_);
-    //ImGui::Text("moveYTemp_=%f", moveYTemp_);
+    //ImGui::Text("posYPrev_=%f", posYPrev_);
+    //ImGui::Text("posYTemp_=%f", posYTemp_);
     /*ImGui::Text("Transform_.position_.x=%f", transform_.position_.x);
     ImGui::Text("Transform_.position_.y=%f", transform_.position_.y);
     ImGui::Text("Transform_.position_.z=%f", transform_.position_.z);
@@ -118,7 +118,7 @@ void Player::OnCollision(GameObject* _pTarget)
         dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos,vecUp));
         float angleRadians = acosf(dotProduct_);
         angleDegrees_ = XMConvertToDegrees(angleRadians);
-        if (angleDegrees_ <= 50)
+        if (angleDegrees_ <= 20)
         {
             PlayerJump();
             pWoodBox_->KillMe();
@@ -220,7 +220,7 @@ void Player::PlayerMove()
         {
             playerState_ = PLAYERSTATE::WALK;
         }
-        else if (jumpFlg_ == false)
+        else if (isJump_ == false)
         {
             playerState_ = PLAYERSTATE::WAIT;
         }
@@ -252,11 +252,11 @@ void Player::PlayerMove()
                 XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
-            if (Input::IsPadButton(XINPUT_GAMEPAD_A) && jumpFlg_ == false)
+            if (Input::IsPadButton(XINPUT_GAMEPAD_A) && isJump_ == false)
             {
                 PlayerJump();
             }
-            if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && jumpFlg_ == false)
+            if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && isJump_ == false)
             {
                 playerState_ = PLAYERSTATE::RUN;
                 isDash_ = true;
@@ -293,11 +293,11 @@ void Player::PlayerMove()
                 XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
                 XMStoreFloat3(&transform_.position_, vectorMove);
             }
-            if (Input::IsKeyDown(DIK_SPACE) && jumpFlg_ == false)
+            if (Input::IsKeyDown(DIK_SPACE) && isJump_ == false)
             {
                PlayerJump();
             }
-            if (Input::IsKey(DIK_LSHIFT) && jumpFlg_ == false)
+            if (Input::IsKey(DIK_LSHIFT) && isJump_ == false)
             {
                 playerState_ = PLAYERSTATE::RUN;
                 isDash_ = true;
@@ -309,7 +309,7 @@ void Player::PlayerMove()
         }
     }
 
-    if(jumpFlg_ == true)
+    if(isJump_ == true)
     {
         playerState_ = PLAYERSTATE::JUMP;
     }
@@ -318,8 +318,8 @@ void Player::PlayerMove()
 void Player::PlayerJump()
 {
     //ジャンプの処理
-    jumpFlg_ = true;
-    moveYPrev_ = posY_;
+    isJump_ = true;
+    posYPrev_ = posY_;
     posY_ = posY_ + 0.3;
 }
 
@@ -337,25 +337,24 @@ void Player::PlayerRayCast()
     int hStageModel_            = pStage->GetModelHandle();         //モデル番号を取得
     Floor* pFloor               = (Floor*)FindObject("Floor");
     int hFloorModel_            = pFloor->GetModelHandle();
-    if (jumpFlg_ == true || transform_.position_.y >= 10)
+    if (isJump_ == true)
     {
         //放物線に下がる処理
-        moveYTemp_ = posY_;
-        posY_ += (posY_ - moveYPrev_) - 0.007;
-        moveYPrev_ = moveYTemp_;
+        posYTemp_ = posY_;
+        posY_ += (posY_ - posYPrev_) - 0.007;
+        posYPrev_ = posYTemp_;
         if (posY_ <= -rayFloorDist_ + 0.6)
         {
-            jumpFlg_ = false;
+            isJump_ = false;
         }
-        if (posY_ <= -rayGravityDist_ + 0.6)
+        if (posY_ <= -rayStageDist_ + 0.6)
         {
-            jumpFlg_ = false;
+            isJump_ = false;
         }
     }
 
     for (int i = 0; i <= 2; i++)
     {
-
         //▼上の法線(すり抜け床のため)
         upData.start = transform_.position_;           //レイの発射位置
         upData.dir = XMFLOAT3(0, 1, 0);                //レイの方向
@@ -375,17 +374,17 @@ void Player::PlayerRayCast()
         //ImGui::Text("rayFloorDist_=%f", rayFloorDist_);
         if (rayFloorDist_ + posY_ <= playerFling)
         {
-            if (jumpFlg_ == false)
+            if (isJump_ == false)
             {
                 posY_ = -downFloorData.dist + 0.6f;
-                isFloor_ = 1;
-                moveYTemp_ = posY_;
-                moveYPrev_ = moveYTemp_;
+                isOnFloor_ = 1;
+                posYTemp_ = posY_;
+                posYPrev_ = posYTemp_;
             }
         }
         else
         {
-            isFloor_ = 0;
+            isOnFloor_ = 0;
         }
 
     }
@@ -393,24 +392,24 @@ void Player::PlayerRayCast()
     downData.start = transform_.position_;  //レイの発射位置
     downData.start.y = 0;
     downData.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-    Model::RayCast(hStageModel_, &downData);  //レイを発射
-    rayGravityDist_ = downData.dist;
+    Model::RayCast(hStageModel_, &downData); //レイを発射
+    rayStageDist_ = downData.dist;
     //プレイヤーが浮いていないとき
     //ImGui::Text("rayGravityDist_=%f", rayGravityDist_);
-    if (rayGravityDist_ + posY_ <= playerFling)
+    if (rayStageDist_ + posY_ <= playerFling)
     {
         //ジャンプしてない＆すり抜け床の上にいない
-        if (jumpFlg_ == false && isFloor_ == 0)
+        if (isJump_ == false && isOnFloor_ == 0)
         {
             //地面に張り付き
             posY_ = -downData.dist + 0.6;
-            moveYTemp_ = posY_;
-            moveYPrev_ = moveYTemp_;
+            posYTemp_ = posY_;
+            posYPrev_ = posYTemp_;
         }
     }
-    else if (isFloor_ == 0)
+    else if (isOnFloor_ == 0)
     {
-        jumpFlg_ = true;
+        isJump_ = true;
     }
     //▼前の法線(壁の当たり判定)
     frontData.start = transform_.position_;       //レイの発射位置
@@ -457,7 +456,6 @@ void Player::PlayerRayCast()
         transform_.position_.x = prevPosition_.x;
     }
     prevPosition_ = transform_.position_;
-    prevIsFloor_ = isFloor_;
 }
 
 bool Player::IsMoving()

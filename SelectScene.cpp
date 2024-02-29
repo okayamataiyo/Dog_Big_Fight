@@ -14,7 +14,7 @@ void SelectScene::Initialize()
 	Direct3D::SetIsChangeView(1);
 	pText_ = Instantiate<SolidText>(this);
 	pText_->SetMode(1);
-	buttonStart_ = Instantiate<Button>(this);
+	//buttonStart_ = Instantiate<Button>(this);
 	Instantiate<Sky>(this);
 }
 
@@ -26,7 +26,7 @@ void SelectScene::Update()
 	Camera::SetPosition(camPos_, 0);
 	Camera::SetTarget(pText_->GetPosition(), 0);
 	XMFLOAT3 pos = Input::GetMousePosition();
-	if (buttonStart_->MouseInArea(pos))
+//	if (buttonStart_->MouseInArea(pos))
 	{
 
 	}
