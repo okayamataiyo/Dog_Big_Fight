@@ -2,11 +2,11 @@
 //インクルード
 #include "Engine/GameObject.h"
 #include "Engine/Camera.h"
+#include "objectManager.h"
 #include <vector>
 class Player;
 class Sky;
 class Floor;
-class ObjectManager;
 /// <summary>
 /// 遊べるシーン
 /// </summary>
@@ -30,5 +30,6 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
+    std::vector<int> GetwoodBoxs() { return pObjectManager->GetwoodBoxs(); }
 };
 

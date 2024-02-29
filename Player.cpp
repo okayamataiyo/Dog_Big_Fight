@@ -12,6 +12,7 @@ Player::Player(GameObject* _pParent)
     :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 },isJump_(false), 
     gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isOnFloor_(0),isDash_(false)
 {
+    pParent_ = _pParent;
 }
 
 Player::~Player()
@@ -26,11 +27,8 @@ void Player::Initialize()
     transform_.scale_ = { 0.5,0.5,0.5 };
     posY_ = transform_.position_.y;
     prevPosition_ = transform_.position_;
-    for (int i = 0u; i <= 1; i++)
-    {
-        pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
-        AddCollider(pCollision_);
-    }
+    pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
+    AddCollider(pCollision_);
 }
 
 void Player::Update()

@@ -27,6 +27,7 @@ class Player : public GameObject
 {
 private:
 	int hModel_;					//ƒ‚ƒfƒ‹”Ô†
+	GameObject* pParent_;
 
 	SphereCollider* pCollision_;
 	PLAYERSTATE playerState_;

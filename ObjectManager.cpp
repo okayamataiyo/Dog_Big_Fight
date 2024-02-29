@@ -4,11 +4,11 @@
 
 void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT3 _rotate, XMFLOAT3 _scale)
 {
-	pObjectBase_ = nullptr;
 	switch (_objectState)
 	{
 	case OBJECTSTATE::FLOOR:
 		pObjectBase_ = Instantiate<Floor>(pParent_);
+		floors_.push_back(pObjectBase_->GetModelHandle());
 		break;
 	case OBJECTSTATE::WOODBOX:
 		pObjectBase_ = Instantiate<WoodBox>(pParent_);
@@ -31,7 +31,7 @@ void ObjectManager::SetPosition(XMFLOAT3 _position)
 }
 
 ObjectManager::ObjectManager(GameObject* _parent)
-	:pParent_(_parent)
+	:pParent_(_parent), pObjectBase_(nullptr),objectState_(OBJECTSTATE::FLOOR)
 {
 }
 

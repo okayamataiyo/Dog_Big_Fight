@@ -2,14 +2,20 @@
 #include "Engine/Camera.h"
 #include "Engine/Input.h"
 #include "Engine/Fbx.h"
+#include "Engine/ImGui/imgui.h"
 #include "WoodBox.h"
 #include "Stage.h"
 #include "ObjectBase.h"
-#include "Engine/ImGui/imgui.h"
+#include "ObjectManager.h"
 WoodBox::WoodBox(GameObject* _parent)
     :ObjectBase(_parent, "WoodBox"), hModel_(-1)
 {
+}
 
+WoodBox::WoodBox(PlayScene* _pParent)
+    :ObjectBase(_pParent, "WoodBox"), hModel_(-1)
+{
+    pParent_ = _pParent;
 }
 
 WoodBox::~WoodBox()
@@ -61,8 +67,9 @@ void WoodBox::RayCast()
     RayCastData woodBoxData;
     RayCastData stageData;
     float woodBoxFling = 1.0f;
-    WoodBox* pWoodBox = (WoodBox*)FindObject("WoodBox");
-    int hWoodBoxModel = pWoodBox->GetModelHandle();
+    int startWoodHModel = pParent_->GetwoodBoxs().size();
+    int endWoodHModel = 0;
+    int hWoodBoxModel = pParent_->GetwoodBoxs().at(2);
     Stage* pStage = (Stage*)FindObject("Stage");      //ステージオブジェクト
     int hStageModel = pStage->GetModelHandle();         //モデル番号を取得
     if (isJump_ == true)
@@ -80,13 +87,11 @@ void WoodBox::RayCast()
             isJump_ = false;
         }
     }
-    int startWoodHModel = 6;
-    int endWoodHModel = 0;
 
     //for (int i : vector) {}
     //std::vector<int> woodBoxSize = ;
 
-    for (int i = 0; i <= 1; i++)
+    for (int i = 0; i <= 4; i += 2)
     {
         //▼木箱の法線(木箱の上に木箱が乗るため)
         woodBoxData.start       = transform_.position_;
