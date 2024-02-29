@@ -30,8 +30,6 @@ public:
     //引数:x,z  調べる位置
     //戻り値:通れない=true/通れない=false
     //bool IsWall(int x, int z);
-
-    int GetModelHandle() { return hModel_; }
     //▼セッター・ゲッター
     void SetRotate(XMFLOAT3 _rotate) { transform_.rotate_ = _rotate; }
 };

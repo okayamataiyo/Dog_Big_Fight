@@ -108,8 +108,6 @@ public:
 	//子オブジェクトを全て削除
 	void KillAllChildren();
 
-
-
 	//コライダー（衝突判定）を追加する
 	void AddCollider(Collider * collider);
 

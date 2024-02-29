@@ -19,5 +19,5 @@ public:
     //ŠJ•ú
     void Release()      override {};
 
-
+    virtual int GetModelHandle() = 0;
 };

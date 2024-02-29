@@ -84,8 +84,9 @@ void WoodBox::RayCast()
     int endWoodHModel = 0;
 
     //for (int i : vector) {}
+    //std::vector<int> woodBoxSize = ;
 
-    for (int i = 0; i <= vectorSize.size(); i++)
+    for (int i = 0; i <= 1; i++)
     {
         //¥–Ø” ‚Ì–@ü(–Ø” ‚Ìã‚É–Ø” ‚ªæ‚é‚½‚ß)
         woodBoxData.start       = transform_.position_;

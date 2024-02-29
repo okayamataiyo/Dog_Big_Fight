@@ -20,7 +20,6 @@ namespace Model
 	{
 			ModelData* pData = new ModelData;
 
-
 			//開いたファイル一覧から同じファイル名のものが無いか探す
 			bool isExist = false;
 			for (int i = 0; i < _datas.size(); i++)

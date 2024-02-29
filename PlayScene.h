@@ -16,7 +16,6 @@ private:
     //ƒƒ“ƒo•Ï”
     Player* pPlayer_[2];
     Sky* pSky_;
-    Floor* pFloor_[3];
     ObjectManager* pObjectManager;
     XMFLOAT3 camVec_[2];
     XMFLOAT3 rotate_;

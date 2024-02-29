@@ -26,7 +26,7 @@ void Floor::Initialize()
 
 void Floor::Update()
 {
-    //transform_.rotate_.y += 1;
+    transform_.position_.y += 0.01;
 }
 
 void Floor::Draw()
