@@ -51,7 +51,6 @@ void PlayScene::Initialize()
 	pPlayer_[1]->SetObjectName("PlayerSeconds");
 	pSky_ = Instantiate<Sky>(this);
 	pSky_->SetObjectName("SkyFirst");
-	//pCamera_ = new Camera;
 	XMFLOAT3 firstPPos = { -3,0,0 };
 	XMFLOAT3 secondsPPos = { 3,0,0 };
 	rotate_ = { 0,0,0 };

@@ -2,7 +2,7 @@
 //インクルード
 #include "Engine/GameObject.h"
 #include "Engine/Camera.h"
-#include "objectManager.h"
+#include "ObjectManager.h"
 #include <vector>
 class Player;
 class Sky;

@@ -7,12 +7,7 @@
 #include "Stage.h"
 #include "ObjectBase.h"
 #include "ObjectManager.h"
-WoodBox::WoodBox(GameObject* _parent)
-    :ObjectBase(_parent, "WoodBox"), hModel_(-1)
-{
-}
-
-WoodBox::WoodBox(PlayScene* _pParent)
+WoodBox::WoodBox(GameObject* _pParent)
     :ObjectBase(_pParent, "WoodBox"), hModel_(-1)
 {
     pParent_ = _pParent;
@@ -67,9 +62,11 @@ void WoodBox::RayCast()
     RayCastData woodBoxData;
     RayCastData stageData;
     float woodBoxFling = 1.0f;
-    int startWoodHModel = pParent_->GetwoodBoxs().size();
+    //int startWoodHModel = pParent_->GetwoodBoxs().size();
+    int startWoodHModel = 0;
     int endWoodHModel = 0;
-    int hWoodBoxModel = pParent_->GetwoodBoxs().at(2);
+    //int hWoodBoxModel = pParent_->GetwoodBoxs().at(2);
+    int hWoodBoxModel = 0;
     Stage* pStage = (Stage*)FindObject("Stage");      //ステージオブジェクト
     int hStageModel = pStage->GetModelHandle();         //モデル番号を取得
     if (isJump_ == true)
