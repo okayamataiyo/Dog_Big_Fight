@@ -28,7 +28,7 @@ void PlayScene::Initialize()
 	XMFLOAT3 OnceData	   = { 1.0f,1.0f,1.0f };
 	XMFLOAT3 scale		   = { 3.0f,1.0f,3.0f };
 	XMFLOAT3 WoodBox[3];
-	WoodBox[0]			   = { 30.0f,0.0f,40.0f };
+	WoodBox[0]			   = { 30.0f,-5.0f,40.0f };
 	WoodBox[1]			   = { 30.0f,-10.0f,40.0f };
 	WoodBox[2]			   = { 30.0f,-20.0f,40.0f };
 	for (int i = 0u; i <= 2; i++)
@@ -37,7 +37,7 @@ void PlayScene::Initialize()
 	}
 	//for (int i = 0u; i <= 2; i++)
 	{
-		pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[1], XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
+		pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[3], XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
 	}
 	for (int i = 0u; i <= 1; i++)
 	{

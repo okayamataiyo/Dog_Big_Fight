@@ -118,7 +118,7 @@ void Player::OnCollision(GameObject* _pTarget)
         dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos,vecUp));
         float angleRadians = acosf(dotProduct_);
         angleDegrees_ = XMConvertToDegrees(angleRadians);
-        if (angleDegrees_ <= 20)
+        if (angleDegrees_ <= 50)
         {
             PlayerJump();
             pWoodBox_->KillMe();

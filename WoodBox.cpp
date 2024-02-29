@@ -23,7 +23,7 @@ void WoodBox::Initialize()
     hModel_ = Model::Load("WoodBox.fbx");
     assert(hModel_ >= 0);
 
-    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(2.0f, 2.0f, 2.0f));
+    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f));
     AddCollider(pCollision);
 }
 
@@ -80,8 +80,12 @@ void WoodBox::RayCast()
             isJump_ = false;
         }
     }
+    int startWoodHModel = 6;
+    int endWoodHModel = 0;
 
-    for (int i = 0u; i <= 1; i++)
+    //for (int i : vector) {}
+
+    for (int i = 0; i <= vectorSize.size(); i++)
     {
         //¥–Ø” ‚Ì–@ü(–Ø” ‚Ìã‚É–Ø” ‚ªæ‚é‚½‚ß)
         woodBoxData.start       = transform_.position_;

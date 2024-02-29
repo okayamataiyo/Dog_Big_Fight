@@ -2,6 +2,7 @@
 //インクルード
 #include "Engine/GameObject.h"
 #include "Engine/Camera.h"
+#include <vector>
 class Player;
 class Sky;
 class Floor;

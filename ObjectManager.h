@@ -14,6 +14,7 @@ private:
     GameObject* pParent_;
     OBJECTSTATE objectState_;
     ObjectBase* pObjectBase_;
+    std::vector<int> woodBoxs_;
 public:
     ObjectManager(GameObject* _parent);
     ~ObjectManager();
