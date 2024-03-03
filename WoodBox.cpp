@@ -119,22 +119,26 @@ void WoodBox::RayCast()
         stageData.dir = XMFLOAT3(0, -1, 0);               //レイの方向
         Model::RayCast(hStageModel, &stageData);                //レイを発射
         rayStageDist_ = stageData.dist;
+        //地面と
         if (rayStageDist_ + posY_ <= woodBoxFling)
         {
+            //小さかったら
             if (isJump_ == false && isOnWoodBox_ == 0)
             {
-                posY_ = -stageData.dist + 0.6;
+                posY_ = -stageData.dist + 0.6;  //地面の張り付き
                 posYTemp_ = posY_;
                 posYPrev_ = posYTemp_;
             }
         }
         else if (isOnWoodBox_ == 0)
         {
+            //大きかったら
             isJump_ = true;
         }
     }
     ImGui::Text("rayWoodBoxDist_=%f", rayWoodBoxDist_);
-    ImGui::Text("isJum_p=%s", isJump_ ? "true" : "false");
+    ImGui::Text("isJump_=%s", isJump_ ? "true" : "false");
+    ImGui::Text("posY_=%f", posY_);
 }
 
 void WoodBox::OnCollision(GameObject* _pTarget)

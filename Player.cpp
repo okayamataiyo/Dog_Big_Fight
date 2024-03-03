@@ -10,7 +10,8 @@
 
 Player::Player(GameObject* _pParent)
     :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 },isJump_(false), 
-    gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isOnFloor_(0),isDash_(false)
+    gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isOnFloor_(0),isDash_(false),number_(0)
+    ,woodBoxName_("WoodBox"),woodBoxNumber_("WoodBox0"),pPlayScene_(nullptr)
 {
     pParent_ = _pParent;
 }
@@ -29,6 +30,7 @@ void Player::Initialize()
     prevPosition_ = transform_.position_;
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
     AddCollider(pCollision_);
+    pPlayScene_ = (PlayScene*)FindObject("PlayScene");
 }
 
 void Player::Update()
@@ -105,42 +107,53 @@ void Player::OnCollision(GameObject* _pTarget)
     {
         PlayerJump();
     }
-
-    if (_pTarget->GetObjectName() == "WoodBox")
+    std::vector<int> woodBoxs = pPlayScene_->GetWoodBoxs();
+    woodBoxNumber_ = woodBoxName_ + std::to_string(number_);
+    if (_pTarget->GetObjectName() == woodBoxNumber_)
     {
-
-        pWoodBox_ = (WoodBox*)FindObject("WoodBox");
+        pWoodBox_ = (WoodBox*)FindObject(woodBoxNumber_);
         XMVECTOR vecPos = XMLoadFloat3(&transform_.position_) - pWoodBox_->GetVecPos();
         vecPos = XMVector3Normalize(vecPos);
         XMVECTOR vecUp = { 0,1,0,0 };
         dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos,vecUp));
         float angleRadians = acosf(dotProduct_);
         angleDegrees_ = XMConvertToDegrees(angleRadians);
-        if (angleDegrees_ <= 50)
+        if (angleDegrees_ <= 80)
         {
             PlayerJump();
             pWoodBox_->KillMe();
         }
-        else
+
+    }
+    //Itemという名前を持つ全てのオブジェクトの機能を実装
+    if (_pTarget->GetObjectName().find("WoodBox") != std::string::npos)
+    {
+        if(angleDegrees_ > 80)
         {
             transform_.position_ = prevPosition_;
         }
     }
-
-    if (_pTarget->GetObjectName() == "PlayerSeconds")
+    number_++;
+    if (number_ >= woodBoxs.size())
     {
+        number_ = 0;
+    }
+    if (_pTarget->GetObjectName().find("Player") != std::string::npos)
+    {
+        if (this->GetObjectName() == "PlayerFirst")
+        {
+            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecMove_[0] / 4);
+            XMFLOAT3 targetPosition;
+            XMStoreFloat3(&targetPosition, -vectorMove);
+            _pTarget->SetPosition(targetPosition);
+            //if(_pTarget->GetObjectName() == "PlayerSeconds")
+        }
         if (gameState_ != GAMESTATE::GAMEOVER)
         {
             pPlayer_ = (Player*)FindObject("PlayerFirst");
 
         }
     }
-
-    //Itemという名前を持つ全てのオブジェクトの機能を実装
-//if (_pTarget->GetObjectName().find("Item") != std::string::npos)
-//{
-
-//}
 }
 
 void Player::PlayerMove()

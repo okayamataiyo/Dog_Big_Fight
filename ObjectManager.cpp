@@ -13,6 +13,11 @@ void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT
 	case OBJECTSTATE::WOODBOX:
 		pObjectBase_ = Instantiate<WoodBox>(pParent_);
 		woodBoxs_.push_back(pObjectBase_->GetModelHandle());
+		std::string woodBoxName = "WoodBox";
+		std::string woodBoxNumber = woodBoxName + std::to_string(number_);
+
+		pObjectBase_->SetObjectName(woodBoxNumber);
+		number_++;
 		break;
 	}
 	pObjectBase_->SetPosition(_pos);
@@ -31,7 +36,7 @@ void ObjectManager::SetPosition(XMFLOAT3 _position)
 }
 
 ObjectManager::ObjectManager(GameObject* _parent)
-	:pParent_(_parent), pObjectBase_(nullptr),objectState_(OBJECTSTATE::FLOOR)
+	:pParent_(_parent), pObjectBase_(nullptr),objectState_(OBJECTSTATE::FLOOR),number_(0)
 {
 }
 

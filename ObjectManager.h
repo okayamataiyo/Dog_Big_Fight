@@ -16,6 +16,7 @@ private:
     ObjectBase* pObjectBase_;
     std::vector<int> woodBoxs_;
     std::vector<int> floors_;
+    int number_;
 public:
     ObjectManager(GameObject* _parent);
     ~ObjectManager();

@@ -2,6 +2,7 @@
 //インクルード
 #include "Engine/GameObject.h"
 #include "Engine/Camera.h"
+#include "PlayScene.h"
 
 class WoodBox;
 
@@ -27,8 +28,11 @@ class Player : public GameObject
 {
 private:
 	int hModel_;					//モデル番号
+	int number_;
 	GameObject* pParent_;
-
+	PlayScene* pPlayScene_;
+	std::string woodBoxName_;
+	std::string woodBoxNumber_;
 	SphereCollider* pCollision_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE prevState_;			//前のプレイヤーの状態
