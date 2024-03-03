@@ -22,7 +22,7 @@ public:
     void CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT3 _rotate, XMFLOAT3 _scale);
     void SetRotate(XMFLOAT3 _rotate);
     void SetPosition(XMFLOAT3 _position);
-    std::vector<int> GetwoodBoxs() { return woodBoxs_; }
-    std::vector<int> Getfloors() { return floors_; }
+    std::vector<int> GetWoodBoxs() { return woodBoxs_; }
+    std::vector<int> GetFloors() { return floors_; }
 };
 

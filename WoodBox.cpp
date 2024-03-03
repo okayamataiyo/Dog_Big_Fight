@@ -23,13 +23,14 @@ void WoodBox::Initialize()
     //モデルデータのロード
     hModel_ = Model::Load("WoodBox.fbx");
     assert(hModel_ >= 0);
-
     BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f));
     AddCollider(pCollision);
+    pPlayScene_ = (PlayScene*)FindObject("PlayScene");
 }
 
 void WoodBox::Update()
 {
+    woodBoxs_ = pPlayScene_->GetWoodBoxs();
     RayCast();
 }
 
@@ -58,17 +59,15 @@ void WoodBox::Move()
 
 void WoodBox::RayCast()
 {
-    transform_.position_.y = posY_;
+    transform_.position_.y  = posY_;
     RayCastData woodBoxData;
     RayCastData stageData;
-    float woodBoxFling = 1.0f;
-    //int startWoodHModel = pParent_->GetwoodBoxs().size();
-    int startWoodHModel = 0;
-    int endWoodHModel = 0;
-    //int hWoodBoxModel = pParent_->GetwoodBoxs().at(2);
-    int hWoodBoxModel = 0;
-    Stage* pStage = (Stage*)FindObject("Stage");      //ステージオブジェクト
-    int hStageModel = pStage->GetModelHandle();         //モデル番号を取得
+    float woodBoxFling      = 1.0f;
+    int startWoodHModel     = woodBoxs_.front();
+    int endWoodHModel       = woodBoxs_.back();
+    int nowWoodBoxHModel     = GetModelHandle();
+    Stage* pStage           = (Stage*)FindObject("Stage");      //ステージオブジェクト
+    int hStageModel         = pStage->GetModelHandle();         //モデル番号を取得
     if (isJump_ == true)
     {
         //放物線に下がる処理
@@ -88,13 +87,17 @@ void WoodBox::RayCast()
     //for (int i : vector) {}
     //std::vector<int> woodBoxSize = ;
 
-    for (int i = 0; i <= 4; i += 2)
+    for (int i = 0; i < woodBoxs_.size();i++)
     {
         //▼木箱の法線(木箱の上に木箱が乗るため)
         woodBoxData.start       = transform_.position_;
         woodBoxData.start.y     = 0;
         woodBoxData.dir         = XMFLOAT3(0, -1, 0);
-        Model::RayCast(hWoodBoxModel + i, &woodBoxData);
+        if (!(woodBoxs_.at(i) == nowWoodBoxHModel))
+        {
+            int nowData = woodBoxs_.at(i);
+            Model::RayCast(nowData, &woodBoxData);
+        }
         rayWoodBoxDist_         = woodBoxData.dist;
         if (rayWoodBoxDist_ + posY_ <= woodBoxFling)
         {

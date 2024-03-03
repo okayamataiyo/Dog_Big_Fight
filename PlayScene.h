@@ -30,6 +30,6 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-    std::vector<int> GetwoodBoxs() { return pObjectManager->GetwoodBoxs(); }
+    std::vector<int> GetWoodBoxs() { return pObjectManager->GetWoodBoxs(); }
 };
 

@@ -3,7 +3,7 @@
 #include <string>
 #include "Engine/Direct3D.h"
 #include "ObjectBase.h"
-
+#include "PlayScene.h"
 using std::string;
 //WoodBoxを管理するクラス
 class WoodBox : public ObjectBase
@@ -11,6 +11,8 @@ class WoodBox : public ObjectBase
 private:
     int hModel_;            //モデル
     GameObject* pParent_;
+    PlayScene* pPlayScene_;
+    std::vector<int> woodBoxs_;
 
     //▼レイキャストで使うメンバ変数
     float posY_;            //木箱のY座標に代入する値
