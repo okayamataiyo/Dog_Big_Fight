@@ -19,6 +19,8 @@ enum class GAMESTATE
 	READY = 0,
 	PLAY,
 	GAMEOVER,
+	FIRSTSTUN,
+	SECONDSSTUN
 };
 
 /// <summary>
@@ -29,6 +31,7 @@ class Player : public GameObject
 private:
 	int hModel_;					//モデル番号
 	int number_;
+	Player* pPlayer_;
 	GameObject* pParent_;
 	PlayScene* pPlayScene_;
 	std::string woodBoxName_;
@@ -39,6 +42,7 @@ private:
 	GAMESTATE gameState_;
 	//▼ゲームの演出で使うメンバ関数
 	int TimeCounter_;
+	int isStun_;		//スタンしているかどうか
 
 	//▼移動で使うメンバ変数
 	float posY_;	//プレイヤーのY座標に代入する値
@@ -68,7 +72,6 @@ private:
 	float angleDegrees_;
 	WoodBox* pWoodBox_;
 	//▼ノックバックで使うメンバ変数
-	Player* pPlayer_;
 
 	//▼慣性で使うメンバ変数
 
@@ -105,6 +108,11 @@ public:
 	void UpdateReady();
 	void UpdatePlay();
 	void UpdateGameOver();
+	/// <summary>
+	/// プレイヤーをスタン(行動不能)にする処理
+	/// </summary>
+	/// <param name="_timeLimit">_timeLimit秒まで、動かせない</param>
+	void UpdateStun(int _timeLimit = 60);
 
 	/// <summary>
 	/// 描画関数
@@ -138,6 +146,8 @@ public:
 	void PlayerRayCast();
 
 	XMVECTOR GetVecPos() { return XMLoadFloat3(&transform_.position_); }
+
+	XMVECTOR GetVecMove(int _type) { return vecMove_[_type]; }
 
 	PLAYERSTATE GetPlayerState() { return playerState_; }
 

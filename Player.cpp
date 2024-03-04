@@ -10,8 +10,8 @@
 
 Player::Player(GameObject* _pParent)
     :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 },isJump_(false), 
-    gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isOnFloor_(0),isDash_(false),number_(0)
-    ,woodBoxName_("WoodBox"),woodBoxNumber_("WoodBox0"),pPlayScene_(nullptr)
+    gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isOnFloor_(0),isDash_(false),isStun_(0), number_(0)
+    ,woodBoxName_("WoodBox"),woodBoxNumber_("WoodBox0"), pPlayer_(nullptr),pParent_(nullptr),pPlayScene_(nullptr)
 {
     pParent_ = _pParent;
 }
@@ -31,15 +31,25 @@ void Player::Initialize()
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
     AddCollider(pCollision_);
     pPlayScene_ = (PlayScene*)FindObject("PlayScene");
+    if (this->GetObjectName() == "PlayerSeconds")
+    {
+        pPlayer_ = (Player*)FindObject("PlayerFirst");
+    }
+    if (this->GetObjectName() == "PlayerFirst")
+    {
+        pPlayer_ = (Player*)FindObject("PlayerSeconds");
+    }
 }
 
 void Player::Update()
 {
     switch (gameState_)
     {
-    case GAMESTATE::READY:     UpdateReady();    break;
-    case GAMESTATE::PLAY:      UpdatePlay();     break;
-    case GAMESTATE::GAMEOVER:  UpdateGameOver(); break;
+    case GAMESTATE::READY:          UpdateReady();      break;
+    case GAMESTATE::PLAY:           UpdatePlay();       break;
+    case GAMESTATE::GAMEOVER:       UpdateGameOver();   break;
+    case GAMESTATE::FIRSTSTUN:      UpdateStun(30);     break;
+    case GAMESTATE::SECONDSSTUN:    UpdateStun(60);     break;
     }
 }
 
@@ -55,7 +65,6 @@ void Player::Release()
 
 void Player::UpdateReady()
 {
-    //PlayerGravity();
     ++TimeCounter_;
     if (TimeCounter_ >= 60)
     {
@@ -89,15 +98,26 @@ void Player::UpdatePlay()
     ImGui::Text("prevPosition_.y=%f", prevPosition_.y);
     ImGui::Text("prevPosition_.z=%f", prevPosition_.z);*/
     ImGui::Text("angleDegrees=%f", angleDegrees_);
+    ImGui::Text("timeCounter_=%i", TimeCounter_);
 }
 
 void Player::UpdateGameOver()
 {
-    ++TimeCounter_;
     if (Input::IsKey(DIK_SPACE))
     {
         SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
         pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
+    }
+}
+
+void Player::UpdateStun(int _timeLimit)
+{
+    //transform_.position_.y = posY_;
+    ++TimeCounter_;
+    if (TimeCounter_ >= _timeLimit)
+    {
+        gameState_ = GAMESTATE::PLAY;
+        TimeCounter_ = 0;
     }
 }
 
@@ -118,17 +138,16 @@ void Player::OnCollision(GameObject* _pTarget)
         dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos,vecUp));
         float angleRadians = acosf(dotProduct_);
         angleDegrees_ = XMConvertToDegrees(angleRadians);
-        if (angleDegrees_ <= 80)
+        if (angleDegrees_ <= 85)
         {
             PlayerJump();
             pWoodBox_->KillMe();
         }
-
     }
     //Itemという名前を持つ全てのオブジェクトの機能を実装
     if (_pTarget->GetObjectName().find("WoodBox") != std::string::npos)
     {
-        if(angleDegrees_ > 80)
+        if(angleDegrees_ > 85)
         {
             transform_.position_ = prevPosition_;
         }
@@ -138,21 +157,19 @@ void Player::OnCollision(GameObject* _pTarget)
     {
         number_ = 0;
     }
-    if (_pTarget->GetObjectName().find("Player") != std::string::npos)
+    if (_pTarget->GetObjectName() == "PlayerFirst")
     {
-        if (this->GetObjectName() == "PlayerFirst")
-        {
-            XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecMove_[0] / 4);
-            XMFLOAT3 targetPosition;
-            XMStoreFloat3(&targetPosition, -vectorMove);
-            _pTarget->SetPosition(targetPosition);
-            //if(_pTarget->GetObjectName() == "PlayerSeconds")
-        }
-        if (gameState_ != GAMESTATE::GAMEOVER)
-        {
-            pPlayer_ = (Player*)FindObject("PlayerFirst");
-
-        }
+        gameState_ = GAMESTATE::FIRSTSTUN;
+        XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecMove_[0] / 4);
+        XMFLOAT3 targetPosition;
+        XMStoreFloat3(&targetPosition, -vectorMove);
+        XMStoreFloat3(&transform_.position_, vectorMove);
+        gameState_ = GAMESTATE::SECONDSSTUN;
+    }
+    if (_pTarget->GetObjectName() == "PlayerSeconds")
+    {
+        gameState_ = GAMESTATE::FIRSTSTUN;
+        gameState_ = GAMESTATE::SECONDSSTUN;
     }
 }
 
