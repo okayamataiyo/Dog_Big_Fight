@@ -88,7 +88,7 @@ void PlayScene::Update()
 		controller					= Input::GetPadStickR();
 
 		const float mouseSens		= 400;
-		const float controllerSens	= 100;
+		const float controllerSens	= 50;
 		static float RotationX[2]	= {};
 		static float RotationY[2]	= {};
 		static float vecLength[2]	= {};

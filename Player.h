@@ -48,14 +48,14 @@ private:
 	float posY_;	//プレイヤーのY座標に代入する値
 	bool isDash_;	//ダッシュしているかどうか
 	//▼向き変えで使うメンバ変数
-	XMVECTOR vecMove_[2];
-	XMVECTOR vecLength_[2];
+	XMVECTOR vecMove_;
+	XMVECTOR vecLength_;
 	XMVECTOR vecFront_;
-	XMVECTOR vecDot_[2];
+	XMVECTOR vecDot_;
 	XMVECTOR vecCross_;
-	float length_[2];
+	float length_;
 	float dot_;
-	float angle_[2];
+	float angle_;
 	//▼ジャンプで使うメンバ変数
 	bool  isJump_;				//ジャンプしてるかしていないか
 	float rayStageDist_;		//地面とプレイヤーの差分
@@ -145,9 +145,13 @@ public:
 	/// </summary>
 	void PlayerRayCast();
 
+	void SetGameState(GAMESTATE _gameState, int _time = 60);
+
+	void SetVecPos(XMVECTOR _vecMove) { XMStoreFloat3(&transform_.position_, _vecMove); }
+
 	XMVECTOR GetVecPos() { return XMLoadFloat3(&transform_.position_); }
 
-	XMVECTOR GetVecMove(int _type) { return vecMove_[_type]; }
+	XMVECTOR GetVecMove() { return vecMove_; }
 
 	PLAYERSTATE GetPlayerState() { return playerState_; }
 
