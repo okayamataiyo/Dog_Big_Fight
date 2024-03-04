@@ -4,6 +4,7 @@
 #include "Engine/Camera.h"
 #include "SolidText.h"
 #include "Button.h"
+
 class SelectScene : public GameObject
 {
 	SolidText* pText_;

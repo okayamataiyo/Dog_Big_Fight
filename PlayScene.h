@@ -16,9 +16,8 @@ private:
     //ƒƒ“ƒo•Ï”
     Player* pPlayer_[2];
     Sky* pSky_;
-    ObjectManager* pObjectManager;
+    ObjectManager* pObjectManager_;
     XMFLOAT3 camVec_[2];
-    XMFLOAT3 rotate_;
     Transform floorPos_[3];
 public:
     /// <summary>
@@ -30,6 +29,6 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-    std::vector<int> GetWoodBoxs() { return pObjectManager->GetWoodBoxs(); }
+    std::vector<int> GetWoodBoxs() { return pObjectManager_->GetWoodBoxs(); }
 };
 

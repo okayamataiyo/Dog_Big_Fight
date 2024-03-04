@@ -5,7 +5,7 @@
 #include "PlayScene.h"
 
 class WoodBox;
-
+class Text;
 enum class PLAYERSTATE
 {
 	WAIT = 0,
@@ -32,9 +32,10 @@ private:
 	Player* pPlayer_;
 	GameObject* pParent_;
 	PlayScene* pPlayScene_;
+	SphereCollider* pCollision_;
+	Text* pText_;
 	std::string woodBoxName_;
 	std::string woodBoxNumber_;
-	SphereCollider* pCollision_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE prevState_;			//前のプレイヤーの状態
 	GAMESTATE gameState_;

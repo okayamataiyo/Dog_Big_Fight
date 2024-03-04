@@ -10,14 +10,19 @@
 #include "Item.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
-	:GameObject(_pParent, "PlayScene"),pObjectManager(nullptr)
+	:GameObject(_pParent, "PlayScene"), pObjectManager_(nullptr),
+	pSky_(nullptr)
 {
 
 }
 
 void PlayScene::Initialize()
 {
-	pObjectManager = new ObjectManager(this);
+	pObjectManager_ = new ObjectManager(this);
+	pSky_ = Instantiate<Sky>(this);
+	pSky_->SetObjectName("SkyFirst");
+	XMFLOAT3 firstPPos = { -3,0,0 };
+	XMFLOAT3 secondsPPos = { 3,0,0 };
 	Instantiate<Item>(this);
 	Instantiate<Stage>(this);
 	floorPos_[0].position_ = { 30.0f,0.8f,3.0f };
@@ -32,12 +37,12 @@ void PlayScene::Initialize()
 	WoodBox[2]			   = { 10.0f,-20.0f,40.0f };
 	for (int i = 0u; i <= 2; i++)
 	{
-		pObjectManager->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), XMFLOAT3(4.0f,1.0f,4.0f));
+		pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), XMFLOAT3(4.0f,1.0f,4.0f));
 	}
 
 	for (int i = 0u; i <= 2; i++)
 	{
-		pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[i], DefaultData[0], XMFLOAT3(0.3f, 0.3f, 0.3f));
+		pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[i], DefaultData[0], XMFLOAT3(0.3f, 0.3f, 0.3f));
 	}
 
 	for (int i = 0u; i <= 1; i++)
@@ -49,14 +54,8 @@ void PlayScene::Initialize()
 	}
 	pPlayer_[0]->SetObjectName("PlayerFirst");
 	pPlayer_[1]->SetObjectName("PlayerSeconds");
-	pSky_ = Instantiate<Sky>(this);
-	pSky_->SetObjectName("SkyFirst");
-	XMFLOAT3 firstPPos = { -3,0,0 };
-	XMFLOAT3 secondsPPos = { 3,0,0 };
-	rotate_ = { 0,0,0 };
 	pPlayer_[0]->SetPosition(firstPPos);
 	pPlayer_[1]->SetPosition(secondsPPos);
-
 }
 
 void PlayScene::Update()
@@ -64,13 +63,13 @@ void PlayScene::Update()
 	/*XMFLOAT3 up = { -5.0f, 0.3f,9.0f };
 	up.y += 0.1;
 	pObjectManager->SetPosition(up);*/
-	if (Input::IsKeyDown(DIK_E))
+	if (Input::IsMouseButtonDown(0))
 	{
-		pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[1]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
+		pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[1]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
 	}
 	if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y))
 	{
-		pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[0]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
+		pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[0]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
 	}
 	for (int i = 0u; i <= 1; i++)
 	{
@@ -158,10 +157,9 @@ void PlayScene::Update()
 
 void PlayScene::Draw()
 {
-
 }
 
 void PlayScene::Release()
 {
-	SAFE_DELETE(pObjectManager);
+	SAFE_DELETE(pObjectManager_);
 }

@@ -3,6 +3,7 @@
 #include "Engine/Model.h"
 #include "Engine/Direct3D.h"
 #include "Engine/ImGui/imgui.h"
+#include "Engine/Text.h"
 #include "Player.h"
 #include "Stage.h"
 #include "Floor.h"
@@ -11,7 +12,7 @@
 Player::Player(GameObject* _pParent)
     :GameObject(_pParent, "Player"), timeCounter_(0), hModel_{ -1 },isJump_(false), 
     gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isOnFloor_(0),isDash_(false),isStun_(0),isKnockBack_(0),number_(0)
-    ,woodBoxName_("WoodBox"),woodBoxNumber_("WoodBox0"), pPlayer_(nullptr),pParent_(nullptr),pPlayScene_(nullptr)
+    ,woodBoxName_("WoodBox"),woodBoxNumber_("WoodBox0"), pPlayer_(nullptr),pParent_(nullptr),pPlayScene_(nullptr),pText_(nullptr)
 {
     pParent_ = _pParent;
 }
@@ -31,6 +32,8 @@ void Player::Initialize()
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
     AddCollider(pCollision_);
     pPlayScene_ = (PlayScene*)FindObject("PlayScene");
+    pText_ = new Text;
+    pText_->Initialize();
 }
 
 void Player::Update()
@@ -58,6 +61,16 @@ void Player::Draw()
 {
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);
+    if (this->GetObjectName() == "PlayerSeconds")
+    {
+        pText_->Draw(30, 30,"Player1:Score=");
+        pText_->Draw(280, 30, score_);
+    }
+    if (this->GetObjectName() == "PlayerFirst")
+    {
+        pText_->Draw(30, 60, "Player2:Score=");
+        pText_->Draw(280, 60, score_);
+    }
 }
 
 void Player::Release()
@@ -136,7 +149,7 @@ void Player::OnCollision(GameObject* _pTarget)
 {
     if (_pTarget->GetObjectName() == "Item")
     {
-        PlayerJump();
+        score_ += 10;
     }
     std::vector<int> woodBoxs = pPlayScene_->GetWoodBoxs();
     woodBoxNumber_ = woodBoxName_ + std::to_string(number_);

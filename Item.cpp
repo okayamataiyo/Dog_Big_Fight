@@ -55,8 +55,8 @@ void Item::Release()
 
 void Item::OnCollision(GameObject* _pTarget)
 {
-	if (_pTarget->GetObjectName() == "PlayerFirst")
+	if (_pTarget->GetObjectName().find("Player") != std::string::npos)
 	{
-
+		KillMe();
 	}
 }
