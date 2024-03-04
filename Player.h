@@ -19,8 +19,6 @@ enum class GAMESTATE
 	READY = 0,
 	PLAY,
 	GAMEOVER,
-	FIRSTSTUN,
-	SECONDSSTUN
 };
 
 /// <summary>
@@ -41,8 +39,8 @@ private:
 	PLAYERSTATE prevState_;			//前のプレイヤーの状態
 	GAMESTATE gameState_;
 	//▼ゲームの演出で使うメンバ関数
-	int TimeCounter_;
-	int isStun_;		//スタンしているかどうか
+	int timeCounter_;
+	int score_;			//得点
 
 	//▼移動で使うメンバ変数
 	float posY_;	//プレイヤーのY座標に代入する値
@@ -72,7 +70,9 @@ private:
 	float angleDegrees_;
 	WoodBox* pWoodBox_;
 	//▼ノックバックで使うメンバ変数
-
+	bool isKnockBack_;
+	int stunLimit_;		//スタンしている時間
+	int isStun_;		//スタンしているかどうか
 	//▼慣性で使うメンバ変数
 
 	//▼壁判定で使うメンバ変数
@@ -112,7 +112,7 @@ public:
 	/// プレイヤーをスタン(行動不能)にする処理
 	/// </summary>
 	/// <param name="_timeLimit">_timeLimit秒まで、動かせない</param>
-	void UpdateStun(int _timeLimit = 60);
+	void Stun(int _timeLimit = 60);
 
 	/// <summary>
 	/// 描画関数
@@ -144,8 +144,6 @@ public:
 	/// プレイヤーのレイ関数
 	/// </summary>
 	void PlayerRayCast();
-
-	void SetGameState(GAMESTATE _gameState, int _time = 60);
 
 	void SetVecPos(XMVECTOR _vecMove) { XMStoreFloat3(&transform_.position_, _vecMove); }
 

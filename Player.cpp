@@ -9,8 +9,8 @@
 #include "WoodBox.h"
 
 Player::Player(GameObject* _pParent)
-    :GameObject(_pParent, "Player"), TimeCounter_(0), hModel_{ -1 },isJump_(false), 
-    gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isOnFloor_(0),isDash_(false),isStun_(0), number_(0)
+    :GameObject(_pParent, "Player"), timeCounter_(0), hModel_{ -1 },isJump_(false), 
+    gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isOnFloor_(0),isDash_(false),isStun_(0),isKnockBack_(0),number_(0)
     ,woodBoxName_("WoodBox"),woodBoxNumber_("WoodBox0"), pPlayer_(nullptr),pParent_(nullptr),pPlayScene_(nullptr)
 {
     pParent_ = _pParent;
@@ -51,8 +51,6 @@ void Player::Update()
     case GAMESTATE::READY:          UpdateReady();      break;
     case GAMESTATE::PLAY:           UpdatePlay();       break;
     case GAMESTATE::GAMEOVER:       UpdateGameOver();   break;
-    case GAMESTATE::FIRSTSTUN:      UpdateStun(60);     break;
-    case GAMESTATE::SECONDSSTUN:    UpdateStun(60);     break;
     }
 }
 
@@ -68,11 +66,11 @@ void Player::Release()
 
 void Player::UpdateReady()
 {
-    ++TimeCounter_;
-    if (TimeCounter_ >= 60)
+    ++timeCounter_;
+    if (timeCounter_ >= 60)
     {
         gameState_ = GAMESTATE::PLAY;
-        TimeCounter_ = 0;
+        timeCounter_ = 0;
     }
 }
 
@@ -90,7 +88,21 @@ void Player::UpdatePlay()
     }
     prevState_ = playerState_;
     PlayerRayCast();
-    PlayerMove();
+    transform_.position_.y = posY_;
+    if (isStun_ == 1)
+    {
+        timeCounter_++;
+        if (timeCounter_ >= stunLimit_)
+        {
+            gameState_ = GAMESTATE::PLAY;
+            isStun_ = 0;
+            timeCounter_ = 0;
+        }
+    }
+    if (isStun_ == 0)
+    {
+        PlayerMove();
+    }
     //ImGui::Text("playerState_=%i", playerState_);
     //ImGui::Text("posYPrev_=%f", posYPrev_);
     //ImGui::Text("posYTemp_=%f", posYTemp_);
@@ -100,8 +112,8 @@ void Player::UpdatePlay()
     ImGui::Text("prevPosition_.x=%f", prevPosition_.x);
     ImGui::Text("prevPosition_.y=%f", prevPosition_.y);
     ImGui::Text("prevPosition_.z=%f", prevPosition_.z);*/
-    ImGui::Text("angleDegrees=%f", angleDegrees_);
-    ImGui::Text("timeCounter_=%i", TimeCounter_);
+    ImGui::Text("angleDegrees_=%f", angleDegrees_);
+    ImGui::Text("timeCounter_=%i", timeCounter_);
 }
 
 void Player::UpdateGameOver()
@@ -113,18 +125,11 @@ void Player::UpdateGameOver()
     }
 }
 
-void Player::UpdateStun(int _timeLimit)
+void Player::Stun(int _timeLimit)
 {
     //transform_.position_.y = posY_;
-    while (TimeCounter_ <= _timeLimit)
-    {
-        ++TimeCounter_;
-    }
-    if (TimeCounter_ >= _timeLimit)
-    {
-        gameState_ = GAMESTATE::PLAY;
-        TimeCounter_ = 0;
-    }
+    isStun_ = 1;
+    stunLimit_ = _timeLimit;
 }
 
 void Player::OnCollision(GameObject* _pTarget)
@@ -144,7 +149,7 @@ void Player::OnCollision(GameObject* _pTarget)
         dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos,vecUp));
         float angleRadians = acosf(dotProduct_);
         angleDegrees_ = XMConvertToDegrees(angleRadians);
-        if (angleDegrees_ <= 85)
+        if (angleDegrees_ <= 80)
         {
             PlayerJump();
             pWoodBox_->KillMe();
@@ -153,7 +158,7 @@ void Player::OnCollision(GameObject* _pTarget)
     //Itemという名前を持つ全てのオブジェクトの機能を実装
     if (_pTarget->GetObjectName().find("WoodBox") != std::string::npos)
     {
-        if(angleDegrees_ > 85)
+        if(angleDegrees_ > 80)
         {
             transform_.position_ = prevPosition_;
         }
@@ -178,22 +183,24 @@ void Player::OnCollision(GameObject* _pTarget)
     //}
     if (_pTarget->GetObjectName() == "PlayerSeconds")
     {
-        SetGameState(GAMESTATE::FIRSTSTUN,60);
-        XMVECTOR vecKnockbackDirection = -(XMLoadFloat3(&transform_.position_) - pPlayer_->GetVecPos());
-        XMFLOAT3 moveRot = {};
-        XMStoreFloat3(&moveRot, vecKnockbackDirection);
-        moveRot.y = 0;
-        vecKnockbackDirection = XMLoadFloat3(&moveRot);
-        XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecKnockbackDirection / 4);
-        XMStoreFloat3(&transform_.position_, vectorMove);
-        pPlayer_->SetVecPos(-vectorMove);
-        SetGameState(GAMESTATE::SECONDSSTUN,60);
+        Stun(10);
+        pPlayer_->Stun(10);
+        isKnockBack_ = true;
     }
 }
 
 void Player::PlayerMove()
 {
-    transform_.position_.y = posY_;
+    if (isKnockBack_ == true)
+    {
+        XMVECTOR vecKnockbackDirection = (XMLoadFloat3(&transform_.position_) - pPlayer_->GetVecPos());
+        XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecKnockbackDirection / 1);
+        XMStoreFloat3(&transform_.position_, vectorMove);
+        pPlayer_->SetVecPos(-vectorMove);
+        Stun();
+        pPlayer_->Stun();
+        isKnockBack_ = false;
+    }
     for (int i = 0u; i <= 1; i++)
     {
         if (this->GetObjectName() == "PlayerFirst")
@@ -502,19 +509,6 @@ void Player::PlayerRayCast()
         transform_.position_.x = prevPosition_.x;
     }
     prevPosition_ = transform_.position_;
-}
-
-void Player::SetGameState(GAMESTATE _gameState,int _time)
-{
-    gameState_ = _gameState;
-    switch (gameState_)
-    {
-    case GAMESTATE::READY:          UpdateReady();      break;
-    case GAMESTATE::PLAY:           UpdatePlay();       break;
-    case GAMESTATE::GAMEOVER:       UpdateGameOver();   break;
-    case GAMESTATE::FIRSTSTUN:      UpdateStun(_time);     break;
-    case GAMESTATE::SECONDSSTUN:    UpdateStun(_time);     break;
-    }
 }
 
 bool Player::IsMoving()

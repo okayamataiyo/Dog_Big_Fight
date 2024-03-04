@@ -32,7 +32,7 @@ void PlayScene::Initialize()
 	WoodBox[2]			   = { 10.0f,-20.0f,40.0f };
 	for (int i = 0u; i <= 2; i++)
 	{
-		pObjectManager->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), DefaultData[1]);
+		pObjectManager->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), XMFLOAT3(4.0f,1.0f,4.0f));
 	}
 
 	for (int i = 0u; i <= 2; i++)
@@ -67,6 +67,10 @@ void PlayScene::Update()
 	if (Input::IsKeyDown(DIK_E))
 	{
 		pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[1]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
+	}
+	if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y))
+	{
+		pObjectManager->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[0]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
 	}
 	for (int i = 0u; i <= 1; i++)
 	{

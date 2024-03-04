@@ -21,7 +21,7 @@ void Floor::Initialize()
     //モデルデータのロード
     hModel_ = Model::Load("Floor.fbx");
     assert(hModel_ >= 0);
-    transform_.scale_ = { 4,1,4 };
+    transform_.scale_ = { 1,1,1 };
 }
 
 void Floor::Update()

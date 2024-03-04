@@ -2,8 +2,11 @@
 #include "Floor.h"
 #include "WoodBox.h"
 
+
 void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT3 _rotate, XMFLOAT3 _scale)
 {
+	std::string woodBoxName = "WoodBox";
+	std::string woodBoxNumber = woodBoxName + std::to_string(number_);
 	switch (_objectState)
 	{
 	case OBJECTSTATE::FLOOR:
@@ -13,11 +16,11 @@ void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT
 	case OBJECTSTATE::WOODBOX:
 		pObjectBase_ = Instantiate<WoodBox>(pParent_);
 		woodBoxs_.push_back(pObjectBase_->GetModelHandle());
-		std::string woodBoxName = "WoodBox";
-		std::string woodBoxNumber = woodBoxName + std::to_string(number_);
-
 		pObjectBase_->SetObjectName(woodBoxNumber);
 		number_++;
+		break;
+	case OBJECTSTATE::BONE:
+
 		break;
 	}
 	pObjectBase_->SetPosition(_pos);

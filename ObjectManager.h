@@ -6,6 +6,7 @@ enum class OBJECTSTATE
 {
     FLOOR = 0,
     WOODBOX,
+    BONE
 };
 
 class ObjectManager
