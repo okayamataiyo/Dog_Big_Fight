@@ -10,9 +10,9 @@
 #include "WoodBox.h"
 
 Player::Player(GameObject* _pParent)
-    :GameObject(_pParent, "Player"), timeCounter_(0), hModel_{ -1 },isJump_(false), 
-    gameState_(GAMESTATE::READY),playerState_(PLAYERSTATE::WAIT), isOnFloor_(0),isDash_(false),isStun_(0),isKnockBack_(0),number_(0)
-    ,woodBoxName_("WoodBox"),woodBoxNumber_("WoodBox0"), pPlayer_(nullptr),pParent_(nullptr),pPlayScene_(nullptr),pText_(nullptr)
+    :GameObject(_pParent, "Player"), timeCounter_(0), hModel_{ -1 }
+, isJump_(false), isOnFloor_(0), isDash_(false), isStun_(0), isKnockBack_(0), number_(0), mouseMoveSpeed_(0.3f), controllerMoveSpeed_(0.3f)
+    ,gameState_(GAMESTATE::READY), playerState_(PLAYERSTATE::WAIT),woodBoxName_("WoodBox"),woodBoxNumber_("WoodBox0"), pPlayer_(nullptr),pParent_(nullptr),pPlayScene_(nullptr),pText_(nullptr)
 {
     pParent_ = _pParent;
 }
@@ -101,6 +101,7 @@ void Player::UpdatePlay()
     }
     prevState_ = playerState_;
     PlayerRayCast();
+    PlayerKnockback();
     transform_.position_.y = posY_;
     if (isStun_ == 1)
     {
@@ -109,6 +110,7 @@ void Player::UpdatePlay()
         {
             gameState_ = GAMESTATE::PLAY;
             isStun_ = 0;
+            isKnockBack_ = false;
             timeCounter_ = 0;
         }
     }
@@ -204,27 +206,17 @@ void Player::OnCollision(GameObject* _pTarget)
 
 void Player::PlayerMove()
 {
-    if (isKnockBack_ == true)
-    {
-        XMVECTOR vecKnockbackDirection = (XMLoadFloat3(&transform_.position_) - pPlayer_->GetVecPos());
-        XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecKnockbackDirection / 1);
-        XMStoreFloat3(&transform_.position_, vectorMove);
-        pPlayer_->SetVecPos(-vectorMove);
-        Stun();
-        pPlayer_->Stun();
-        isKnockBack_ = false;
-    }
     for (int i = 0u; i <= 1; i++)
     {
         if (this->GetObjectName() == "PlayerFirst")
         {
             if (isDash_ == false)
             {
-                vecMove_ *= 0.9f;
+                //controllerMoveSpeed_ *= 0.9f;
             }
             else
             {
-                vecMove_ *= 1.1f;
+                //controllerMoveSpeed_ *= 1.1f;
             }
             if (!(Input::IsPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER)))
             {
@@ -243,11 +235,11 @@ void Player::PlayerMove()
         {
             if (isDash_ == false)
             {
-                vecMove_ *= 0.9f;
+                //mouseMoveSpeed_ *= 0.9f;
             }
             else
             {
-                vecMove_ *= 1.4f;
+                //mouseMoveSpeed_ *= 1.1f;
             }
             if (!(Input::IsKey(DIK_F)))
             {
@@ -296,27 +288,35 @@ void Player::PlayerMove()
             transform_.rotate_.y = XMConvertToDegrees(angle_);
             if (Input::GetPadStickL().y > 0.3)
             {
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecMove_ / 4);
-                XMStoreFloat3(&transform_.position_, vectorMove);
+                XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
+                vecDirection = XMVector3Normalize(vecDirection);
+                transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(vecDirection);
+                transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(vecDirection);
             }
             if (Input::GetPadStickL().y < -0.3)
             {
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - (vecMove_ / 4);
-                XMStoreFloat3(&transform_.position_, vectorMove);
+                XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
+                vecDirection = XMVector3Normalize(vecDirection);
+                transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(-vecDirection);
+                transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(-vecDirection);
             }
             if (Input::GetPadStickL().x > 0.3)
             {
-                XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);                          //XMMatrixRotationY = Yç¿ïWÇíÜêSÇ…âÒì]Ç≥ÇπÇÈçsóÒÇçÏÇÈä÷êî
-                XMVECTOR tempvec = XMVector3Transform((vecMove_ / 4), rotmat);       //XMConvertToRadians = degreeäpÇradianäpÇ…(ÇΩÇæ)ïœä∑Ç∑ÇÈ
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
-                XMStoreFloat3(&transform_.position_, vectorMove);
+                XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);                          //XMMatrixRotationY = Yç¿ïWÇíÜêSÇ…âÒì]Ç≥ÇπÇÈçsóÒÇçÏÇÈä÷êî,//XMConvertToRadians = degreeäpÇradianäpÇ…(ÇΩÇæ)ïœä∑Ç∑ÇÈ
+                XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
+                vecDirection = XMVector3Normalize(vecDirection);
+                XMVECTOR tempvec = XMVector3Transform(vecDirection, rotmat);
+                transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(tempvec);
+                transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(tempvec);
             }
             if (Input::GetPadStickL().x < -0.3)
             {
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-                XMVECTOR tempvec = XMVector3Transform((vecMove_ / 4), -rotmat);
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
-                XMStoreFloat3(&transform_.position_, vectorMove);
+                XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
+                vecDirection = XMVector3Normalize(vecDirection);
+                XMVECTOR tempvec = XMVector3Transform(vecDirection, -rotmat);
+                transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(tempvec);
+                transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(tempvec);
             }
             if (Input::IsPadButton(XINPUT_GAMEPAD_A) && isJump_ == false)
             {
@@ -337,27 +337,35 @@ void Player::PlayerMove()
             transform_.rotate_.y = XMConvertToDegrees(angle_);
             if (Input::IsKey(DIK_W))
             {
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecMove_ / 4);
-                XMStoreFloat3(&transform_.position_, vectorMove);
+                XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
+                vecDirection = XMVector3Normalize(vecDirection);
+                transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(vecDirection);
+                transform_.position_.z = transform_.position_.z + mouseMoveSpeed_ * XMVectorGetZ(vecDirection);
             }
             if (Input::IsKey(DIK_S))
             {
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) - (vecMove_ / 4);
-                XMStoreFloat3(&transform_.position_, vectorMove);
+                XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
+                vecDirection = XMVector3Normalize(vecDirection);
+                transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(-vecDirection);
+                transform_.position_.z = transform_.position_.z + mouseMoveSpeed_ * XMVectorGetZ(-vecDirection);
             }
             if (Input::IsKey(DIK_D))
             {
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-                XMVECTOR tempvec = XMVector3Transform((vecMove_ / 4), rotmat);
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
-                XMStoreFloat3(&transform_.position_, vectorMove);
+                XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
+                vecDirection = XMVector3Normalize(vecDirection);
+                XMVECTOR tempvec = XMVector3Transform(vecDirection, rotmat);
+                transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(tempvec);
+                transform_.position_.z = transform_.position_.z + mouseMoveSpeed_ * XMVectorGetZ(tempvec);
             }
             if (Input::IsKey(DIK_A))
             {
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-                XMVECTOR tempvec = XMVector3Transform((vecMove_ / 4), -rotmat);
-                XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + tempvec;
-                XMStoreFloat3(&transform_.position_, vectorMove);
+                XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
+                vecDirection = XMVector3Normalize(vecDirection);
+                XMVECTOR tempvec = XMVector3Transform(vecDirection, -rotmat);
+                transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(tempvec);
+                transform_.position_.z = transform_.position_.z + mouseMoveSpeed_ * XMVectorGetZ(tempvec);
             }
             if (Input::IsKeyDown(DIK_SPACE) && isJump_ == false)
             {
@@ -387,6 +395,20 @@ void Player::PlayerJump()
     isJump_ = true;
     posYPrev_ = posY_;
     posY_ = posY_ + 0.3;
+}
+
+void Player::PlayerKnockback()
+{
+    if (isKnockBack_ == true)
+    {
+        XMVECTOR vecKnockbackDirection = (XMLoadFloat3(&transform_.position_) - pPlayer_->GetVecPos());
+        vecKnockbackDirection = XMVector3Normalize(vecKnockbackDirection);
+        float knockbackSpeed = 0.3f;
+        SetKnockback(vecKnockbackDirection, knockbackSpeed);
+        pPlayer_->SetKnockback(-vecKnockbackDirection, knockbackSpeed);
+        Stun(30);
+        pPlayer_->Stun(30);
+    }
 }
 
 void Player::PlayerRayCast()
@@ -522,6 +544,12 @@ void Player::PlayerRayCast()
         transform_.position_.x = prevPosition_.x;
     }
     prevPosition_ = transform_.position_;
+}
+
+void Player::SetKnockback(XMVECTOR _vecKnockbackDirection, float _knockbackSpeed)
+{
+    transform_.position_.x = transform_.position_.x + _knockbackSpeed * XMVectorGetX(_vecKnockbackDirection);
+    transform_.position_.z = transform_.position_.z + _knockbackSpeed * XMVectorGetZ(_vecKnockbackDirection);
 }
 
 bool Player::IsMoving()

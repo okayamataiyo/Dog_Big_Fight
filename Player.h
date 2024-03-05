@@ -42,9 +42,10 @@ private:
 	//▼ゲームの演出で使うメンバ関数
 	int timeCounter_;
 	int score_;			//得点
-
 	//▼移動で使うメンバ変数
 	float posY_;	//プレイヤーのY座標に代入する値
+	float controllerMoveSpeed_;
+	float mouseMoveSpeed_;
 	bool isDash_;	//ダッシュしているかどうか
 	//▼向き変えで使うメンバ変数
 	XMVECTOR vecMove_;
@@ -60,12 +61,10 @@ private:
 	float rayStageDist_;		//地面とプレイヤーの差分
 	float posYTemp_;	//y座標をPrevに保存する
 	float posYPrev_;	//1時的にy座標を保存しておく
-
 	//▼すり抜け床で使うメンバ変数
 	int isOnFloor_;		//すり抜け床にレイを飛ばしているかどうか
 	float rayUpDist_;	//上の物体とプレイヤーの差分
 	float rayFloorDist_;	//下のすり抜けたい物体とプレイヤーの差分
-
 	//▼木箱で使うメンバ変数
 	float dotProduct_;
 	float angleDegrees_;
@@ -141,12 +140,16 @@ public:
 	/// </summary>
 	void PlayerJump();
 
+	void PlayerKnockback();
+
 	/// <summary>
 	/// プレイヤーのレイ関数
 	/// </summary>
 	void PlayerRayCast();
 
 	void SetVecPos(XMVECTOR _vecMove) { XMStoreFloat3(&transform_.position_, _vecMove); }
+
+	void SetKnockback(XMVECTOR _vecKnockbackDirection, float _knockbackSpeed = 0.5f);
 
 	XMVECTOR GetVecPos() { return XMLoadFloat3(&transform_.position_); }
 
