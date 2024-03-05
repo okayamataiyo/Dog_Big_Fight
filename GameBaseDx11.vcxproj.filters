@@ -120,7 +120,7 @@
       <Filter>01Engine\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="Bone.cpp" />
     <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="SolidText.cpp" />
     <ClCompile Include="Floor.cpp" />
@@ -224,7 +224,7 @@
       <Filter>01Engine\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Stage.h" />
-    <ClInclude Include="Item.h" />
+    <ClInclude Include="Bone.h" />
     <ClInclude Include="Engine\SceneManager.h">
       <Filter>01Engine</Filter>
     </ClInclude>

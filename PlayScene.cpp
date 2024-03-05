@@ -7,7 +7,7 @@
 #include "Floor.h"
 #include "WoodBox.h"
 #include "Stage.h"
-#include "Item.h"
+#include "Bone.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
 	:GameObject(_pParent, "PlayScene"), pObjectManager_(nullptr),
@@ -23,7 +23,6 @@ void PlayScene::Initialize()
 	pSky_->SetObjectName("SkyFirst");
 	XMFLOAT3 firstPPos = { -3,0,0 };
 	XMFLOAT3 secondsPPos = { 3,0,0 };
-	Instantiate<Item>(this);
 	Instantiate<Stage>(this);
 	floorPos_[0].position_ = { 30.0f,0.8f,3.0f };
 	floorPos_[1].position_ = { 6.0f,0.5f,20.0f };
@@ -44,6 +43,8 @@ void PlayScene::Initialize()
 	{
 		pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[i], DefaultData[0], XMFLOAT3(0.3f, 0.3f, 0.3f));
 	}
+
+	pObjectManager_->CreateObject(OBJECTSTATE::BONE, DefaultData[0], DefaultData[0], DefaultData[1]);
 
 	for (int i = 0u; i <= 1; i++)
 	{

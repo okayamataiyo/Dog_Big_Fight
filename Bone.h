@@ -1,10 +1,11 @@
+#pragma once
 //インクルード
-#include "Engine/GameObject.h"
+#include "ObjectBase.h"
 
 /// <summary>
 /// アイテムを管理するクラス
 /// </summary>
-class Item :public GameObject
+class Bone : public ObjectBase
 {
 protected:
 	int hModel_;
@@ -14,12 +15,12 @@ public:
 	/// コンストラクタ関数
 	/// </summary>
 	/// <param name="_parent">親の名前</param>
-	Item(GameObject* _parent);
+	Bone(GameObject* _parent);
 
 	/// <summary>
 	/// デストラクタ関数
 	/// </summary>
-	~Item();
+	~Bone();
 
 	/// <summary>
 	/// 初期化関数
@@ -40,6 +41,8 @@ public:
 	/// 開放関数
 	/// </summary>
 	void Release() override;
+
+	int GetModelHandle() { return hModel_; }
 
 	/// <summary>
 	/// 何かに当たった時の関数

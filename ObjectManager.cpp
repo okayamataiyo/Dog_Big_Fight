@@ -1,6 +1,7 @@
 #include "ObjectManager.h"
 #include "Floor.h"
 #include "WoodBox.h"
+#include "Bone.h"
 
 
 void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT3 _rotate, XMFLOAT3 _scale)
@@ -20,7 +21,7 @@ void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT
 		number_++;
 		break;
 	case OBJECTSTATE::BONE:
-
+		pObjectBase_ = Instantiate<Bone>(pParent_);
 		break;
 	}
 	pObjectBase_->SetPosition(_pos);

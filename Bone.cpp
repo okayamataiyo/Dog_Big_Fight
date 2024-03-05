@@ -1,19 +1,19 @@
 //インクルード
 #include "Engine/Model.h"
-#include "Item.h"
+#include "Bone.h"
 #include "Stage.h"
 
-Item::Item(GameObject* _parent)
-	:GameObject(_parent, "Item"), hModel_(-1)
+Bone::Bone(GameObject* _parent)
+	:ObjectBase(_parent, "Bone"), hModel_(-1)
 {
 
 }
 
-Item::~Item()
+Bone::~Bone()
 {
 }
 
-void Item::Initialize()
+void Bone::Initialize()
 {
 	hModel_ = Model::Load("Bone.fbx");
 	assert(hModel_ >= 0);
@@ -25,7 +25,7 @@ void Item::Initialize()
 	transform_.position_ = { 10,0,0 };
 }
 
-void Item::Update()
+void Bone::Update()
 {
 	RayCastData data;
 	Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
@@ -43,17 +43,17 @@ void Item::Update()
 	}
 }
 
-void Item::Draw()
+void Bone::Draw()
 {
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 }
 
-void Item::Release()
+void Bone::Release()
 {
 }
 
-void Item::OnCollision(GameObject* _pTarget)
+void Bone::OnCollision(GameObject* _pTarget)
 {
 	if (_pTarget->GetObjectName().find("Player") != std::string::npos)
 	{

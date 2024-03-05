@@ -149,7 +149,7 @@ void Player::Stun(int _timeLimit)
 
 void Player::OnCollision(GameObject* _pTarget)
 {
-    if (_pTarget->GetObjectName() == "Item")
+    if (_pTarget->GetObjectName() == "Bone")
     {
         score_ += 10;
     }
