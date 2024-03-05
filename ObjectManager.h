@@ -21,7 +21,8 @@ private:
 public:
     ObjectManager(GameObject* _parent);
     ~ObjectManager();
-    void CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT3 _rotate, XMFLOAT3 _scale);
+    void CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos = XMFLOAT3(0.0f,0.0f,0.0f), XMFLOAT3 _rotate = XMFLOAT3(0.0f,0.0f,0.0f), XMFLOAT3 _scale = XMFLOAT3(1.0f,1.0f,1.0f));
+    void CreateObject(OBJECTSTATE _objectState, float _minX, float _maxX, float _minZ, float _maxZ);
     void SetRotate(XMFLOAT3 _rotate);
     void SetPosition(XMFLOAT3 _position);
     std::vector<int> GetWoodBoxs() { return woodBoxs_; }

@@ -10,7 +10,7 @@
 #include "WoodBox.h"
 
 Player::Player(GameObject* _pParent)
-    :GameObject(_pParent, "Player"), timeCounter_(0), hModel_{ -1 }
+    :GameObject(_pParent, "Player"), timeCounter_(0), hModel_{ -1,-1 }
 , isJump_(false), isOnFloor_(0), isDash_(false), isStun_(0), isKnockBack_(0), number_(0), mouseMoveSpeed_(0.3f), controllerMoveSpeed_(0.3f)
     ,gameState_(GAMESTATE::READY), playerState_(PLAYERSTATE::WAIT),woodBoxName_("WoodBox"),woodBoxNumber_("WoodBox0"), pPlayer_(nullptr),pParent_(nullptr),pPlayScene_(nullptr),pText_(nullptr)
 {
@@ -24,8 +24,10 @@ Player::~Player()
 void Player::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("DogWalk.fbx");
-    assert(hModel_ >= 0);
+    hModel_[0] = Model::Load("AttackDog.fbx");
+    assert(hModel_[0] >= 0);
+    hModel_[1] = Model::Load("CollectDog.fbx");
+    assert(hModel_[1] >= 0);
     transform_.scale_ = { 0.5,0.5,0.5 };
     posY_ = transform_.position_.y;
     prevPosition_ = transform_.position_;
@@ -59,8 +61,6 @@ void Player::Update()
 
 void Player::Draw()
 {
-    Model::SetTransform(hModel_, transform_);
-    Model::Draw(hModel_);
     if (this->GetObjectName() == "PlayerSeconds")
     {
         pText_->Draw(30, 30,"Player1:Score=");
@@ -71,6 +71,39 @@ void Player::Draw()
         pText_->Draw(30, 60, "Player2:Score=");
         pText_->Draw(280, 60, score_);
     }
+    pText_->Draw(30, 90, "Time=");
+    pText_->Draw(280, 90, pPlayScene_->GetTime() / 60);
+    if (pPlayScene_->GetBlockOrCollect() == 0)
+    {
+        if (this->GetObjectName() == "PlayerFirst")
+        {
+            //pText_->Draw(30, 120, "Attack!!!");
+            Model::SetTransform(hModel_[0], transform_);
+            Model::Draw(hModel_[0]);
+        }
+        if (this->GetObjectName() == "PlayerSeconds")
+        {
+            //pText_->Draw(30, 120, "Collect!!!");
+            Model::SetTransform(hModel_[1], transform_);
+            Model::Draw(hModel_[1]);
+        }
+    }
+    if (pPlayScene_->GetBlockOrCollect() == 1)
+    {
+        if (this->GetObjectName() == "PlayerFirst")
+        {
+            //pText_->Draw(30, 120, "Attack!!!");
+            Model::SetTransform(hModel_[1], transform_);
+            Model::Draw(hModel_[1]);
+        }
+        if (this->GetObjectName() == "PlayerSeconds")
+        {
+            //pText_->Draw(30, 120, "Collect!!!");
+            Model::SetTransform(hModel_[0], transform_);
+            Model::Draw(hModel_[0]);
+        }
+    }
+
 }
 
 void Player::Release()
@@ -91,12 +124,15 @@ void Player::UpdatePlay()
 {
     if (prevState_ != playerState_)
     {
-        switch (playerState_)
+        for (int i = 0u; i <= 1; i++)
         {
-        case PLAYERSTATE::WAIT:       Model::SetAnimFrame(hModel_, 0, 0, 1); break;
-        case PLAYERSTATE::WALK:       Model::SetAnimFrame(hModel_, 20, 60, 0.5); break;
-        case PLAYERSTATE::RUN:        Model::SetAnimFrame(hModel_, 80, 120, 0.5); break;
-        case PLAYERSTATE::JUMP:       Model::SetAnimFrame(hModel_, 120, 120, 1); break;
+            switch (playerState_)
+            {
+            case PLAYERSTATE::WAIT:       Model::SetAnimFrame(hModel_[i], 0, 0, 1); break;
+            case PLAYERSTATE::WALK:       Model::SetAnimFrame(hModel_[i], 20, 60, 0.5); break;
+            case PLAYERSTATE::RUN:        Model::SetAnimFrame(hModel_[i], 80, 120, 0.5); break;
+            case PLAYERSTATE::JUMP:       Model::SetAnimFrame(hModel_[i], 120, 120, 1); break;
+            }
         }
     }
     prevState_ = playerState_;
@@ -121,14 +157,14 @@ void Player::UpdatePlay()
     //ImGui::Text("playerState_=%i", playerState_);
     //ImGui::Text("posYPrev_=%f", posYPrev_);
     //ImGui::Text("posYTemp_=%f", posYTemp_);
-    /*ImGui::Text("Transform_.position_.x=%f", transform_.position_.x);
+    ImGui::Text("Transform_.position_.x=%f", transform_.position_.x);
     ImGui::Text("Transform_.position_.y=%f", transform_.position_.y);
     ImGui::Text("Transform_.position_.z=%f", transform_.position_.z);
-    ImGui::Text("prevPosition_.x=%f", prevPosition_.x);
+    /*ImGui::Text("prevPosition_.x=%f", prevPosition_.x);
     ImGui::Text("prevPosition_.y=%f", prevPosition_.y);
     ImGui::Text("prevPosition_.z=%f", prevPosition_.z);*/
-    ImGui::Text("angleDegrees_=%f", angleDegrees_);
-    ImGui::Text("timeCounter_=%i", timeCounter_);
+    //ImGui::Text("angleDegrees_=%f", angleDegrees_);
+    //ImGui::Text("timeCounter_=%i", timeCounter_);
 }
 
 void Player::UpdateGameOver()
@@ -149,9 +185,29 @@ void Player::Stun(int _timeLimit)
 
 void Player::OnCollision(GameObject* _pTarget)
 {
-    if (_pTarget->GetObjectName() == "Bone")
+    if (pPlayScene_->GetBlockOrCollect() == 0)
     {
-        score_ += 10;
+        if (GetObjectName() == "PlayerSeconds")
+        {
+            if (_pTarget->GetObjectName() == "Bone")
+            {
+                _pTarget->KillMe();
+                score_ += 10;
+                pPlayScene_->AddBoneCount(-1);
+            }
+        }
+    }
+    if (pPlayScene_->GetBlockOrCollect() == 1)
+    {
+        if (GetObjectName() == "PlayerFirst")
+        {
+            if (_pTarget->GetObjectName() == "Bone")
+            {
+                _pTarget->KillMe();
+                score_ += 10;
+                pPlayScene_->AddBoneCount(-1);
+            }
+        }
     }
     std::vector<int> woodBoxs = pPlayScene_->GetWoodBoxs();
     woodBoxNumber_ = woodBoxName_ + std::to_string(number_);
@@ -168,6 +224,14 @@ void Player::OnCollision(GameObject* _pTarget)
         {
             PlayerJump();
             pWoodBox_->KillMe();
+            if (GetObjectName() == "PlayerFirst")
+            {
+                pPlayScene_->AddPlayerFirstWoodBoxNum(-1);
+            }
+            if (GetObjectName() == "PlayerSeconds")
+            {
+                pPlayScene_->AddPlayerSecondsWoodBoxNum(-1);
+            }
         }
     }
     //Itemという名前を持つ全てのオブジェクトの機能を実装

@@ -13,7 +13,7 @@ WoodBox::WoodBox(GameObject* _pParent)
 }
 
 WoodBox::~WoodBox()
-{
+{ 
 
 }
 
@@ -22,7 +22,8 @@ void WoodBox::Initialize()
     //モデルデータのロード
     hModel_ = Model::Load("WoodBox.fbx");
     assert(hModel_ >= 0);
-    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f));
+    //BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.5f, 1.5f, 1.5f));
+    SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.5);
     AddCollider(pCollision);
     pPlayScene_ = (PlayScene*)FindObject("PlayScene");
 }

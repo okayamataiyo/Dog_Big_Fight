@@ -57,6 +57,7 @@ void Bone::OnCollision(GameObject* _pTarget)
 {
 	if (_pTarget->GetObjectName().find("Player") != std::string::npos)
 	{
-		KillMe();
+		
+
 	}
 }

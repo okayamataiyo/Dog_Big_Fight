@@ -10,8 +10,8 @@
 #include "Bone.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
-	:GameObject(_pParent, "PlayScene"), pObjectManager_(nullptr),
-	pSky_(nullptr)
+	:GameObject(_pParent, "PlayScene"), pObjectManager_(nullptr),pSky_(nullptr)
+	,boneCount_(0),isCreateBone_(false),playerFirstCreatWoodBoxNum_(0),playerSecondsCreatWoodBoxNum_(0),blockOrCollect_(0)
 {
 
 }
@@ -44,8 +44,6 @@ void PlayScene::Initialize()
 		pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[i], DefaultData[0], XMFLOAT3(0.3f, 0.3f, 0.3f));
 	}
 
-	pObjectManager_->CreateObject(OBJECTSTATE::BONE, DefaultData[0], DefaultData[0], DefaultData[1]);
-
 	for (int i = 0u; i <= 1; i++)
 	{
 		pPlayer_[i] = Instantiate<Player>(this);
@@ -61,16 +59,56 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
-	/*XMFLOAT3 up = { -5.0f, 0.3f,9.0f };
-	up.y += 0.1;
-	pObjectManager->SetPosition(up);*/
-	if (Input::IsMouseButtonDown(0))
+	time_++;
+	if (time_ % 1800 == 0)
 	{
-		pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[1]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
+		if (time_ % 3600 != 0)
+		{
+			blockOrCollect_ = 1;
+		}
 	}
-	if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y))
+	if (time_ % 3600 == 0)
 	{
-		pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[0]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f));
+		blockOrCollect_ = 0;
+	}
+	if (boneCount_ == 0)
+	{
+		isCreateBone_ = true;
+	}
+	if (boneCount_ == 3)
+	{
+		isCreateBone_ = false;
+	}
+
+	if (isCreateBone_ == true)
+	{
+		for (int i = 0u; i <= 2; i++)
+		{
+			pObjectManager_->CreateObject(OBJECTSTATE::BONE, -140, 140, -140, 140);
+			boneCount_ += 1;
+		}
+	}
+	if (blockOrCollect_ == 1)
+	{
+		if (playerSecondsCreatWoodBoxNum_ < 5)
+		{
+			if (Input::IsMouseButtonDown(1))
+			{
+				pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[1]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
+				playerSecondsCreatWoodBoxNum_ += 1;
+			}
+		}
+	}
+	if (blockOrCollect_ == 0)
+	{
+		if (playerFirstCreatWoodBoxNum_ < 5)
+		{
+			if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y))
+			{
+				pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[0]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
+				playerFirstCreatWoodBoxNum_ += 1;
+			}
+		}
 	}
 	for (int i = 0u; i <= 1; i++)
 	{

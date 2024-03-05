@@ -27,7 +27,7 @@ enum class GAMESTATE
 class Player : public GameObject
 {
 private:
-	int hModel_;					//ƒ‚ƒfƒ‹”Ô†
+	int hModel_[2];					//ƒ‚ƒfƒ‹”Ô†
 	int number_;
 	Player* pPlayer_;
 	GameObject* pParent_;

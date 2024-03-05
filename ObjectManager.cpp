@@ -1,3 +1,5 @@
+//インクルード
+#include <random>
 #include "ObjectManager.h"
 #include "Floor.h"
 #include "WoodBox.h"
@@ -27,6 +29,29 @@ void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT
 	pObjectBase_->SetPosition(_pos);
 	pObjectBase_->SetRotate(_rotate);
 	pObjectBase_->SetScale(_scale);
+}
+
+void ObjectManager::CreateObject(OBJECTSTATE _objectState, float _minX, float _maxX, float _minZ, float _maxZ)
+{
+	switch (_objectState)
+	{
+	case OBJECTSTATE::BONE:
+		float minX = _minX;
+		float maxX = _maxX;
+		float minY = 0;
+		float maxY = 0;
+		float minZ = _minZ;
+		float maxZ = _maxZ;
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> distX(minX, maxX);
+		std::uniform_real_distribution<float> distY(minY, maxY);
+		std::uniform_real_distribution<float> distZ(minZ, maxZ);
+		XMFLOAT3 randomPos = { distX(gen), distY(gen), distZ(gen) };
+		pObjectBase_ = Instantiate<Bone>(pParent_);
+		pObjectBase_->SetPosition(randomPos);
+		break;
+	}
 }
 
 void ObjectManager::SetRotate(XMFLOAT3 _rotate)
