@@ -164,6 +164,7 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="GameOverScene.cpp" />
+    <ClCompile Include="GameTitleScene.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="SolidText.cpp" />
     <ClCompile Include="Bone.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="GameOverScene.h" />
+    <ClInclude Include="GameTitleScene.h" />
     <ClInclude Include="ObjectBase.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="SolidText.h" />

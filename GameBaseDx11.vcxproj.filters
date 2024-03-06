@@ -128,6 +128,7 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="WoodBox.cpp" />
+    <ClCompile Include="GameTitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -236,6 +237,7 @@
     <ClInclude Include="ObjectBase.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="WoodBox.h" />
+    <ClInclude Include="GameTitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

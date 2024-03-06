@@ -1,7 +1,7 @@
 #include "SolidText.h"
 
 SolidText::SolidText(GameObject* _pParent)
-	:GameObject(_pParent, "Text"), hModel_{ -1,-1 },textState_(Select)
+	:GameObject(_pParent, "Text"), hModel_{ -1,-1, -1 },textState_(Select)
 {
 }
 
@@ -11,6 +11,8 @@ void SolidText::Initialize()
 	assert(hModel_[0] >= 0);
 	hModel_[1] = Model::Load("SelectText.fbx");
 	assert(hModel_[1] >= 0);
+	hModel_[2] = Model::Load("GameTitle.fbx");
+	assert(hModel_[2] >= 0);
 	transform_.rotate_.y = 180;
 }
 
@@ -30,6 +32,9 @@ void SolidText::Draw()
 		Model::SetTransform(hModel_[1], transform_);
 		Model::Draw(hModel_[1]);
 		break;
+	case TEXTSTATE::GameTitle:
+		Model::SetTransform(hModel_[2], transform_);
+		Model::Draw(hModel_[2]);
 	}
 }
 

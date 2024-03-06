@@ -11,8 +11,9 @@ private:
 	{
 		GameOver = 0,
 		Select,
+		GameTitle,
 	}textState_;
-	int hModel_[2];
+	int hModel_[3];
 public:
 	SolidText(GameObject* _pParent);
 	void Initialize() override;
