@@ -371,6 +371,7 @@ void Player::PlayerMove()
             if (Input::GetPadStickL().y > 0.3)
             {
                 XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
+                vecDirection = XMVectorSetY(vecDirection, 0);
                 vecDirection = XMVector3Normalize(vecDirection);
                 transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(vecDirection);
                 transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(vecDirection);
@@ -378,6 +379,7 @@ void Player::PlayerMove()
             if (Input::GetPadStickL().y < -0.3)
             {
                 XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
+                vecDirection = XMVectorSetY(vecDirection, 0);
                 vecDirection = XMVector3Normalize(vecDirection);
                 transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(-vecDirection);
                 transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(-vecDirection);
@@ -386,6 +388,7 @@ void Player::PlayerMove()
             {
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);                          //XMMatrixRotationY = YÀ•W‚ð’†S‚É‰ñ“]‚³‚¹‚és—ñ‚ðì‚éŠÖ”,//XMConvertToRadians = degreeŠp‚ðradianŠp‚É(‚½‚¾)•ÏŠ·‚·‚é
                 XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
+                vecDirection = XMVectorSetY(vecDirection, 0);
                 vecDirection = XMVector3Normalize(vecDirection);
                 XMVECTOR tempvec = XMVector3Transform(vecDirection, rotmat);
                 transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(tempvec);
@@ -395,6 +398,7 @@ void Player::PlayerMove()
             {
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
                 XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
+                vecDirection = XMVectorSetY(vecDirection, 0);
                 vecDirection = XMVector3Normalize(vecDirection);
                 XMVECTOR tempvec = XMVector3Transform(vecDirection, -rotmat);
                 transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(tempvec);
@@ -420,6 +424,7 @@ void Player::PlayerMove()
             if (Input::IsKey(DIK_W))
             {
                 XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
+                vecDirection = XMVectorSetY(vecDirection, 0);
                 vecDirection = XMVector3Normalize(vecDirection);
                 transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(vecDirection);
                 transform_.position_.z = transform_.position_.z + mouseMoveSpeed_ * XMVectorGetZ(vecDirection);
@@ -427,6 +432,7 @@ void Player::PlayerMove()
             if (Input::IsKey(DIK_S))
             {
                 XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
+                vecDirection = XMVectorSetY(vecDirection, 0);
                 vecDirection = XMVector3Normalize(vecDirection);
                 transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(-vecDirection);
                 transform_.position_.z = transform_.position_.z + mouseMoveSpeed_ * XMVectorGetZ(-vecDirection);
@@ -435,6 +441,7 @@ void Player::PlayerMove()
             {
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
                 XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
+                vecDirection = XMVectorSetY(vecDirection, 0);
                 vecDirection = XMVector3Normalize(vecDirection);
                 XMVECTOR tempvec = XMVector3Transform(vecDirection, rotmat);
                 transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(tempvec);
@@ -444,6 +451,7 @@ void Player::PlayerMove()
             {
                 XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
                 XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
+                vecDirection = XMVectorSetY(vecDirection, 0);
                 vecDirection = XMVector3Normalize(vecDirection);
                 XMVECTOR tempvec = XMVector3Transform(vecDirection, -rotmat);
                 transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(tempvec);

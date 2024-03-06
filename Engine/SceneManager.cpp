@@ -18,9 +18,9 @@ SceneManager::SceneManager(GameObject * parent)
 void SceneManager::Initialize()
 {
 	//最初のシーンを準備
-	currentSceneID_ = SCENE_ID_GAMEOVER;
+	currentSceneID_ = SCENE_ID_SELECT;
 	nextSceneID_ = currentSceneID_;
-	Instantiate<GameOverScene>(this);
+	Instantiate<SelectScene>(this);
 }
 
 //更新
