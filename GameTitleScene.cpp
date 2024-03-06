@@ -13,15 +13,13 @@ GameTitleScene::GameTitleScene(GameObject* _pParent)
 void GameTitleScene::Initialize()
 {
 	Direct3D::SetIsChangeView(1);
-	//画像データのロード
 	pText_ = Instantiate<SolidText>(this);
-	pText_->SetMode(3);
+	pText_->SetMode(2);
 	Instantiate<Sky>(this);
 }
 
 void GameTitleScene::Update()
 {
-
 	camPos_ = pText_->GetPosition();
 	camPos_.y += 2;
 	camPos_.z -= 15;
@@ -31,7 +29,7 @@ void GameTitleScene::Update()
 	{
 		Direct3D::SetIsChangeView(2);
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_PLAY);
+		pSceneManager->ChangeScene(SCENE_ID_SELECT);
 	}
 	if (Input::IsKeyDown(DIK_R))
 	{

@@ -71,8 +71,6 @@ void Player::Draw()
         pText_->Draw(30, 60, "Player2:Score=");
         pText_->Draw(280, 60, score_);
     }
-    pText_->Draw(30, 90, "Time=");
-    pText_->Draw(280, 90, pPlayScene_->GetTime() / 60);
     if (pPlayScene_->GetBlockOrCollect() == 0)
     {
         if (this->GetObjectName() == "PlayerFirst")

@@ -39,7 +39,6 @@ public:
     void Draw() override;
     void Release() override;
     std::vector<int> GetWoodBoxs() { return pObjectManager_->GetWoodBoxs(); }
-    int GetTime() { return time_; }
     int GetBlockOrCollect() { return blockOrCollect_; }
     void AddBoneCount(int _boneCount) { boneCount_ += _boneCount; }
     void AddPlayerFirstWoodBoxNum(int _woodBoxNum) { playerFirstCreatWoodBoxNum_ += _woodBoxNum; }

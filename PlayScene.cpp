@@ -60,18 +60,6 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
-	time_++;
-	if (time_ % 1800 == 0)
-	{
-		if (time_ % 3600 != 0)
-		{
-			blockOrCollect_ = 1;
-		}
-	}
-	if (time_ % 3600 == 0)
-	{
-		blockOrCollect_ = 0;
-	}
 	if (boneCount_ == 0)
 	{
 		isCreateBone_ = true;

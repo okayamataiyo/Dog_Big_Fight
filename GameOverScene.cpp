@@ -29,7 +29,7 @@ void GameOverScene::Update()
 	{
 		Direct3D::SetIsChangeView(2);
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_SELECT);
+		pSceneManager->ChangeScene(SCENE_ID_GAMETITLE);
 	}
 }
 

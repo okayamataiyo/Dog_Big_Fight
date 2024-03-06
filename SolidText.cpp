@@ -11,7 +11,7 @@ void SolidText::Initialize()
 	assert(hModel_[0] >= 0);
 	hModel_[1] = Model::Load("SelectText.fbx");
 	assert(hModel_[1] >= 0);
-	hModel_[2] = Model::Load("GameTitle.fbx");
+	hModel_[2] = Model::Load("GameTitleText.fbx");
 	assert(hModel_[2] >= 0);
 	transform_.rotate_.y = 180;
 }
