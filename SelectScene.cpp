@@ -30,7 +30,7 @@ void SelectScene::Update()
 	{
 
 	}
-	if (Input::IsKeyDown(DIK_G))
+	if (Input::IsKeyDown(DIK_G) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A))
 	{
 		Direct3D::SetIsChangeView(2);
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");

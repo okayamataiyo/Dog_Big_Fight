@@ -1,6 +1,7 @@
 #include "Engine/Input.h"
 #include "Engine/SceneManager.h"
 #include "Engine/Direct3D.h"
+#include "Engine/Image.h"
 #include "GameOverScene.h"
 #include "Sky.h"
 GameOverScene::GameOverScene(GameObject* _pParent)
@@ -11,6 +12,7 @@ GameOverScene::GameOverScene(GameObject* _pParent)
 
 void GameOverScene::Initialize()
 {
+	//画像データのロード
 	pText_ = Instantiate<SolidText>(this);
 	pText_->SetMode(0);
 	Instantiate<Sky>(this);
@@ -23,7 +25,7 @@ void GameOverScene::Update()
 	camPos_.z -= 15;
 	Camera::SetPosition(camPos_, 0);
 	Camera::SetTarget(pText_->GetPosition(), 0);
-	if (Input::IsKeyDown(DIK_B))
+	if (Input::IsKeyDown(DIK_B) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A))
 	{
 		Direct3D::SetIsChangeView(2);
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
@@ -33,7 +35,6 @@ void GameOverScene::Update()
 
 void GameOverScene::Draw()
 {
-
 }
 
 void GameOverScene::Release()
