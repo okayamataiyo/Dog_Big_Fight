@@ -26,7 +26,7 @@ void PlayScene::Initialize()
 	Instantiate<Stage>(this);
 	floorPos_[0].position_ = { 30.0f,0.8f,3.0f };
 	floorPos_[1].position_ = { 6.0f,0.5f,20.0f };
-	floorPos_[2].position_ = { -5.0f, 0.3f,9.0f };
+	floorPos_[2].position_ = { 25.0f, -0.3f,-20.0f };
 	XMFLOAT3 scale		   = { 3.0f,1.0f,3.0f };
 	XMFLOAT3 DefaultData[2] = { XMFLOAT3(0.0f,0.0f,0.0f)	//0Ç≈èâä˙âªw
 							   ,XMFLOAT3(1.0f,1.0f,1.0f) };	//1Ç≈èâä˙âª
@@ -34,15 +34,16 @@ void PlayScene::Initialize()
 	WoodBox[0]			   = { 30.0f,-5.0f,40.0f };
 	WoodBox[1]			   = { 20.0f,-10.0f,40.0f };
 	WoodBox[2]			   = { 10.0f,-20.0f,40.0f };
-	for (int i = 0u; i <= 2; i++)
-	{
-		pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), XMFLOAT3(4.0f,1.0f,4.0f));
-	}
+	//for (int i = 0u; i <= 1; i++)
+	//{
+	//	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), XMFLOAT3(4.0f,1.0f,4.0f));
+	//}
+	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPos_[2].position_, XMFLOAT3(0.0f, 90.0f, 0.0f), XMFLOAT3(10.0f, 1.0f, 10.0f));
 
-	for (int i = 0u; i <= 2; i++)
-	{
-		pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[i], DefaultData[0], XMFLOAT3(0.3f, 0.3f, 0.3f));
-	}
+	//for (int i = 0u; i <= 2; i++)
+	//{
+	//	pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[i], DefaultData[0], XMFLOAT3(0.3f, 0.3f, 0.3f));
+	//}
 
 	for (int i = 0u; i <= 1; i++)
 	{

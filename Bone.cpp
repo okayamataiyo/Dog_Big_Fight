@@ -27,6 +27,7 @@ void Bone::Initialize()
 
 void Bone::Update()
 {
+	transform_.rotate_.y += 1.0f;
 	RayCastData data;
 	Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
 	int hStageModel;

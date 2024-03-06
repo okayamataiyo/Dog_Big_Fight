@@ -20,7 +20,7 @@ void Stage::Initialize()
     //モデルデータのロード
     hModel_ = Model::Load("Ground.fbx");
     assert(hModel_ >= 0);
-    transform_.position_.y = -5;
+    transform_.position_.y = -10;
     //transform_.rotate_.x= 90;
     transform_.scale_ = { 25,15,25 };
 }

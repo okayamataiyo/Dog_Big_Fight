@@ -154,6 +154,24 @@ void Player::UpdatePlay()
     {
         PlayerMove();
     }
+    if (this->GetObjectName() == "PlayerFirst")
+    {
+        if (score_ >= 150)
+        {
+            SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+            pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
+            Direct3D::SetIsChangeView(1);
+        }
+    }
+    if (this->GetObjectName() == "PlayerSeconds")
+    {
+        if (score_ >= 150)
+        {
+            SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+            pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
+            Direct3D::SetIsChangeView(1);
+        }
+    }
     //ImGui::Text("playerState_=%i", playerState_);
     //ImGui::Text("posYPrev_=%f", posYPrev_);
     //ImGui::Text("posYTemp_=%f", posYTemp_);

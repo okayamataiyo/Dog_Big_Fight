@@ -9,6 +9,7 @@ using std::string;
 class Floor : public ObjectBase
 {
     int hModel_;    //モデル番号
+    int upOrDown_;  //上がってるか下がってるか
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)

@@ -6,7 +6,7 @@
 #include "ObjectBase.h"
 
 Floor::Floor(GameObject* _parent)
-    :ObjectBase(_parent, "Floor"), hModel_(-1)
+    :ObjectBase(_parent, "Floor"), hModel_(-1),upOrDown_(0)
 {
 
 }
@@ -26,7 +26,24 @@ void Floor::Initialize()
 
 void Floor::Update()
 {
-    transform_.position_.y += 0.01;
+    //transform_.position_.y += 0.01;
+    if (upOrDown_ == 0)
+    {
+        transform_.position_.y += 0.1f;
+    }
+    if (upOrDown_ == 1)
+    {
+        transform_.position_.y -= 0.1f;
+    }
+
+    if (transform_.position_.y >= 30.0f)
+    {
+        upOrDown_ = 1;
+    }
+    if (transform_.position_.y <= -10.0f)
+    {
+        upOrDown_ = 0;
+    }
 }
 
 void Floor::Draw()
