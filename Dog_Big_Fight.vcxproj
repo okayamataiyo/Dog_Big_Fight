@@ -133,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="CollectPlayer.cpp" />
     <ClCompile Include="Engine\Audio.cpp" />
     <ClCompile Include="Engine\BillBoard.cpp" />
     <ClCompile Include="Engine\BoxCollider.cpp" />
@@ -168,7 +169,7 @@
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="SolidText.cpp" />
     <ClCompile Include="Bone.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="AttackPlayer.cpp" />
     <ClCompile Include="SelectScene.cpp" />
     <ClCompile Include="Sky.cpp" />
     <ClCompile Include="PlayScene.cpp" />
@@ -177,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
+    <ClInclude Include="CollectPlayer.h" />
     <ClInclude Include="Engine\Audio.h" />
     <ClInclude Include="Engine\BillBoard.h" />
     <ClInclude Include="Engine\BoxCollider.h" />
@@ -216,7 +218,7 @@
     <ClInclude Include="PlayerBase.h" />
     <ClInclude Include="SolidText.h" />
     <ClInclude Include="Bone.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="AttackPlayer.h" />
     <ClInclude Include="SelectScene.h" />
     <ClInclude Include="Sky.h" />
     <ClInclude Include="PlayScene.h" />

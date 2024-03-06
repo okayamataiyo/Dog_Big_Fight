@@ -99,7 +99,7 @@
     <ClCompile Include="Engine\VFX.cpp">
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="AttackPlayer.cpp" />
     <ClCompile Include="Sky.cpp" />
     <ClCompile Include="Engine\ImGui\imgui.cpp">
       <Filter>01Engine\ImGui</Filter>
@@ -129,6 +129,7 @@
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="WoodBox.cpp" />
     <ClCompile Include="GameTitleScene.cpp" />
+    <ClCompile Include="CollectPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -198,7 +199,7 @@
     <ClInclude Include="Engine\VFX.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="AttackPlayer.h" />
     <ClInclude Include="Sky.h" />
     <ClInclude Include="Engine\ImGui\imconfig.h">
       <Filter>01Engine\ImGui</Filter>
@@ -239,6 +240,7 @@
     <ClInclude Include="WoodBox.h" />
     <ClInclude Include="GameTitleScene.h" />
     <ClInclude Include="PlayerBase.h" />
+    <ClInclude Include="CollectPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

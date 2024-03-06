@@ -30,5 +30,5 @@ public:
     //ŠJ•ú
     void Release() override;
 
-    int GetModelHandle() { return hModel_; }
+    int GetModelHandle() override { return hModel_; }
 };

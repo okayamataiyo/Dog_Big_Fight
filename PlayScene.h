@@ -4,7 +4,8 @@
 #include "Engine/Camera.h"
 #include "ObjectManager.h"
 #include <vector>
-class Player;
+class AttackPlayer;
+class CollectPlayer;
 class Sky;
 class Floor;
 /// <summary>
@@ -14,7 +15,8 @@ class PlayScene : public GameObject
 {
 private:
     //ƒƒ“ƒo•Ï”
-    Player* pPlayer_[2];
+    AttackPlayer* pAttackPlayer_;
+    CollectPlayer* pCollectPlayer_;
     Sky* pSky_;
     ObjectManager* pObjectManager_;
     XMFLOAT3 camVec_[2];

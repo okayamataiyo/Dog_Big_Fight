@@ -2,7 +2,8 @@
 #include "Engine/SceneManager.h"
 #include "Engine/ImGui/imgui.h"
 #include "PlayScene.h"
-#include "Player.h"
+#include "AttackPlayer.h"
+#include "CollectPlayer.h"
 #include "Sky.h"
 #include "Floor.h"
 #include "WoodBox.h"
@@ -44,18 +45,16 @@ void PlayScene::Initialize()
 	//{
 	//	pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, WoodBox[i], DefaultData[0], XMFLOAT3(0.3f, 0.3f, 0.3f));
 	//}
-
-	for (int i = 0u; i <= 1; i++)
-	{
-		pPlayer_[i] = Instantiate<Player>(this);
-		camVec_[i].x = 0;
-		camVec_[i].y = 5;
-		camVec_[i].z = -10;
-	}
-	pPlayer_[0]->SetObjectName("PlayerFirst");
-	pPlayer_[1]->SetObjectName("PlayerSeconds");
-	pPlayer_[0]->SetPosition(firstPPos);
-	pPlayer_[1]->SetPosition(secondsPPos);
+	pAttackPlayer_ = Instantiate<AttackPlayer>(this);
+	camVec_[0].x = 0;
+	camVec_[0].y = 5;
+	camVec_[0].z = -10;
+	pCollectPlayer_ = Instantiate<CollectPlayer>(this);
+	camVec_[1].x = 0;
+	camVec_[1].y = 5;
+	camVec_[1].z = -10;
+	pAttackPlayer_->SetPosition(firstPPos);
+	pCollectPlayer_->SetPosition(secondsPPos);
 }
 
 void PlayScene::Update()
@@ -77,26 +76,12 @@ void PlayScene::Update()
 			boneCount_ += 1;
 		}
 	}
-	if (blockOrCollect_ == 1)
+	if (playerSecondsCreatWoodBoxNum_ < 5)
 	{
-		if (playerSecondsCreatWoodBoxNum_ < 5)
+		if (Input::IsMouseButtonDown(1))
 		{
-			if (Input::IsMouseButtonDown(1))
-			{
-				pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[1]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
-				playerSecondsCreatWoodBoxNum_ += 1;
-			}
-		}
-	}
-	if (blockOrCollect_ == 0)
-	{
-		if (playerFirstCreatWoodBoxNum_ < 5)
-		{
-			if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y))
-			{
-				pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, pPlayer_[0]->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
-				playerFirstCreatWoodBoxNum_ += 1;
-			}
+			pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, pAttackPlayer_->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
+			playerSecondsCreatWoodBoxNum_ += 1;
 		}
 	}
 	for (int i = 0u; i <= 1; i++)
@@ -114,7 +99,8 @@ void PlayScene::Update()
 		XMMATRIX rot[2]				= {};
 		XMFLOAT3 playerPos[2]		= {};
 		XMFLOAT3 floatDir[2]		= {};
-		vPos[i]						= pPlayer_[i]->GetVecPos();
+		vPos[0]						= pAttackPlayer_->GetVecPos();
+		vPos[1]						= pCollectPlayer_->GetVecPos();
 		mouse						= Input::GetMouseMove();
 		controller					= Input::GetPadStickR();
 
@@ -162,7 +148,8 @@ void PlayScene::Update()
 		mxRotY[i] = XMMatrixRotationY(sigmaRotY[i]);
 
 		rot[i] = mxRotX[i] * mxRotY[i];
-		playerPos[i] = pPlayer_[i]->GetPosition();
+		playerPos[0] = pAttackPlayer_->GetPosition();
+		playerPos[1] = pCollectPlayer_->GetPosition();
 
 		Dir[i] = XMVector3Transform(Dir[i], rot[i]);
 		Dir[i] = XMVector3Normalize(Dir[i]);
@@ -177,7 +164,8 @@ void PlayScene::Update()
 		//pCamera_->SetTarget(pPlayer_[i]->GetPosition(), i)
 		XMStoreFloat3(&floatDir[i], Dir[i]);
 		Camera::SetPosition(floatDir[i], i);
-		Camera::SetTarget(pPlayer_[i]->GetPosition(), i);
+		Camera::SetTarget(pAttackPlayer_->GetPosition(), 0);
+		Camera::SetTarget(pCollectPlayer_->GetPosition(), 1);
 
 		prevLen[i] = vecLength[i];
 	}
