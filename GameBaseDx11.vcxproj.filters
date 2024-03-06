@@ -238,6 +238,7 @@
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="WoodBox.h" />
     <ClInclude Include="GameTitleScene.h" />
+    <ClInclude Include="PlayerBase.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

@@ -23,7 +23,7 @@
     <ProjectGuid>{D68FA256-14C6-4B85-B85F-EC93C87CD599}</ProjectGuid>
     <RootNamespace>BaseProjectDx112</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>GameBaseDx11</ProjectName>
+    <ProjectName>Dog_Big_Fight</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -213,6 +213,7 @@
     <ClInclude Include="GameTitleScene.h" />
     <ClInclude Include="ObjectBase.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="PlayerBase.h" />
     <ClInclude Include="SolidText.h" />
     <ClInclude Include="Bone.h" />
     <ClInclude Include="Player.h" />
