@@ -1,8 +1,8 @@
 #pragma once
 //インクルード
-#include "Engine/GameObject.h"
-#include "Engine/Camera.h"
-#include "ObjectManager.h"
+#include "../Engine/GameObject.h"
+#include "../Engine/Camera.h"
+#include "../Object/ObjectManager.h"
 #include <vector>
 class AttackPlayer;
 class CollectPlayer;

@@ -1,7 +1,7 @@
 #pragma once
 //インクルード
 #include <string>
-#include "Engine/Direct3D.h"
+#include "../Engine/Direct3D.h"
 #include "ObjectBase.h"
 
 using std::string;

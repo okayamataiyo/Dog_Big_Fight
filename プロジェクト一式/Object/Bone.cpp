@@ -1,7 +1,7 @@
 //インクルード
-#include "Engine/Model.h"
+#include "../Engine/Model.h"
 #include "Bone.h"
-#include "Stage.h"
+#include "../Stage.h"
 
 Bone::Bone(GameObject* _parent)
 	:ObjectBase(_parent, "Bone"), hModel_(-1)

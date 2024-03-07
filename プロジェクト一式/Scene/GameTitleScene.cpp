@@ -1,9 +1,9 @@
-#include "Engine/Input.h"
-#include "Engine/SceneManager.h"
-#include "Engine/Direct3D.h"
-#include "Engine/Image.h"
+#include "../Engine/Input.h"
+#include "../Engine/SceneManager.h"
+#include "../Engine/Direct3D.h"
+#include "../Engine/Image.h"
 #include "GameTitleScene.h"
-#include "Sky.h"
+#include "../Sky.h"
 GameTitleScene::GameTitleScene(GameObject* _pParent)
 	:GameObject(_pParent, "GameTitleScene")
 {

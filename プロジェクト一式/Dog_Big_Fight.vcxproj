@@ -133,7 +133,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
-    <ClCompile Include="CollectPlayer.cpp" />
     <ClCompile Include="Engine\Audio.cpp" />
     <ClCompile Include="Engine\BillBoard.cpp" />
     <ClCompile Include="Engine\BoxCollider.cpp" />
@@ -163,22 +162,22 @@
     <ClCompile Include="Engine\Text.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
-    <ClCompile Include="Floor.cpp" />
-    <ClCompile Include="GameOverScene.cpp" />
-    <ClCompile Include="GameTitleScene.cpp" />
-    <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="Object\Bone.cpp" />
+    <ClCompile Include="Object\Floor.cpp" />
+    <ClCompile Include="Object\ObjectManager.cpp" />
+    <ClCompile Include="Object\WoodBox.cpp" />
+    <ClCompile Include="Player\AttackPlayer.cpp" />
+    <ClCompile Include="Player\CollectPlayer.cpp" />
+    <ClCompile Include="Scene\GameOverScene.cpp" />
+    <ClCompile Include="Scene\GameTitleScene.cpp" />
+    <ClCompile Include="Scene\PlayScene.cpp" />
+    <ClCompile Include="Scene\SelectScene.cpp" />
     <ClCompile Include="SolidText.cpp" />
-    <ClCompile Include="Bone.cpp" />
-    <ClCompile Include="AttackPlayer.cpp" />
-    <ClCompile Include="SelectScene.cpp" />
     <ClCompile Include="Sky.cpp" />
-    <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="WoodBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
-    <ClInclude Include="CollectPlayer.h" />
     <ClInclude Include="Engine\Audio.h" />
     <ClInclude Include="Engine\BillBoard.h" />
     <ClInclude Include="Engine\BoxCollider.h" />
@@ -210,20 +209,21 @@
     <ClInclude Include="Engine\Text.h" />
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
-    <ClInclude Include="Floor.h" />
-    <ClInclude Include="GameOverScene.h" />
-    <ClInclude Include="GameTitleScene.h" />
-    <ClInclude Include="ObjectBase.h" />
-    <ClInclude Include="ObjectManager.h" />
-    <ClInclude Include="PlayerBase.h" />
+    <ClInclude Include="Object\Bone.h" />
+    <ClInclude Include="Object\Floor.h" />
+    <ClInclude Include="Object\ObjectBase.h" />
+    <ClInclude Include="Object\ObjectManager.h" />
+    <ClInclude Include="Object\WoodBox.h" />
+    <ClInclude Include="Player\AttackPlayer.h" />
+    <ClInclude Include="Player\CollectPlayer.h" />
+    <ClInclude Include="Player\PlayerBase.h" />
+    <ClInclude Include="Scene\GameOverScene.h" />
+    <ClInclude Include="Scene\GameTitleScene.h" />
+    <ClInclude Include="Scene\PlayScene.h" />
+    <ClInclude Include="Scene\SelectScene.h" />
     <ClInclude Include="SolidText.h" />
-    <ClInclude Include="Bone.h" />
-    <ClInclude Include="AttackPlayer.h" />
-    <ClInclude Include="SelectScene.h" />
     <ClInclude Include="Sky.h" />
-    <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Stage.h" />
-    <ClInclude Include="WoodBox.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">

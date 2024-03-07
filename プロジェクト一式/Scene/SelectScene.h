@@ -1,9 +1,9 @@
 #pragma once
 //インクルード
-#include "Engine/GameObject.h"
-#include "Engine/Camera.h"
-#include "SolidText.h"
-#include "Button.h"
+#include "../Engine/GameObject.h"
+#include "../Engine/Camera.h"
+#include "../SolidText.h"
+#include "../Button.h"
 
 class SelectScene : public GameObject
 {

@@ -1,8 +1,8 @@
-#include "Engine/Input.h"
-#include "Engine/SceneManager.h"
-#include "Engine/Direct3D.h"
+#include "../Engine/Input.h"
+#include "../Engine/SceneManager.h"
+#include "../Engine/Direct3D.h"
 #include "SelectScene.h"
-#include "Sky.h"
+#include "../Sky.h"
 SelectScene::SelectScene(GameObject* _pParent)
 	:GameObject(_pParent, "SelectScene")
 {

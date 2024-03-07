@@ -1,10 +1,10 @@
 #pragma once
 //インクルード
-#include "Engine/GameObject.h"
+#include "../Engine/GameObject.h"
 #include "PlayerBase.h"
 
 class PlayScene;
-class AttackPlayer;
+class CollectPlayer;
 class SphereCollider;
 class WoodBox;
 class Text;
@@ -12,7 +12,7 @@ class Text;
 /// <summary>
 /// プレイヤーを管理するクラス
 /// </summary>
-class CollectPlayer : public PlayerBase
+class AttackPlayer : public PlayerBase
 {
 private:
 	int hModel_;					//モデル番号
@@ -22,7 +22,7 @@ private:
 	GAMESTATE gameState_;
 	GameObject* pParent_;
 	PlayScene* pPlayScene_;
-	AttackPlayer* pAttackPlayer_;
+	CollectPlayer* pCollectPlayer_;
 	SphereCollider* pCollision_;
 	WoodBox* pWoodBox_;
 	Text* pText_;
@@ -40,12 +40,12 @@ public:
 	/// コンストラクタ関数
 	/// </summary>
 	/// <param name="_parent">親の名前</param>
-	CollectPlayer(GameObject* _pParent);
+	AttackPlayer(GameObject* _pParent);
 
 	/// <summary>
 	/// デストラクタ関数
 	/// </summary>
-	~CollectPlayer();
+	~AttackPlayer();
 
 	/// <summary>
 	/// 初期化関数

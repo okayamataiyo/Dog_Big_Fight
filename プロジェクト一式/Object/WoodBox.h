@@ -1,9 +1,9 @@
 #pragma once
 //インクルード
 #include <string>
-#include "Engine/Direct3D.h"
+#include "../Engine/Direct3D.h"
 #include "ObjectBase.h"
-#include "PlayScene.h"
+#include "../Scene/PlayScene.h"
 using std::string;
 //WoodBoxを管理するクラス
 class WoodBox : public ObjectBase

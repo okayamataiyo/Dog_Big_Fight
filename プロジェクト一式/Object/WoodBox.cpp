@@ -1,10 +1,10 @@
-#include "Engine/Model.h"
-#include "Engine/Camera.h"
-#include "Engine/Input.h"
-#include "Engine/Fbx.h"
-#include "Engine/ImGui/imgui.h"
+#include "../Engine/Model.h"
+#include "../Engine/Camera.h"
+#include "../Engine/Input.h"
+#include "../Engine/Fbx.h"
+#include "../Engine/ImGui/imgui.h"
 #include "WoodBox.h"
-#include "Stage.h"
+#include "../Stage.h"
 #include "ObjectManager.h"
 WoodBox::WoodBox(GameObject* _pParent)
     :ObjectBase(_pParent, "WoodBox"), hModel_(-1)

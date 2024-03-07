@@ -1,9 +1,9 @@
 #include "sceneManager.h"
 
-#include "../PlayScene.h"
-#include "../GameOverScene.h"
-#include "../SelectScene.h"
-#include "../GameTitleScene.h"
+#include "../Scene/PlayScene.h"
+#include "../Scene/GameOverScene.h"
+#include "../Scene/SelectScene.h"
+#include "../Scene/GameTitleScene.h"
 #include "Model.h"
 #include "Image.h"
 #include "Audio.h"

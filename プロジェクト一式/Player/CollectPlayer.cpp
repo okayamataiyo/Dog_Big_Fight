@@ -1,14 +1,14 @@
-#include "Engine/SceneManager.h"
-#include "Engine/Input.h"
-#include "Engine/Model.h"
-#include "Engine/Direct3D.h"
-#include "Engine/ImGui/imgui.h"
-#include "Engine/Text.h"
+#include "../Engine/SceneManager.h"
+#include "../Engine/Input.h"
+#include "../Engine/Model.h"
+#include "../Engine/Direct3D.h"
+#include "../Engine/ImGui/imgui.h"
+#include "../Engine/Text.h"
 #include "CollectPlayer.h"
 #include "AttackPlayer.h"
-#include "Stage.h"
-#include "Floor.h"
-#include "WoodBox.h"
+#include "../Stage.h"
+#include "../Object/Floor.h"
+#include "../Object/WoodBox.h"
 
 CollectPlayer::CollectPlayer(GameObject* _pParent)
     :PlayerBase(_pParent, "AttackPlayer"), hModel_{ -1 }, number_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
