@@ -78,7 +78,7 @@ void PlayScene::Update()
 	}
 	if (playerSecondsCreatWoodBoxNum_ < 5)
 	{
-		if (Input::IsMouseButtonDown(1))
+		if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y))
 		{
 			pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, pAttackPlayer_->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
 			playerSecondsCreatWoodBoxNum_ += 1;
@@ -99,8 +99,8 @@ void PlayScene::Update()
 		XMMATRIX rot[2]				= {};
 		XMFLOAT3 playerPos[2]		= {};
 		XMFLOAT3 floatDir[2]		= {};
-		vPos[0]						= pAttackPlayer_->GetVecPos();
-		vPos[1]						= pCollectPlayer_->GetVecPos();
+		vPos[0]						= pCollectPlayer_->GetVecPos();
+		vPos[1]						= pAttackPlayer_->GetVecPos();
 		mouse						= Input::GetMouseMove();
 		controller					= Input::GetPadStickR();
 
@@ -122,10 +122,10 @@ void PlayScene::Update()
 
 		//Dir = Dir * (pPlayer_[i]->GetRotate().x + RotationX[i]) * (pPlayer_[i]->GetRotate().y + RotationY[i]);
 		//Dir = Dir + (vecLength * 2);
-		camVec_[0].x			   += RotationY[0] / controllerSens;
-		camVec_[0].y			   += RotationX[0] / controllerSens;
-		camVec_[1].x			   += RotationY[1] / mouseSens;
-		camVec_[1].y			   += RotationX[1] / mouseSens;
+		camVec_[1].x			   += RotationY[0] / controllerSens;
+		camVec_[1].y			   += RotationX[0] / controllerSens;
+		camVec_[0].x			   += RotationY[1] / mouseSens;
+		camVec_[0].y			   += RotationX[1] / mouseSens;
 
 		sigmaRotY[i]				= camVec_[i].y;// +pPlayer_[i]->GetRotate().y;
 		sigmaRotX[i]				= -camVec_[i].x;// + EasingX[i]; +pPlayer_[i]->GetRotate().x;
@@ -133,14 +133,14 @@ void PlayScene::Update()
 		if (sigmaRotX[i] > 0 * (3.14 / 180))
 		{
 			sigmaRotX[i]			= 0;
-			camVec_[1].x		   -= RotationY[1] / mouseSens;
-			camVec_[0].x		   -= RotationY[0] / controllerSens;
+			camVec_[0].x		   -= RotationY[1] / mouseSens;
+			camVec_[1].x		   -= RotationY[0] / controllerSens;
 		}
 		if (sigmaRotX[i] < -88 * (3.14 / 180))
 		{
 			sigmaRotX[i] = -87.9 * (3.14 / 180);
-			camVec_[1].x		   -= RotationY[1] / mouseSens;
-			camVec_[0].x		   -= RotationY[0] / controllerSens;
+			camVec_[0].x		   -= RotationY[1] / mouseSens;
+			camVec_[1].x		   -= RotationY[0] / controllerSens;
 		}
 
 		prevRotX[i] = sigmaRotX[i];
@@ -148,8 +148,8 @@ void PlayScene::Update()
 		mxRotY[i] = XMMatrixRotationY(sigmaRotY[i]);
 
 		rot[i] = mxRotX[i] * mxRotY[i];
-		playerPos[0] = pAttackPlayer_->GetPosition();
-		playerPos[1] = pCollectPlayer_->GetPosition();
+		playerPos[0] = pCollectPlayer_->GetPosition();
+		playerPos[1] = pAttackPlayer_->GetPosition();
 
 		Dir[i] = XMVector3Transform(Dir[i], rot[i]);
 		Dir[i] = XMVector3Normalize(Dir[i]);
@@ -164,8 +164,8 @@ void PlayScene::Update()
 		//pCamera_->SetTarget(pPlayer_[i]->GetPosition(), i)
 		XMStoreFloat3(&floatDir[i], Dir[i]);
 		Camera::SetPosition(floatDir[i], i);
-		Camera::SetTarget(pAttackPlayer_->GetPosition(), 0);
-		Camera::SetTarget(pCollectPlayer_->GetPosition(), 1);
+		Camera::SetTarget(pAttackPlayer_->GetPosition(), 1);
+		Camera::SetTarget(pCollectPlayer_->GetPosition(), 0);
 
 		prevLen[i] = vecLength[i];
 	}

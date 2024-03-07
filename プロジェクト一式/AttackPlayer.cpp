@@ -82,7 +82,7 @@ void AttackPlayer::Update()
 void AttackPlayer::Draw()
 {
     pText_->Draw(30, 30,"AttackPlayer:Score=");
-    pText_->Draw(280, 30, direct_.score_);
+    pText_->Draw(360, 30, direct_.score_);
 
     //pText_->Draw(30, 120, "Attack!!!");
     Model::SetTransform(hModel_, transform_);

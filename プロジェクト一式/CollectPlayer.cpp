@@ -81,8 +81,8 @@ void CollectPlayer::Update()
 
 void CollectPlayer::Draw()
 {
-    pText_->Draw(30, 30, "CollectPlayer:Score=");
-    pText_->Draw(280, 30, direct_.score_);
+    pText_->Draw(30, 60, "CollectPlayer:Score=");
+    pText_->Draw(360, 60, direct_.score_);
 
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);
@@ -195,6 +195,11 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
         {
             transform_.position_ = move_.positionPrev_;
         }
+    }
+    if (_pTarget->GetObjectName().find("Bone") != std::string::npos)
+    {
+        direct_.score_ += 10;
+        _pTarget->KillMe();
     }
     ++number_;
     if (number_ >= woodBoxs.size())
