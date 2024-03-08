@@ -15,7 +15,7 @@ Sky::~Sky()
 void Sky::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("SkySphere.fbx");
+	hModel_ = Model::Load("Sky.fbx");
 	assert(hModel_ >= 0);
 	transform_.scale_ = { 500.0f,500.0f,500.0f };
 	transform_.position_.y = -50;

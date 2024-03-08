@@ -11,7 +11,7 @@
 #include "../Object/WoodBox.h"
 
 CollectPlayer::CollectPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, "AttackPlayer"), hModel_{ -1 }, number_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
+    :PlayerBase(_pParent, playerNames_.collectPlayer), hModel_{ -1 }, number_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
     , pParent_(nullptr), pPlayScene_(nullptr), pAttackPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr)
 {
     pParent_ = _pParent;
@@ -34,8 +34,8 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     jump_.positionPrevY_ = 0.0f;
     jump_.isJump_ = false;
     floor_.isOnFloor_ = false;
-    woodBox_.woodBoxName_ = "WoodBox";
-    woodBox_.woodBoxNumber_ = "WoodBox0";
+    woodBox_.woodBoxName_ = objectNames_.woodBoxName;
+    woodBox_.woodBoxNumber_ = "";
     woodBox_.dotProduct_ = 0.0f;
     woodBox_.angleDegrees_ = 0.0f;
     knockback_.stunLimit_ = 0;
@@ -57,14 +57,17 @@ CollectPlayer::~CollectPlayer()
 void CollectPlayer::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("CollectDog.fbx");
+    hModel_ = Model::Load(playerNames_.collectPlayer + modelNames_.fbx);
     assert(hModel_ >= 0);
     transform_.scale_ = { 0.5,0.5,0.5 };
     move_.positionY_ = transform_.position_.y;
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
     AddCollider(pCollision_);
-    pPlayScene_ = (PlayScene*)FindObject("PlayScene");
-    pAttackPlayer_ = (AttackPlayer*)FindObject("AttackPlayer");
+    pSceneManager_ = (SceneManager*)FindObject(sceneNames_.sceneManager);
+    pStage_ = (Stage*)FindObject(objectNames_.stageName);
+    pFloor_ = (Floor*)FindObject(objectNames_.floorName);
+    pPlayScene_ = (PlayScene*)FindObject(sceneNames_.playScene);
+    pAttackPlayer_ = (AttackPlayer*)FindObject(playerNames_.collectPlayer);
     pText_ = new Text;
     pText_->Initialize();
 }
@@ -135,8 +138,7 @@ void CollectPlayer::UpdatePlay()
     }
     if (direct_.score_ >= 150)
     {
-        SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-        pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
+        pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
         Direct3D::SetIsChangeView(1);
     }
     //ImGui::Text("playerState_=%i", playerState_);
@@ -156,8 +158,7 @@ void CollectPlayer::UpdateGameOver()
 {
     if (Input::IsKey(DIK_SPACE))
     {
-        SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-        pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
+        pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
     }
 }
 
@@ -189,17 +190,17 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
         }
     }
     //WoodBoxという名前を持つ全てのオブジェクトの機能を実装
-    if (_pTarget->GetObjectName().find("WoodBox") != std::string::npos)
+    if (_pTarget->GetObjectName().find(objectNames_.woodBoxName) != std::string::npos)
     {
         if (woodBox_.angleDegrees_ > 80)
         {
             transform_.position_ = move_.positionPrev_;
         }
     }
-    if (_pTarget->GetObjectName().find("Bone") != std::string::npos)
+    if (_pTarget->GetObjectName().find(objectNames_.boneName) != std::string::npos)
     {
         direct_.score_ += 10;
-        _pTarget->KillMe();
+        //_pTarget->KillMe();
     }
     ++number_;
     if (number_ >= woodBoxs.size())
@@ -219,7 +220,7 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
     //    pPlayer_->SetVecPos(-vectorMove);
     //    SetGameState(GAMESTATE::SECONDSSTUN);
     //}
-    if (_pTarget->GetObjectName() == "AttackPlayer")
+    if (_pTarget->GetObjectName() == playerNames_.attackPlayer)
     {
         Stun(10);
         pAttackPlayer_->Stun(10);
@@ -367,10 +368,8 @@ void CollectPlayer::PlayerRayCast()
     RayCastData leftData;
     RayCastData rightData;
     float playerFling = 1.0f;                             //プレイヤーが地面からどのくらい離れていたら浮いている判定にするか
-    Stage* pStage = (Stage*)FindObject("Stage");      //ステージオブジェクト
-    int hStageModel_ = pStage->GetModelHandle();         //モデル番号を取得
-    Floor* pFloor = (Floor*)FindObject("Floor");
-    int hFloorModel_ = pFloor->GetModelHandle();
+    int hStageModel_ = pStage_->GetModelHandle();         //モデル番号を取得
+    int hFloorModel_ = pFloor_->GetModelHandle();
     if (jump_.isJump_ == true)
     {
         //放物線に下がる処理

@@ -2,6 +2,7 @@
 #include "../Engine/Model.h"
 #include "Bone.h"
 #include "../Stage.h"
+#include "../Player/PlayerBase.h"
 
 Bone::Bone(GameObject* _parent)
 	:ObjectBase(_parent, "Bone"), hModel_(-1)
@@ -56,9 +57,9 @@ void Bone::Release()
 
 void Bone::OnCollision(GameObject* _pTarget)
 {
-	if (_pTarget->GetObjectName().find("Player") != std::string::npos)
+	if (_pTarget->GetObjectName().find("CollectPlayer") != std::string::npos)
 	{
-		
-
+		this->KillMe();
+		//((PlayerBase*)_pTarget)->Set
 	}
 }

@@ -91,7 +91,7 @@ void WoodBox::RayCast()
     {
         //▼木箱の法線(木箱の上に木箱が乗るため)
         woodBoxData.start       = transform_.position_;
-        woodBoxData.start.y     = 0;
+        //woodBoxData.start.y     = 0;
         woodBoxData.dir         = XMFLOAT3(0, -1, 0);
         if (!(woodBoxs_.at(i) == nowWoodBoxHModel))
         {
@@ -115,7 +115,7 @@ void WoodBox::RayCast()
         }
         //▼ステージの法線(地面の張り付き)
         stageData.start = transform_.position_;             //レイの発射位置
-        stageData.start.y = 0;
+        //stageData.start.y = 0;
         stageData.dir = XMFLOAT3(0, -1, 0);               //レイの方向
         Model::RayCast(hStageModel, &stageData);                //レイを発射
         rayStageDist_ = stageData.dist;
