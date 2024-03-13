@@ -10,7 +10,7 @@
 #include "../Object/Floor.h"
 #include "../Object/WoodBox.h"
 CollectPlayer::CollectPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, "CollectPlayer"), hModel_{-1}, number_(0),playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
+    :PlayerBase(_pParent, collectPlayerName), hModel_{-1}, number_(0),playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
     , pParent_(nullptr), pPlayScene_(nullptr), pAttackPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr)
 {
     pParent_ = _pParent;
@@ -57,7 +57,7 @@ CollectPlayer::~CollectPlayer()
 void CollectPlayer::Initialize()
 {
     //モデルデータのロード
-    std::string ModelName = (std::string)"CollectPlayer" + (std::string)".fbx";
+    std::string ModelName = collectPlayerName + (std::string)".fbx";
     hModel_ = Model::Load(ModelName);
     assert(hModel_ >= 0);
     transform_.scale_ = { 0.5,0.5,0.5 };
@@ -65,7 +65,7 @@ void CollectPlayer::Initialize()
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
     AddCollider(pCollision_);
     pPlayScene_ = (PlayScene*)FindObject("PlayScene");
-    pAttackPlayer_ = (AttackPlayer*)FindObject("AttackPlayer");
+    pAttackPlayer_ = (AttackPlayer*)FindObject(attackPlayerName);
     pText_ = new Text;
     pText_->Initialize();
 }
@@ -221,7 +221,7 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
     //    pPlayer_->SetVecPos(-vectorMove);
     //    SetGameState(GAMESTATE::SECONDSSTUN);
     //}
-    if (_pTarget->GetObjectName() == "AttackPlayer")
+    if (_pTarget->GetObjectName() == attackPlayerName)
     {
         Stun(10);
         pAttackPlayer_->Stun(10);

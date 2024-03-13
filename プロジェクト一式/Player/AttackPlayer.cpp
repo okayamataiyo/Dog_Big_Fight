@@ -11,7 +11,7 @@
 #include "../Object/WoodBox.h"
 
 AttackPlayer::AttackPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, "AttackPlayer"), hModel_{ -1 }, number_(0), scoreTimeCounter_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
+    :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 }, number_(0), scoreTimeCounter_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
     , pParent_(nullptr), pPlayScene_(nullptr), pCollectPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr)
 {
     pParent_ = _pParent;
@@ -71,7 +71,7 @@ void AttackPlayer::Initialize()
 
 void AttackPlayer::Update()
 {
-    pCollectPlayer_ = (CollectPlayer*)FindObject("CollectPlayer");
+    pCollectPlayer_ = (CollectPlayer*)FindObject(collectPlayerName);
     switch (gameState_)
     {
     case GAMESTATE::READY:          UpdateReady();      break;
@@ -222,7 +222,7 @@ void AttackPlayer::OnCollision(GameObject* _pTarget)
     //    pPlayer_->SetVecPos(-vectorMove);
     //    SetGameState(GAMESTATE::SECONDSSTUN);
     //}
-    if (_pTarget->GetObjectName() == "CollectPlayer")
+    if (_pTarget->GetObjectName() == collectPlayerName)
     {
         Stun(10);
         pCollectPlayer_->Stun(10);

@@ -9,6 +9,11 @@ class SphereCollider;
 class WoodBox;
 class Text;
 
+namespace
+{
+	std::string collectPlayerName = "CollectPlayer";
+}
+
 /// <summary>
 /// プレイヤーを管理するクラス
 /// </summary>
