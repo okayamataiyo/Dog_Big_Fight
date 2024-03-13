@@ -58,7 +58,7 @@ void Bone::OnCollision(GameObject* _pTarget)
 {
 	if (_pTarget->GetObjectName().find("CollectPlayer") != std::string::npos)
 	{
-		this->KillMe();
+		//this->KillMe();
 		//((PlayerBase*)_pTarget)->Set
 	}
 }

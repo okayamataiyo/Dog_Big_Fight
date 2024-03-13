@@ -70,6 +70,7 @@ public:
 	//▼ノックバックで使うメンバ変数
 	struct KnockbackStruct
 	{
+		int stunTimeCounter_;	//スタンしてからどのくらい経ったか
 		int stunLimit_;		//スタンしている時間
 		int isStun_;		//スタンしているかどうか
 		bool isKnockBack_;	//ノックバックしているかどうか

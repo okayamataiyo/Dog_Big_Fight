@@ -11,7 +11,7 @@
 #include "../Object/WoodBox.h"
 
 AttackPlayer::AttackPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, "AttackPlayer"), hModel_{ -1 }, number_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
+    :PlayerBase(_pParent, "AttackPlayer"), hModel_{ -1 }, number_(0), scoreTimeCounter_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
     , pParent_(nullptr), pPlayScene_(nullptr), pCollectPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr)
 {
     pParent_ = _pParent;
@@ -38,6 +38,7 @@ AttackPlayer::AttackPlayer(GameObject* _pParent)
     woodBox_.woodBoxNumber_ = "WoodBox0";
     woodBox_.dotProduct_ = 0.0f;
     woodBox_.angleDegrees_ = 0.0f;
+    knockback_.stunTimeCounter_ = 0;
     knockback_.stunLimit_ = 0;
     knockback_.isStun_ = 0;
     knockback_.isKnockBack_ = false;
@@ -116,19 +117,24 @@ void AttackPlayer::UpdatePlay()
         case PLAYERSTATE::JUMP:       Model::SetAnimFrame(hModel_, 120, 120, 1); break;
         }
     }
+    scoreTimeCounter_++;
+    if (scoreTimeCounter_ % 600 == 0)
+    {
+        direct_.score_ += 10;
+    }
     playerStatePrev_ = playerState_;
     PlayerRayCast();
     PlayerKnockback();
     transform_.position_.y = move_.positionY_;
     if (knockback_.isStun_ == 1)
     {
-        direct_.timeCounter_++;
-        if (direct_.timeCounter_ >= knockback_.stunLimit_)
+        knockback_.stunTimeCounter_++;
+        if (knockback_.stunTimeCounter_ >= knockback_.stunLimit_)
         {
             gameState_ = GAMESTATE::PLAY;
             knockback_.isStun_ = 0;
             knockback_.isKnockBack_ = false;
-            direct_.timeCounter_ = 0;
+            knockback_.stunTimeCounter_ = 0;
         }
     }
     if (knockback_.isStun_ == 0)

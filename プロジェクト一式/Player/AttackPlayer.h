@@ -17,6 +17,7 @@ class AttackPlayer : public PlayerBase
 private:
 	int hModel_;					//ƒ‚ƒfƒ‹”Ô†
 	int number_;
+	int scoreTimeCounter_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
 	GAMESTATE gameState_;

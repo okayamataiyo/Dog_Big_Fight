@@ -66,9 +66,9 @@ void PlayScene::Update()
 		isCreateBone_ = false;
 	}
 
-	if (isCreateBone_ == true)
+	if (isCreateBone_)
 	{
-		for (int i = 0u; i <= 2; i++)
+		for (int i = 0u; i <= 2u; i++)
 		{
 			pObjectManager_->CreateObject(OBJECTSTATE::BONE, -140, 140, -140, 140);
 			boneCount_ += 1;
@@ -82,7 +82,7 @@ void PlayScene::Update()
 			playerSecondsCreatWoodBoxNum_ += 1;
 		}
 	}
-	for (int i = 0u; i <= 1; i++)
+	for (int i = 0u; i <= 1u; i++)
 	{
 		XMFLOAT3 Init				= { 0.0f,0.0f,0.0f };
 		XMVECTOR vPos[2]			= {};
