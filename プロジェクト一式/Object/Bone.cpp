@@ -7,7 +7,6 @@
 Bone::Bone(GameObject* _parent)
 	:ObjectBase(_parent, "Bone"), hModel_(-1)
 {
-
 }
 
 Bone::~Bone()

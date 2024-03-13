@@ -8,6 +8,7 @@ class AttackPlayer;
 class CollectPlayer;
 class Sky;
 class Floor;
+
 /// <summary>
 /// —V‚×‚éƒV[ƒ“
 /// </summary>

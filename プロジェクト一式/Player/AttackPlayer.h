@@ -1,17 +1,13 @@
 #pragma once
 //インクルード
-#include "../Engine/Global.h"
 #include "../Engine/GameObject.h"
 #include "PlayerBase.h"
 
-class SceneManager;
 class PlayScene;
 class CollectPlayer;
 class SphereCollider;
 class WoodBox;
 class Text;
-class Stage;
-class Floor;
 
 /// <summary>
 /// プレイヤーを管理するクラス
@@ -24,19 +20,20 @@ private:
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
 	GAMESTATE gameState_;
-	SceneManager* pSceneManager_;
 	GameObject* pParent_;
-	Stage* pStage_;
-	Floor* pFloor_;
 	PlayScene* pPlayScene_;
 	CollectPlayer* pCollectPlayer_;
 	SphereCollider* pCollision_;
 	WoodBox* pWoodBox_;
 	Text* pText_;
-	ObjectName objectNames_;
-	PlayerName playerNames_;
-	ModelName modelNames_;
-	SceneName sceneNames_;
+	DirectStruct direct_;
+	MoveStruct move_;
+	DirectionStruct direction_;
+	JumpStruct jump_;
+	FloorStruct floor_;
+	WoodBoxStruct woodBox_;
+	KnockbackStruct knockback_;
+	RayCastDistStruct rayCastDist_;
 public:
 
 	/// <summary>

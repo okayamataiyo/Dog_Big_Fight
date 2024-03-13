@@ -4,7 +4,6 @@
 #include "../Engine/Direct3D.h"
 #include "ObjectBase.h"
 
-using std::string;
 //Floor‚ğŠÇ—‚·‚éƒNƒ‰ƒX
 class Floor : public ObjectBase
 {

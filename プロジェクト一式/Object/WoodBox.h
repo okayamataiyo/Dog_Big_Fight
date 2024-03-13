@@ -4,7 +4,6 @@
 #include "../Engine/Direct3D.h"
 #include "ObjectBase.h"
 #include "../Scene/PlayScene.h"
-using std::string;
 //WoodBox‚ğŠÇ—‚·‚éƒNƒ‰ƒX
 class WoodBox : public ObjectBase
 {

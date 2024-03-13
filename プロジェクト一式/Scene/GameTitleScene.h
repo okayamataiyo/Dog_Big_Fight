@@ -3,6 +3,7 @@
 #include "../Engine/GameObject.h"
 #include "../Engine/Camera.h"
 #include "../SolidText.h"
+
 class GameTitleScene : public GameObject
 {
 	SolidText* pText_;
