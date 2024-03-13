@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Debug\Dog_Big_Fight.exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Debug\BillBoard.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Debug\Debug3D.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Debug\Simple2D.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Debug\Simple3D.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Debug\Sky.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Debug\ToonOutLine.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Debug\NormalMapping.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>
