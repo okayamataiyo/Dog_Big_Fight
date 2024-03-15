@@ -78,7 +78,7 @@ void WoodBox::RayCast()
         {
             isJump_ = false;
         }
-        if (posY_ <= -rayStageDist_ + 0.6)
+        if (posY_ <= -rayStageDistDown_ + 0.6)
         {
             isJump_ = false;
         }
@@ -118,9 +118,9 @@ void WoodBox::RayCast()
         //stageData.start.y = 0;
         stageData.dir = XMFLOAT3(0, -1, 0);               //ƒŒƒC‚Ì•ûŒü
         Model::RayCast(hStageModel, &stageData);                //ƒŒƒC‚ð”­ŽË
-        rayStageDist_ = stageData.dist;
+        rayStageDistDown_ = stageData.dist;
         //’n–Ê‚Æ
-        if (rayStageDist_ + posY_ <= woodBoxFling)
+        if (rayStageDistDown_ + posY_ <= woodBoxFling)
         {
             //¬‚³‚©‚Á‚½‚ç
             if (isJump_ == false && isOnWoodBox_ == 0)

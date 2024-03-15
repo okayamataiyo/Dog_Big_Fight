@@ -8,6 +8,8 @@ class CollectPlayer;
 class SphereCollider;
 class WoodBox;
 class Text;
+class Stage;
+class Floor;
 
 namespace
 {
@@ -32,14 +34,8 @@ private:
 	SphereCollider* pCollision_;
 	WoodBox* pWoodBox_;
 	Text* pText_;
-	DirectStruct direct_;
-	MoveStruct move_;
-	DirectionStruct direction_;
-	JumpStruct jump_;
-	FloorStruct floor_;
-	WoodBoxStruct woodBox_;
-	KnockbackStruct knockback_;
-	RayCastDistStruct rayCastDist_;
+	Stage* pStage_;
+	Floor* pFloor_;
 public:
 
 	/// <summary>

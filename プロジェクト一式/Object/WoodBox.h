@@ -20,7 +20,7 @@ private:
     bool isJump_;           //飛んでいるか
     int  isOnWoodBox_;      //木箱の上にいるか
     float rayWoodBoxDist_;  //木箱のディスト
-    float rayStageDist_;    //ステージのディスト
+    float rayStageDistDown_;    //ステージのディスト
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)

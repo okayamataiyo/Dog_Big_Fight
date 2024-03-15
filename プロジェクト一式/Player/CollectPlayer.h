@@ -8,6 +8,8 @@ class AttackPlayer;
 class SphereCollider;
 class WoodBox;
 class Text;
+class Stage;
+class Floor;
 
 namespace
 {
@@ -21,6 +23,8 @@ class CollectPlayer : public PlayerBase
 {
 private:
 	int hModel_;					//ÉÇÉfÉãî‘çÜ
+	int hStageModel_;
+	int hFloorModel_;
 	int number_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
@@ -31,14 +35,8 @@ private:
 	SphereCollider* pCollision_;
 	WoodBox* pWoodBox_;
 	Text* pText_;
-	DirectStruct direct_;
-	MoveStruct move_;
-	DirectionStruct direction_;
-	JumpStruct jump_;
-	FloorStruct floor_;
-	WoodBoxStruct woodBox_;
-	KnockbackStruct knockback_;
-	RayCastDistStruct rayCastDist_;
+	Stage* pStage_;
+	Floor* pFloor_;
 public:
 
 	/// <summary>
