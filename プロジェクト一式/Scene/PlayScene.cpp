@@ -51,12 +51,15 @@ void PlayScene::Initialize()
 	camVec_[1].x = 0;
 	camVec_[1].y = 5;
 	camVec_[1].z = -10;
+	pAttackPlayer_->SetCollectPlayer(pCollectPlayer_);
+	pCollectPlayer_->SetAttackPlayer(pAttackPlayer_);
 	pAttackPlayer_->SetPosition(firstPPos);
 	pCollectPlayer_->SetPosition(secondsPPos);
 }
 
 void PlayScene::Update()
 {
+	Input::SetMousePosition(600, 600);
 	if (boneCount_ == 0)
 	{
 		isCreateBone_ = true;

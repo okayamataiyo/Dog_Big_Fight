@@ -93,7 +93,7 @@ void WoodBox::RayCast()
         woodBoxData.start       = transform_.position_;
         //woodBoxData.start.y     = 0;
         woodBoxData.dir         = XMFLOAT3(0, -1, 0);
-        if (!(woodBoxs_.at(i) == nowWoodBoxHModel))
+        if (woodBoxs_.at(i) != nowWoodBoxHModel)
         {
             int nowData = woodBoxs_.at(i);
             Model::RayCast(nowData, &woodBoxData);

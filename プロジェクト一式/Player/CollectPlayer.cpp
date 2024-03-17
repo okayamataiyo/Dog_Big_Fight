@@ -66,7 +66,6 @@ void CollectPlayer::Initialize()
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
     AddCollider(pCollision_);
     pPlayScene_ = (PlayScene*)FindObject("PlayScene");
-    pAttackPlayer_ = (AttackPlayer*)FindObject(attackPlayerName);
     pStage_ = (Stage*)FindObject("Stage");      //ステージオブジェクト
     pFloor_ = (Floor*)FindObject("Floor");
     pText_ = new Text;
@@ -121,6 +120,7 @@ void CollectPlayer::UpdatePlay()
     playerStatePrev_ = playerState_;
     PlayerRayCast();
     PlayerKnockback();
+    transform_.position_.y = positionY_;
     if (isStun_ == 1)
     {
         stunTimeCounter_++;
@@ -153,7 +153,27 @@ void CollectPlayer::UpdatePlay()
     ImGui::Text("prevPosition_.z=%f", prevPosition_.z);*/
     //ImGui::Text("angleDegrees_=%f", angleDegrees_);
     //ImGui::Text("timeCounter_=%i", timeCounter_);
-    transform_.position_.y = positionY_;
+    if (IsMoving())
+    {
+        playerState_ = PLAYERSTATE::WALK;
+    }
+    else if (isJump_ == false)
+    {
+        playerState_ = PLAYERSTATE::WAIT;
+    }
+    if (Input::IsKey(DIK_LSHIFT) && isJump_ == false)
+    {
+        playerState_ = PLAYERSTATE::RUN;
+        isDash_ = true;
+    }
+    else
+    {
+        isDash_ = false;
+    }
+    if (isJump_ == true)
+    {
+        playerState_ = PLAYERSTATE::JUMP;
+    }
 }
 
 void CollectPlayer::UpdateGameOver()
@@ -227,7 +247,6 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
     if (_pTarget->GetObjectName() == attackPlayerName)
     {
         Stun(10);
-        pAttackPlayer_->Stun(10);
         isKnockBack_ = true;
     }
 }
@@ -274,15 +293,6 @@ void CollectPlayer::PlayerMove()
         }
     }
 
-    if (IsMoving())
-    {
-        playerState_ = PLAYERSTATE::WALK;
-    }
-    else if (isJump_ == false)
-    {
-        playerState_ = PLAYERSTATE::WAIT;
-    }
-
     transform_.rotate_.y = XMConvertToDegrees(angle_);
     if (Input::IsKey(DIK_W))
     {
@@ -323,20 +333,6 @@ void CollectPlayer::PlayerMove()
     if (Input::IsKeyDown(DIK_SPACE) && isJump_ == false)
     {
         PlayerJump();
-    }
-    if (Input::IsKey(DIK_LSHIFT) && isJump_ == false)
-    {
-        playerState_ = PLAYERSTATE::RUN;
-        isDash_ = true;
-    }
-    else
-    {
-        isDash_ = false;
-    }
-
-    if (isJump_ == true)
-    {
-        playerState_ = PLAYERSTATE::JUMP;
     }
 }
 
@@ -379,14 +375,8 @@ void CollectPlayer::PlayerRayCast()
         positionTempY_ = positionY_;
         positionY_ += (positionY_ - positionPrevY_) - 0.007;
         positionPrevY_ = positionTempY_;
-        if (positionY_ <= -rayFloorDistDown_ + 0.6)
-        {
-            isJump_ = false;
-        }
-        if (positionY_ <= -rayStageDistDown_ + 0.6)
-        {
-            isJump_ = false;
-        }
+        isJump_ = (positionY_ <= -rayFloorDistDown_ + 0.6f) ? false : isJump_;
+        isJump_ = (positionY_ <= -rayStageDistDown_ + 0.6f) ? false : isJump_;
     }
 
     for (int i = 0; i <= 2; i++)

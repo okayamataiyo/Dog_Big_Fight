@@ -23,6 +23,8 @@ class AttackPlayer : public PlayerBase
 {
 private:
 	int hModel_;					//ÉÇÉfÉãî‘çÜ
+	int hStageModel_;
+	int hFloorModel_;
 	int number_;
 	int scoreTimeCounter_;
 	PLAYERSTATE playerState_;
@@ -104,6 +106,8 @@ public:
 	void SetVecPos(XMVECTOR _vecMove) override { XMStoreFloat3(&transform_.position_, _vecMove); }
 
 	void SetKnockback(XMVECTOR _vecKnockbackDirection, float _knockbackSpeed = 0.5f) override;
+
+	void SetCollectPlayer(CollectPlayer* _pCollectPlayer) { pCollectPlayer_ = _pCollectPlayer; }
 
 	XMVECTOR GetVecPos() override { return XMLoadFloat3(&transform_.position_); }
 

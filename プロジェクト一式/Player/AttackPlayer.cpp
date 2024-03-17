@@ -11,7 +11,7 @@
 #include "../Object/WoodBox.h"
 
 AttackPlayer::AttackPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 }, number_(0), scoreTimeCounter_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
+    :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 },hStageModel_(0),hFloorModel_(0), number_(0), scoreTimeCounter_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
     , pParent_(nullptr), pPlayScene_(nullptr), pCollectPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr),pStage_(nullptr),pFloor_(nullptr)
 {
     pParent_ = _pParent;
@@ -74,7 +74,6 @@ void AttackPlayer::Initialize()
 
 void AttackPlayer::Update()
 {
-    pCollectPlayer_ = (CollectPlayer*)FindObject(collectPlayerName);
     switch (gameState_)
     {
     case GAMESTATE::READY:          UpdateReady();      break;
@@ -161,6 +160,27 @@ void AttackPlayer::UpdatePlay()
     ImGui::Text("prevPosition_.z=%f", prevPosition_.z);*/
     //ImGui::Text("angleDegrees_=%f", angleDegrees_);
     //ImGui::Text("timeCounter_=%i", timeCounter_);
+    if (IsMoving())
+    {
+        playerState_ = PLAYERSTATE::WALK;
+    }
+    else if (isJump_ == false)
+    {
+        playerState_ = PLAYERSTATE::WAIT;
+    }
+    if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && isJump_ == false)
+    {
+        playerState_ = PLAYERSTATE::RUN;
+        isDash_ = true;
+    }
+    else
+    {
+        isDash_ = false;
+    }
+    if (isJump_ == true)
+    {
+        playerState_ = PLAYERSTATE::JUMP;
+    }
 }
 
 void AttackPlayer::UpdateGameOver()
@@ -228,7 +248,6 @@ void AttackPlayer::OnCollision(GameObject* _pTarget)
     if (_pTarget->GetObjectName() == collectPlayerName)
     {
         Stun(10);
-        pCollectPlayer_->Stun(10);
         isKnockBack_ = true;
     }
 }
@@ -274,16 +293,6 @@ void AttackPlayer::PlayerMove()
             angle_ *= -1;
         }
     }
-
-    if (IsMoving())
-    {
-        playerState_ = PLAYERSTATE::WALK;
-    }
-    else if (isJump_ == false)
-    {
-        playerState_ = PLAYERSTATE::WAIT;
-    }
-
     transform_.rotate_.y = XMConvertToDegrees(angle_);
     if (Input::GetPadStickL().y > 0.3)
     {
@@ -325,20 +334,6 @@ void AttackPlayer::PlayerMove()
     {
         PlayerJump();
     }
-    if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && isJump_ == false)
-    {
-        playerState_ = PLAYERSTATE::RUN;
-        isDash_ = true;
-    }
-    else
-    {
-        isDash_ = false;
-    }
-
-    if (isJump_ == true)
-    {
-        playerState_ = PLAYERSTATE::JUMP;
-    }
 }
 
 void AttackPlayer::PlayerJump()
@@ -372,22 +367,16 @@ void AttackPlayer::PlayerRayCast()
     RayCastData stageDataBack;
     RayCastData stageDataLeft;
     RayCastData stageDataRight;                             //プレイヤーが地面からどのくらい離れていたら浮いている判定にするか
-    int hStageModel_ = pStage_->GetModelHandle();         //モデル番号を取得
-    int hFloorModel_ = pFloor_->GetModelHandle();
+    hStageModel_ = pStage_->GetModelHandle();         //モデル番号を取得
+    hFloorModel_ = pFloor_->GetModelHandle();
     if (isJump_ == true)
     {
         //放物線に下がる処理
         positionTempY_ = positionY_;
         positionY_ += (positionY_ - positionPrevY_) - 0.007;
         positionPrevY_ = positionTempY_;
-        if (positionY_ <= -rayFloorDistDown_ + 0.6)
-        {
-            isJump_ = false;
-        }
-        if (positionY_ <= -rayStageDistDown_ + 0.6)
-        {
-            isJump_ = false;
-        }
+        isJump_ = (positionY_ <= -rayFloorDistDown_ + 0.6f) ? false : isJump_;
+        isJump_ = (positionY_ <= -rayStageDistDown_ + 0.6f) ? false : isJump_;
     }
 
     for (int i = 0; i <= 2; i++)
