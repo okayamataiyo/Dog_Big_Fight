@@ -24,7 +24,7 @@ class CollectPlayer : public PlayerBase
 private:
 	int hModel_;					//ƒ‚ƒfƒ‹”Ô†
 	int stageHModel_;
-	int hFloorModel_;
+	int floorHModel_;
 	int number_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;

@@ -11,7 +11,7 @@
 #include "../Object/WoodBox.h"
 
 AttackPlayer::AttackPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 },stageHModel_(0),hFloorModel_(0), number_(0), scoreTimeCounter_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
+    :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 },stageHModel_(0),floorHModel_(0), number_(0), scoreTimeCounter_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
     , pParent_(nullptr), pPlayScene_(nullptr), pCollectPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr),pStage_(nullptr),pFloor_(nullptr)
 {
     pParent_ = _pParent;
@@ -371,7 +371,7 @@ void AttackPlayer::PlayerRayCast()
     RayCastData stageDataDownLeft;
     RayCastData stageDataDownRight;                             //プレイヤーが地面からどのくらい離れていたら浮いている判定にするか
     stageHModel_ = pStage_->GetModelHandle();         //モデル番号を取得
-    hFloorModel_ = pFloor_->GetModelHandle();
+    floorHModel_ = pFloor_->GetModelHandle();
     if (isJump_ == true)
     {
         //放物線に下がる処理
@@ -387,7 +387,7 @@ void AttackPlayer::PlayerRayCast()
         //▼上の法線(すり抜け床のため)
         floorDataUp.start = transform_.position_;           //レイの発射位置
         floorDataUp.dir = XMFLOAT3(0, 1, 0);                //レイの方向
-        Model::RayCast(hFloorModel_ + i, &floorDataUp);         //レイを発射
+        Model::RayCast(floorHModel_ + i, &floorDataUp);         //レイを発射
         rayFloorDistUp_ = floorDataUp.dist;
         //ImGui::Text("rayUpDist_=%f", rayUpDist_);
 
@@ -397,7 +397,7 @@ void AttackPlayer::PlayerRayCast()
         floorDataDown.dir = XMFLOAT3(0, -1, 0);        //レイの方向
         if (floorDataUp.dist == 99999)
         {
-            Model::RayCast(hFloorModel_ + i, &floorDataDown);  //レイを発射
+            Model::RayCast(floorHModel_ + i, &floorDataDown);  //レイを発射
         }
         rayFloorDistDown_ = floorDataDown.dist;
         //ImGui::Text("rayFloorDist_=%f", rayFloorDist_);
