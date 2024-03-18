@@ -167,9 +167,9 @@ namespace Input
 	//マウスカーソルの位置をセット
 	void SetMousePosition(int x, int y)
 	{
-		//mousePos_.x = x;
-		//mousePos_.y = y;
-		SetCursorPos(x, y);
+		mousePos_.x = x;
+		mousePos_.y = y;
+		//SetCursorPos(x, y);
 	}
 
 

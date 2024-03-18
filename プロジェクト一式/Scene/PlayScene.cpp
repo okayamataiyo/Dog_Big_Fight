@@ -59,7 +59,8 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
-	Input::SetMousePosition(600, 600);
+	//Input::SetMousePosition(600, 600);
+	//SetCursorPos(600, 600);
 	if (boneCount_ == 0)
 	{
 		isCreateBone_ = true;

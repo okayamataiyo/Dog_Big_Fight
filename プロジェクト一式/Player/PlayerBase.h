@@ -11,6 +11,7 @@ public:
 		WALK,
 		RUN,
 		JUMP,
+		STUN,
 	};
 
 	enum class GAMESTATE
@@ -53,7 +54,7 @@ public:
 	//▼ノックバックで使うメンバ変数
 	int stunTimeCounter_;	//スタンしてからどのくらい経ったか
 	int stunLimit_;		//スタンしている時間
-	int isStun_;		//スタンしているかどうか
+	bool isStun_;		//スタンしているかどうか
 	bool isKnockBack_;	//ノックバックしているかどうか
 	//▼慣性で使うメンバ変数
 

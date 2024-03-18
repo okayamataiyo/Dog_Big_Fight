@@ -30,12 +30,12 @@ void Bone::Update()
 	transform_.rotate_.y += 1.0f;
 	RayCastData data;
 	Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
-	int hStageModel;
-	hStageModel = pStage->GetModelHandle();   //モデル番号を取得
+	int stageHModel;
+	stageHModel = pStage->GetModelHandle();   //モデル番号を取得
 	data.start = transform_.position_;  //レイの発射位置
 	data.start.y = 0;
 	data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-	Model::RayCast(hStageModel, &data);  //レイを発射
+	Model::RayCast(stageHModel, &data);  //レイを発射
 	rayDist_ = data.dist;
 
 	if (data.hit == true)

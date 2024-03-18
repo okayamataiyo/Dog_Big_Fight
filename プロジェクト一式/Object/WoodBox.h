@@ -14,9 +14,9 @@ private:
     std::vector<int> woodBoxs_;
 
     //▼レイキャストで使うメンバ変数
-    float posY_;            //木箱のY座標に代入する値
-    float posYPrev_;        //1フレーム前のY座標
-    float posYTemp_;        //1時的に座標を保存
+    float positionY_;            //木箱のY座標に代入する値
+    float positionPrevY_;        //1フレーム前のY座標
+    float positionTempY_;        //1時的に座標を保存
     bool isJump_;           //飛んでいるか
     int  isOnWoodBox_;      //木箱の上にいるか
     float rayWoodBoxDist_;  //木箱のディスト

@@ -10,7 +10,7 @@
 #include "../Object/Floor.h"
 #include "../Object/WoodBox.h"
 CollectPlayer::CollectPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, collectPlayerName), hModel_{-1},hStageModel_(-1),hFloorModel_(-1), number_(0),playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
+    :PlayerBase(_pParent, collectPlayerName), hModel_{-1},stageHModel_(-1),hFloorModel_(-1), number_(0),playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
     , pParent_(nullptr), pPlayScene_(nullptr), pAttackPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr),pStage_(nullptr),pFloor_(nullptr)
 {
     pParent_ = _pParent;
@@ -40,7 +40,7 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     angleDegrees_ = 0.0f;
     stunTimeCounter_ = 0;
     stunLimit_ = 0;
-    isStun_ = 0;
+    isStun_ = false;
     isKnockBack_ = false;
     rayFloorDistUp_ = 0.0f;
     rayFloorDistDown_ = 0.0f;
@@ -111,28 +111,29 @@ void CollectPlayer::UpdatePlay()
     {
         switch (playerState_)
         {
-        case PLAYERSTATE::WAIT:       Model::SetAnimFrame(hModel_, 0, 0, 1); break;
-        case PLAYERSTATE::WALK:       Model::SetAnimFrame(hModel_, 20, 60, 0.5); break;
-        case PLAYERSTATE::RUN:        Model::SetAnimFrame(hModel_, 80, 120, 0.5); break;
-        case PLAYERSTATE::JUMP:       Model::SetAnimFrame(hModel_, 120, 120, 1); break;
+        case PLAYERSTATE::WAIT:       Model::SetAnimFrame(hModel_, 0, 0, 1.0f); break;
+        case PLAYERSTATE::WALK:       Model::SetAnimFrame(hModel_, 20, 60, 0.5f); break;
+        case PLAYERSTATE::RUN:        Model::SetAnimFrame(hModel_, 80, 120, 0.5f); break;
+        case PLAYERSTATE::JUMP:       Model::SetAnimFrame(hModel_, 120, 120, 1.0f); break;
+        case PLAYERSTATE::STUN:       Model::SetAnimFrame(hModel_, 140, 200, 0.5f); break;
         }
     }
     playerStatePrev_ = playerState_;
     PlayerRayCast();
     PlayerKnockback();
     transform_.position_.y = positionY_;
-    if (isStun_ == 1)
+    if (isStun_)
     {
         stunTimeCounter_++;
         if (stunTimeCounter_ >= stunLimit_)
         {
             gameState_ = GAMESTATE::PLAY;
-            isStun_ = 0;
+            isStun_ = false;
             isKnockBack_ = false;
             stunTimeCounter_ = 0;
         }
     }
-    if (isStun_ == 0)
+    if (!isStun_)
     {
         PlayerMove();
     }
@@ -143,8 +144,8 @@ void CollectPlayer::UpdatePlay()
         Direct3D::SetIsChangeView(1);
     }
     //ImGui::Text("playerState_=%i", playerState_);
-    //ImGui::Text("posYPrev_=%f", posYPrev_);
-    //ImGui::Text("posYTemp_=%f", posYTemp_);
+    //ImGui::Text("positionPrevY_=%f", positionPrevY_);
+    //ImGui::Text("positionTempY_=%f", positionTempY_);
     ImGui::Text("Transform_.position_.x=%f", transform_.position_.x);
     ImGui::Text("Transform_.position_.y=%f", transform_.position_.y);
     ImGui::Text("Transform_.position_.z=%f", transform_.position_.z);
@@ -157,11 +158,11 @@ void CollectPlayer::UpdatePlay()
     {
         playerState_ = PLAYERSTATE::WALK;
     }
-    else if (isJump_ == false)
+    else if (!isJump_)
     {
         playerState_ = PLAYERSTATE::WAIT;
     }
-    if (Input::IsKey(DIK_LSHIFT) && isJump_ == false)
+    if (Input::IsKey(DIK_LSHIFT) && !isJump_)
     {
         playerState_ = PLAYERSTATE::RUN;
         isDash_ = true;
@@ -170,9 +171,13 @@ void CollectPlayer::UpdatePlay()
     {
         isDash_ = false;
     }
-    if (isJump_ == true)
+    if (isJump_)
     {
         playerState_ = PLAYERSTATE::JUMP;
+    }
+    if (isStun_)
+    {
+        playerState_ = PLAYERSTATE::STUN;
     }
 }
 
@@ -187,8 +192,8 @@ void CollectPlayer::UpdateGameOver()
 
 void CollectPlayer::Stun(int _timeLimit)
 {
-    //transform_.position_.y = posY_;
-    isStun_ = 1;
+    //transform_.position_.y = positionY_;
+    isStun_ = true;
     stunLimit_ = _timeLimit;
 }
 
@@ -352,9 +357,7 @@ void CollectPlayer::PlayerKnockback()
         vecKnockbackDirection = XMVector3Normalize(vecKnockbackDirection);
         float knockbackSpeed = 0.3f;
         SetKnockback(vecKnockbackDirection, knockbackSpeed);
-        pAttackPlayer_->SetKnockback(-vecKnockbackDirection, knockbackSpeed);
         Stun(30);
-        pAttackPlayer_->Stun(30);
     }
 }
 
@@ -362,12 +365,12 @@ void CollectPlayer::PlayerRayCast()
 {
     RayCastData floorDataUp;
     RayCastData floorDataDown;
-    RayCastData stageDataDown;
-    RayCastData stageDataFront;
-    RayCastData stageDataBack;
-    RayCastData stageDataLeft;
-    RayCastData stageDataRight;                 //プレイヤーが地面からどのくらい離れていたら浮いている判定にするか
-    hStageModel_ = pStage_->GetModelHandle();         //モデル番号を取得
+    RayCastData stageDataDownDown;
+    RayCastData stageDataDownFront;
+    RayCastData stageDataDownBack;
+    RayCastData stageDataDownLeft;
+    RayCastData stageDataDownRight;                 //プレイヤーが地面からどのくらい離れていたら浮いている判定にするか
+    stageHModel_ = pStage_->GetModelHandle();         //モデル番号を取得
     hFloorModel_ = pFloor_->GetModelHandle();
     if (isJump_ == true)
     {
@@ -415,11 +418,11 @@ void CollectPlayer::PlayerRayCast()
 
     }
     //▼下の法線(床に張り付き)
-    stageDataDown.start = transform_.position_;  //レイの発射位置
-    stageDataDown.start.y = 0;
-    stageDataDown.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-    Model::RayCast(hStageModel_, &stageDataDown); //レイを発射
-    rayStageDistDown_ = stageDataDown.dist;
+    stageDataDownDown.start = transform_.position_;  //レイの発射位置
+    stageDataDownDown.start.y = 0;
+    stageDataDownDown.dir = XMFLOAT3(0, -1, 0);       //レイの方向
+    Model::RayCast(stageHModel_, &stageDataDownDown); //レイを発射
+    rayStageDistDown_ = stageDataDownDown.dist;
     //プレイヤーが浮いていないとき
     //ImGui::Text("rayGravityDist_=%f", rayGravityDist_);
     if (rayStageDistDown_ + positionY_ <= isFling_)
@@ -428,7 +431,7 @@ void CollectPlayer::PlayerRayCast()
         if (isJump_ == false && isOnFloor_ == 0)
         {
             //地面に張り付き
-            positionY_ = -stageDataDown.dist + 0.6;
+            positionY_ = -stageDataDownDown.dist + 0.6;
             positionTempY_ = positionY_;
             positionPrevY_ = positionTempY_;
         }
@@ -438,10 +441,10 @@ void CollectPlayer::PlayerRayCast()
         isJump_ = true;
     }
     //▼前の法線(壁の当たり判定)
-    stageDataFront.start = transform_.position_;       //レイの発射位置
-    stageDataFront.dir = XMFLOAT3(0, 1, 1);            //レイの方向
-    Model::RayCast(hStageModel_, &stageDataFront);  //レイを発射
-    rayStageDistFront_ = stageDataFront.dist;
+    stageDataDownFront.start = transform_.position_;       //レイの発射位置
+    stageDataDownFront.dir = XMFLOAT3(0, 1, 1);            //レイの方向
+    Model::RayCast(stageHModel_, &stageDataDownFront);  //レイを発射
+    rayStageDistFront_ = stageDataDownFront.dist;
     //ImGui::Text("rayStageDistFront_=%f", rayStageDistFront_);
     if (rayStageDistFront_ <= 1.5f)
     {
@@ -449,10 +452,10 @@ void CollectPlayer::PlayerRayCast()
         transform_.position_.z = positionPrev_.z;
     }
     //▼後ろの法線(壁の当たり判定)
-    stageDataBack.start = transform_.position_;       //レイの発射位置
-    stageDataBack.dir = XMFLOAT3(0, 1, -1);           //レイの方向
-    Model::RayCast(hStageModel_, &stageDataBack);  //レイを発射
-    rayStageDistBack_ = stageDataBack.dist;
+    stageDataDownBack.start = transform_.position_;       //レイの発射位置
+    stageDataDownBack.dir = XMFLOAT3(0, 1, -1);           //レイの方向
+    Model::RayCast(stageHModel_, &stageDataDownBack);  //レイを発射
+    rayStageDistBack_ = stageDataDownBack.dist;
     //ImGui::Text("rayStageDistBack_=%f", rayStageDistBack_);
     if (rayStageDistBack_ <= 1.5f)
     {
@@ -460,10 +463,10 @@ void CollectPlayer::PlayerRayCast()
         transform_.position_.z = positionPrev_.z;
     }
     //▼左の法線(壁の当たり判定)
-    stageDataLeft.start = transform_.position_;       //レイの発射位置
-    stageDataLeft.dir = XMFLOAT3(-1, 1, 0);           //レイの方向
-    Model::RayCast(hStageModel_, &stageDataLeft);  //レイを発射
-    rayStageDistLeft_ = stageDataLeft.dist;
+    stageDataDownLeft.start = transform_.position_;       //レイの発射位置
+    stageDataDownLeft.dir = XMFLOAT3(-1, 1, 0);           //レイの方向
+    Model::RayCast(stageHModel_, &stageDataDownLeft);  //レイを発射
+    rayStageDistLeft_ = stageDataDownLeft.dist;
     //ImGui::Text("rayStageDistLeft_=%f", rayStageDistLeft_);
     if (rayStageDistLeft_ <= 1.5f)
     {
@@ -471,10 +474,10 @@ void CollectPlayer::PlayerRayCast()
         transform_.position_.x = positionPrev_.x;
     }
     //▼右の法線(壁の当たり判定)
-    stageDataRight.start = transform_.position_;       //レイの発射位置
-    stageDataRight.dir = XMFLOAT3(1, 1, 0);           //レイの方向
-    Model::RayCast(hStageModel_, &stageDataRight);  //レイを発射
-    rayStageDistRight_ = stageDataRight.dist;
+    stageDataDownRight.start = transform_.position_;       //レイの発射位置
+    stageDataDownRight.dir = XMFLOAT3(1, 1, 0);           //レイの方向
+    Model::RayCast(stageHModel_, &stageDataDownRight);  //レイを発射
+    rayStageDistRight_ = stageDataDownRight.dist;
     //ImGui::Text("rayStageDistRight_=%f", rayStageDistRight_);
     if (rayStageDistRight_ <= 1.5f)
     {

@@ -23,7 +23,7 @@ class AttackPlayer : public PlayerBase
 {
 private:
 	int hModel_;					//ƒ‚ƒfƒ‹”Ô†
-	int hStageModel_;
+	int stageHModel_;
 	int hFloorModel_;
 	int number_;
 	int scoreTimeCounter_;
