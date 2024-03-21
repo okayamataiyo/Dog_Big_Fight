@@ -1,23 +1,4 @@
-﻿W:\source\repos\okayamataiyo\Dog_Big_Fight\�v���W�F�N�g�ꎮ\Assets\Shader\BillBoard.hlsl(35,2-16): warning X3206: implicit truncation of vector type
-  
-  compilation object save succeeded; see W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Release\BillBoard.cso
-  compilation object save succeeded; see W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Release\Debug3D.cso
-W:\source\repos\okayamataiyo\Dog_Big_Fight\�v���W�F�N�g�ꎮ\Assets\Shader\Simple2D.hlsl(34,2-34): warning X3206: implicit truncation of vector type
-  
-  compilation object save succeeded; see W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Release\Simple2D.cso
-  compilation object save succeeded; see W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Release\Simple3D.cso
-  compilation object save succeeded; see W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Release\Sky.cso
-  compilation object save succeeded; see W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Release\ToonOutLine.cso
-W:\source\repos\okayamataiyo\Dog_Big_Fight\�v���W�F�N�g�ꎮ\NormalMapping.hlsl(65,5-19): warning X3206: implicit truncation of vector type
-W:\source\repos\okayamataiyo\Dog_Big_Fight\�v���W�F�N�g�ꎮ\NormalMapping.hlsl(67,23-44): warning X3206: 'cross': implicit truncation of vector type
-W:\source\repos\okayamataiyo\Dog_Big_Fight\�v���W�F�N�g�ꎮ\NormalMapping.hlsl(67,23-44): warning X3206: 'cross': implicit truncation of vector type
-W:\source\repos\okayamataiyo\Dog_Big_Fight\�v���W�F�N�g�ꎮ\NormalMapping.hlsl(68,16-39): warning X3206: 'mul': implicit truncation of vector type
-W:\source\repos\okayamataiyo\Dog_Big_Fight\�v���W�F�N�g�ꎮ\NormalMapping.hlsl(68,5-39): warning X3206: implicit truncation of vector type
-W:\source\repos\okayamataiyo\Dog_Big_Fight\�v���W�F�N�g�ꎮ\NormalMapping.hlsl(84,23-40): warning X3206: 'dot': implicit truncation of vector type
-W:\source\repos\okayamataiyo\Dog_Big_Fight\�v���W�F�N�g�ꎮ\NormalMapping.hlsl(97,23-42): warning X3206: 'dot': implicit truncation of vector type
-  
-  compilation object save succeeded; see W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Release\NormalMapping.cso
-  Button.cpp
+﻿  Button.cpp
 W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Button.cpp(48,25): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
 W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Button.cpp(48,21): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
 W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Button.cpp(64,33): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
@@ -65,27 +46,25 @@ W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Object\Bone.
   Floor.cpp
   ObjectManager.cpp
   WoodBox.cpp
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Object\WoodBox.cpp(75,38): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Object\WoodBox.cpp(106,43): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Object\WoodBox.cpp(128,41): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Object\WoodBox.cpp(76,53): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
   AttackPlayer.cpp
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(265,33): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(303,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(313,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(346,41): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(381,71): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(442,47): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(292,22): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(320,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(330,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(349,29): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(379,53): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(434,50): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
   CollectPlayer.cpp
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(264,33): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(302,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(312,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(345,41): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(380,71): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(441,47): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(291,22): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(320,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(330,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(349,29): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(379,53): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(434,50): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
   GameOverScene.cpp
   GameTitleScene.cpp
   PlayScene.cpp
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Scene\PlayScene.cpp(139,25): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Scene\PlayScene.cpp(143,25): warning C4305: '=': 'double' から 'float' へ切り詰めます。
   SelectScene.cpp
   コンパイル中...
   SolidText.cpp
@@ -94,7 +73,7 @@ W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Sky.cpp(26,3
   Stage.cpp
   コード生成しています。
   Previous IPDB not found, fall back to full compilation.
-  All 2323 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 2325 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   コード生成が終了しました。
 LibFbxSDK-MT.lib(fbxalloc.obj) : warning LNK4099: PDB '' が 'LibFbxSDK-MT.lib(fbxalloc.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
 LibFbxSDK-MT.lib(fbxstring.obj) : warning LNK4099: PDB '' が 'LibFbxSDK-MT.lib(fbxstring.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。

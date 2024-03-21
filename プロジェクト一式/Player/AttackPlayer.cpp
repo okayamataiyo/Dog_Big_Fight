@@ -61,9 +61,9 @@ void AttackPlayer::Initialize()
     //モデルデータのロード
     hModel_ = Model::Load("AttackPlayer.fbx");
     assert(hModel_ >= 0);
-    transform_.scale_ = { 0.5,0.5,0.5 };
+    transform_.scale_ = { 0.4,0.4,0.4 };
     positionY_ = transform_.position_.y;
-    pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
+    pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 2.0f);
     AddCollider(pCollision_);
     pPlayScene_ = (PlayScene*)FindObject("PlayScene");
     pStage_ = (Stage*)FindObject("Stage");
@@ -140,7 +140,7 @@ void AttackPlayer::UpdatePlay()
             stunTimeCounter_ = 0;
         }
     }
-    if (isStun_ == false)
+    if (!isStun_)
     {
         PlayerMove();
     }
@@ -165,7 +165,7 @@ void AttackPlayer::UpdatePlay()
     {
         playerState_ = PLAYERSTATE::WALK;
     }
-    else if (isJump_ == false)
+    else if (!isJump_)
     {
         playerState_ = PLAYERSTATE::WAIT;
     }
@@ -261,11 +261,11 @@ void AttackPlayer::PlayerMove()
 {
     if (isDash_ == false)
     {
-        //mouseMoveSpeed_ *= 0.9f;
+        mouseMoveSpeed_ = 0.4f;
     }
     else
     {
-        //mouseMoveSpeed_ *= 1.1f;
+        mouseMoveSpeed_ = 0.5f;
     }
     if (!(Input::IsPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER)))
     {

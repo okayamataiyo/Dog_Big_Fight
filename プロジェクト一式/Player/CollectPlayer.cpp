@@ -61,9 +61,9 @@ void CollectPlayer::Initialize()
     std::string ModelName = collectPlayerName + (std::string)".fbx";
     hModel_ = Model::Load(ModelName);
     assert(hModel_ >= 0);
-    transform_.scale_ = { 0.5,0.5,0.5 };
+    transform_.scale_ = { 0.4,0.4,0.4 };
     positionY_ = transform_.position_.y;
-    pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
+    pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 2.0f);
     AddCollider(pCollision_);
     pPlayScene_ = (PlayScene*)FindObject("PlayScene");
     pStage_ = (Stage*)FindObject("Stage");      //ステージオブジェクト
@@ -258,13 +258,13 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
 
 void CollectPlayer::PlayerMove()
 {
-    if (isDash_ == false)
+    if (!isDash_)
     {
-        //controllerMoveSpeed_ *= 0.9f;
+        controllerMoveSpeed_ = 0.4f;
     }
     else
     {
-        //controllerMoveSpeed_ *= 1.1f;
+        controllerMoveSpeed_ = 0.5f;
     }
     if (!(Input::IsKey(DIK_F)))
     {

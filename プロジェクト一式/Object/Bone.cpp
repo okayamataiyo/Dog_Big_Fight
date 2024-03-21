@@ -21,7 +21,7 @@ void Bone::Initialize()
 	SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
 	AddCollider(pCollision);
 
-	transform_.scale_ = { 0.2,0.2,0.2 };
+	transform_.scale_ = { 0.5,0.5,0.5 };
 	transform_.position_ = { 10,0,0 };
 }
 

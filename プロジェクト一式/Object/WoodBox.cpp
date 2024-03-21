@@ -22,11 +22,10 @@ void WoodBox::Initialize()
     //モデルデータのロード
     hModel_ = Model::Load("WoodBox.fbx");
     assert(hModel_ >= 0);
-    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.5f, 1.5f, 1.5f));
+    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(4.0f, 4.0f, 4.0f));
     //SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.5);
     AddCollider(pCollision);
     pPlayScene_ = (PlayScene*)FindObject("PlayScene");
-    positionY_ = transform_.position_.y;
 }
 
 void WoodBox::Update()
@@ -60,7 +59,7 @@ void WoodBox::Move()
 
 void WoodBox::RayCast()
 {
-    transform_.position_.y  = positionY_;
+    positionY_ = transform_.position_.y;
     RayCastData woodBoxDataDown;
     RayCastData stageDataDown;
     float woodBoxFling      = 2.0f;
@@ -105,10 +104,11 @@ void WoodBox::RayCast()
         {
             if (isJump_ == false)
             {
-                positionY_ = -woodBoxDataDown.dist + 0.6;
+                //positionY_ = -woodBoxDataDown.dist + 0.6;
                 isOnWoodBox_ = 1;
                 positionTempY_ = positionY_;
                 positionPrevY_ = positionTempY_;
+                positionY_ = positionPrevY_;
             }
         }
         else
@@ -125,9 +125,10 @@ void WoodBox::RayCast()
         {
             if (isJump_ == false && isOnWoodBox_ == 0)
             {
-                positionY_ += stageDataDown.dist;// + 0.6;  //地面の張り付き
+                //positionY_ += stageDataDown.dist + 0.6;  //地面の張り付き
                 positionTempY_ = positionY_;
                 positionPrevY_ = positionTempY_;
+                positionY_ = positionPrevY_;
             }
         }
         if(isOnWoodBox_ == 0 && rayStageDistDown_ >= woodBoxFling)
@@ -135,6 +136,7 @@ void WoodBox::RayCast()
             isJump_ = true;
         }
     }
+    transform_.position_.y = positionY_;
     ImGui::Text("rayWoodBoxDist_=%f", rayWoodBoxDist_);
     ImGui::Text("rayStageDistDown_=%f", rayStageDistDown_);
     ImGui::Text("isJump_=%s", isJump_ ? "true" : "false");

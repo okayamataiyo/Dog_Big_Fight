@@ -18,11 +18,11 @@ Stage::~Stage()
 void Stage::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("Ground.fbx");
+    hModel_ = Model::Load("Stage.fbx");
     assert(hModel_ >= 0);
-    transform_.position_.y = -10;
+    //aaaaaaaaatransform_.position_.y = -10;
     //transform_.rotate_.x= 90;
-    transform_.scale_ = { 25,15,25 };
+    transform_.scale_ = { 2,1,2 };
 }
 
 void Stage::Update()

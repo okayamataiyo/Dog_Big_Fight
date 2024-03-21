@@ -1,18 +1,3 @@
-﻿  AttackPlayer.cpp
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(265,33): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(303,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(313,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(346,41): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(381,71): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\AttackPlayer.cpp(442,47): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-  CollectPlayer.cpp
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(264,33): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(302,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(312,50): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(345,41): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(380,71): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Player\CollectPlayer.cpp(441,47): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-  PlayScene.cpp
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Scene\PlayScene.cpp(139,25): warning C4305: '=': 'double' から 'float' へ切り詰めます。
-  コードを生成中...
+﻿  WoodBox.cpp
+W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Object\WoodBox.cpp(76,53): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
   Dog_Big_Fight.vcxproj -> W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Debug\Dog_Big_Fight.exe

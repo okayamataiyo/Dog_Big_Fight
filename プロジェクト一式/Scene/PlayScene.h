@@ -21,13 +21,16 @@ private:
     Sky* pSky_;
     ObjectManager* pObjectManager_;
     XMFLOAT3 camVec_[2];
-    Transform floorPos_[3];
+    Transform floorPosition_[3];
     //▼骨の処理で使うメンバ変数
     int boneCount_;         //今ある骨の数
     bool isCreateBone_;     //骨を作ったかどうか
     //▼木箱の処理で使うメンバ変数
     int playerFirstCreatWoodBoxNum_;   //プレイヤー1が何個木箱を作ったか
     int playerSecondsCreatWoodBoxNum_; //プレイヤー2が何個木箱を作ったか
+    XMFLOAT3 attackPlayerPosition_;         //アタックプレイヤーの位置
+    XMVECTOR attackPlayerDirection_;   //アタックプレイヤーの向いてる位置
+    float frontPosition_;              //前にどのくらい移動させるか
     //▼演出で使うメンバ変数
     int time_;                         //時間を表す
     int blockOrCollect_;               //邪魔する側か収集する側か

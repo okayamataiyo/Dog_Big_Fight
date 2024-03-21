@@ -11,7 +11,8 @@
 #include "../Object/Bone.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
-	:GameObject(_pParent, "PlayScene"),boneCount_(0),isCreateBone_(false),playerFirstCreatWoodBoxNum_(0),playerSecondsCreatWoodBoxNum_(0),blockOrCollect_(0)
+	:GameObject(_pParent, "PlayScene"), boneCount_(0), isCreateBone_(false), playerFirstCreatWoodBoxNum_(0), playerSecondsCreatWoodBoxNum_(0)
+	, attackPlayerPosition_{}, attackPlayerDirection_{},frontPosition_(10.0f), blockOrCollect_(0)
 	,pObjectManager_(nullptr), pSky_(nullptr)
 {
 
@@ -24,9 +25,9 @@ void PlayScene::Initialize()
 	XMFLOAT3 firstPPos = { -3,0,0 };
 	XMFLOAT3 secondsPPos = { 3,0,0 };
 	Instantiate<Stage>(this);
-	floorPos_[0].position_ = { 30.0f,0.8f,3.0f };
-	floorPos_[1].position_ = { 6.0f,0.5f,20.0f };
-	floorPos_[2].position_ = { 25.0f, -0.3f,-20.0f };
+	floorPosition_[0].position_ = { 30.0f,0.8f,3.0f };
+	floorPosition_[1].position_ = { 6.0f,0.5f,20.0f };
+	floorPosition_[2].position_ = { 25.0f, -0.3f,-20.0f };
 	XMFLOAT3 scale		   = { 3.0f,1.0f,3.0f };
 	XMFLOAT3 DefaultData[2] = { XMFLOAT3(0.0f,0.0f,0.0f)	//0Ç≈èâä˙âª
 							   ,XMFLOAT3(1.0f,1.0f,1.0f) };	//1Ç≈èâä˙âª
@@ -35,9 +36,9 @@ void PlayScene::Initialize()
 							  ,XMFLOAT3(10.0f,-20.0f,40.0f) };
 	//for (int i = 0u; i <= 1; i++)
 	//{
-	//	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPos_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), XMFLOAT3(4.0f,1.0f,4.0f));
+	//	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPosition_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), XMFLOAT3(4.0f,1.0f,4.0f));
 	//}
-	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPos_[2].position_, XMFLOAT3(0.0f, 90.0f, 0.0f), XMFLOAT3(10.0f, 1.0f, 10.0f));
+	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPosition_[2].position_, XMFLOAT3(0.0f, 90.0f, 0.0f), XMFLOAT3(10.0f, 1.0f, 10.0f));
 
 	//for (int i = 0u; i <= 2; i++)
 	//{
@@ -59,6 +60,7 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
+
 	//Input::SetMousePosition(600, 600);
 	//SetCursorPos(600, 600);
 	if (boneCount_ == 0)
@@ -74,7 +76,7 @@ void PlayScene::Update()
 	{
 		for (int i = 0u; i <= 2u; i++)
 		{
-			pObjectManager_->CreateObject(OBJECTSTATE::BONE, -140, 140, -140, 140);
+			pObjectManager_->CreateObject(OBJECTSTATE::BONE, -100, 100, -100, 100);
 			boneCount_ += 1;
 		}
 	}
@@ -82,7 +84,13 @@ void PlayScene::Update()
 	{
 		if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y))
 		{
-			pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, pAttackPlayer_->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
+			attackPlayerPosition_ = pAttackPlayer_->GetPosition();
+			attackPlayerDirection_ = XMLoadFloat3(&attackPlayerPosition_) - Camera::VecGetPosition(1);
+			attackPlayerDirection_ = XMVectorSetY(attackPlayerDirection_, 0);
+			attackPlayerDirection_ = XMVector3Normalize(attackPlayerDirection_);
+			attackPlayerPosition_.x = attackPlayerPosition_.x + frontPosition_ * XMVectorGetX(attackPlayerDirection_);
+			attackPlayerPosition_.z = attackPlayerPosition_.z + frontPosition_ * XMVectorGetZ(attackPlayerDirection_);
+			pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, attackPlayerPosition_, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
 			playerSecondsCreatWoodBoxNum_ += 1;
 		}
 	}
@@ -118,7 +126,7 @@ void PlayScene::Update()
 		RotationY[0]				= -controller.y;
 		RotationX[1]				= mouse.x;
 		RotationY[1]				= mouse.y;
-		vecLength[1]			   -= (mouse.z) / 50;
+		vecLength[0]			   -= (mouse.z) / 50;
 
 		Dir[i] = XMLoadFloat3(&rDir);
 
