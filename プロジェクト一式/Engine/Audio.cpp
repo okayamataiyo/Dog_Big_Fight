@@ -1,8 +1,7 @@
 #include <xaudio2.h>
 #include <vector>
 #include "Audio.h"
-
-#define SAFE_DELETE_ARRAY(p) if(p){delete[] p; p = nullptr;}
+#include "Global.h"
 
 namespace Audio
 {
@@ -44,13 +43,13 @@ void Audio::Initialize()
 int Audio::Load(std::string fileName, bool isLoop, int svNum)
 {
 	//すでに同じファイルを使ってないかチェック
-	for (int i = 0; i < audioDatas.size(); i++)
-	{
-		if (audioDatas[i].fileName == fileName)
-		{
-			return i;
-		}
-	}
+	//for (int i = 0; i < audioDatas.size(); i++)
+	//{
+	//	if (audioDatas[i].fileName == fileName)
+	//	{
+	//		return i;
+	//	}
+	//}
 
 	//チャンク構造体
 	struct Chunk
@@ -150,12 +149,13 @@ int Audio::Load(std::string fileName, bool isLoop, int svNum)
 }
 
 //再生
-void Audio::Play(int ID)
+void Audio::Play(int ID, float volume)
 {
 	for (int i = 0; i < audioDatas[ID].svNum; i++)
 	{
 		XAUDIO2_VOICE_STATE state;
 		audioDatas[ID].pSourceVoice[i]->GetState(&state);
+		audioDatas[ID].pSourceVoice[i]->SetVolume(volume);
 
 		if (state.BuffersQueued == 0)
 		{

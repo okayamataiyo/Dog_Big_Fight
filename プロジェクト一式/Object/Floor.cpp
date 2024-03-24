@@ -36,11 +36,11 @@ void Floor::Update()
         transform_.position_.y -= 0.1f;
     }
 
-    if (transform_.position_.y >= 30.0f)
+    if (transform_.position_.y >= 10.0f)
     {
         upOrDown_ = 1;
     }
-    if (transform_.position_.y <= -10.0f)
+    if (transform_.position_.y <= 0.0f)
     {
         upOrDown_ = 0;
     }

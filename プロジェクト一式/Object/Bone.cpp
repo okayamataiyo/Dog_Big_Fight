@@ -1,11 +1,14 @@
 //インクルード
 #include "../Engine/Model.h"
+#include "../Engine/Audio.h"
 #include "Bone.h"
 #include "../Stage.h"
 #include "../Player/PlayerBase.h"
+#include "../Player/CollectPlayer.h"
+#include "../Scene/PlayScene.h"
 
 Bone::Bone(GameObject* _parent)
-	:ObjectBase(_parent, "Bone"), hModel_(-1)
+	:ObjectBase(_parent, "Bone"), hModel_(-1),hSound_{-1},pPlayScene_{nullptr}
 {
 }
 
@@ -15,12 +18,16 @@ Bone::~Bone()
 
 void Bone::Initialize()
 {
+	//サウンドのロード
+	hSound_ = Audio::Load("Sound/CollectBone.wav");
+	assert(hSound_ >= 0);
+	//モデルのロード
 	hModel_ = Model::Load("Bone.fbx");
 	assert(hModel_ >= 0);
 
 	SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
 	AddCollider(pCollision);
-
+	pPlayScene_ = (PlayScene*)FindObject("PlayScene");
 	transform_.scale_ = { 0.5,0.5,0.5 };
 	transform_.position_ = { 10,0,0 };
 }
@@ -56,9 +63,11 @@ void Bone::Release()
 
 void Bone::OnCollision(GameObject* _pTarget)
 {
-	if (_pTarget->GetObjectName().find("CollectPlayer") != std::string::npos)
+	//if (_pTarget->GetObjectName().find("CollectPlayer") != std::string::npos)
+	if(_pTarget->GetObjectName() == collectPlayerName)
 	{
-		//this->KillMe();
-		//((PlayerBase*)_pTarget)->Set
+		Audio::Play(hSound_, 0.3f);
+		this->KillMe();
+		pPlayScene_->AddBoneCount(-1);
 	}
 }

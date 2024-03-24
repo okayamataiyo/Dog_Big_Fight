@@ -3,11 +3,12 @@
 #include "../Engine/Input.h"
 #include "../Engine/Fbx.h"
 #include "../Engine/ImGui/imgui.h"
+#include "../Engine/Audio.h"
 #include "WoodBox.h"
 #include "../Stage.h"
 #include "ObjectManager.h"
 WoodBox::WoodBox(GameObject* _pParent)
-    :ObjectBase(_pParent, "WoodBox"), hModel_(-1),isOnWoodBox_(0)
+    :ObjectBase(_pParent, "WoodBox"), hModel_(-1), hSound_{ -1 },isOnWoodBox_(0)
 {
     pParent_ = _pParent;
 }
@@ -19,6 +20,9 @@ WoodBox::~WoodBox()
 
 void WoodBox::Initialize()
 {
+    //サウンドデータのロード
+    hSound_ = Audio::Load("Sound/WoodBoxBreak.wav");
+    assert(hSound_ >= 0);
     //モデルデータのロード
     hModel_ = Model::Load("WoodBox.fbx");
     assert(hModel_ >= 0);
@@ -68,7 +72,7 @@ void WoodBox::RayCast()
     int woodBoxHModelNow     = GetModelHandle();
     Stage* pStage           = (Stage*)FindObject("Stage");      //ステージオブジェクト
     int stageHModel         = pStage->GetModelHandle();         //モデル番号を取得
-    if (isJump_ == true)
+    if (isJump_)
     {
         //放物線に下がる処理
         positionTempY_ = positionY_;
@@ -83,6 +87,12 @@ void WoodBox::RayCast()
         {
             isJump_ = false;
         }
+    }
+
+    if (isBreak_)
+    {
+        Audio::Play(hSound_,0.3f);
+        this->KillMe();
     }
 
     //for (int i : vector) {}
@@ -102,7 +112,7 @@ void WoodBox::RayCast()
         rayWoodBoxDist_         = woodBoxDataDown.dist;
         if (rayWoodBoxDist_ <= woodBoxFling)
         {
-            if (isJump_ == false)
+            if (!isJump_)
             {
                 //positionY_ = -woodBoxDataDown.dist + 0.6;
                 isOnWoodBox_ = 1;
@@ -123,7 +133,7 @@ void WoodBox::RayCast()
         rayStageDistDown_ = stageDataDown.dist;
         if (rayStageDistDown_ <= woodBoxFling)
         {
-            if (isJump_ == false && isOnWoodBox_ == 0)
+            if (!isJump_ && isOnWoodBox_ == 0)
             {
                 //positionY_ += stageDataDown.dist + 0.6;  //地面の張り付き
                 positionTempY_ = positionY_;

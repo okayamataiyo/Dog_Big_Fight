@@ -1,11 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u4E00\u5F0F",
-    "\\\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u4E00\u5F0F\\Object",
-    "\\\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u4E00\u5F0F\\Player",
-    "\\\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u4E00\u5F0F\\Scene"
+    "\\\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u4E00\u5F0F"
   ],
-  "SelectedNode": "\\\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u4E00\u5F0F\\Scene\\PlayScene.cpp",
+  "SelectedNode": "\\\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u4E00\u5F0F\\Dog_Big_Fight.sln",
   "PreviewInSolutionExplorer": false
 }

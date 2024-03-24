@@ -23,8 +23,10 @@ class CollectPlayer : public PlayerBase
 {
 private:
 	int hModel_;					//モデル番号
+	int hSound_[4];					//サウンド番号
 	int stageHModel_;
 	int floorHModel_;
+	bool isBoneTatch_;
 	int number_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;

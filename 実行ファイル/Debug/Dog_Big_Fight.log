@@ -1,3 +1,0 @@
-﻿  WoodBox.cpp
-W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\Object\WoodBox.cpp(76,53): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
-  Dog_Big_Fight.vcxproj -> W:\source\repos\okayamataiyo\Dog_Big_Fight\プロジェクト一式\x64\Debug\Dog_Big_Fight.exe

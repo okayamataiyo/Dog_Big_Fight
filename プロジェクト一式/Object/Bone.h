@@ -2,6 +2,13 @@
 //インクルード
 #include "ObjectBase.h"
 
+class PlayScene;
+
+namespace
+{
+	std::string boneName = "Bone";
+}
+
 /// <summary>
 /// アイテムを管理するクラス
 /// </summary>
@@ -9,6 +16,8 @@ class Bone : public ObjectBase
 {
 protected:
 	int hModel_;
+	int hSound_;
+	PlayScene* pPlayScene_;
 	float rayDist_;
 public:
 	/// <summary>

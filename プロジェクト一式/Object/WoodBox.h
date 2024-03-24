@@ -9,6 +9,8 @@ class WoodBox : public ObjectBase
 {
 private:
     int hModel_;            //モデル
+    int hSound_;            //サウンドデータ
+    bool isBreak_;            //木箱が壊されたか
     GameObject* pParent_;
     PlayScene* pPlayScene_;
     std::vector<int> woodBoxs_;
@@ -50,4 +52,6 @@ public:
     int GetModelHandle() { return hModel_; }
 
     XMVECTOR GetVecPos() { return XMLoadFloat3(&transform_.position_); }
+
+    void SetWoodBoxBreak() { isBreak_ = true; }
 };

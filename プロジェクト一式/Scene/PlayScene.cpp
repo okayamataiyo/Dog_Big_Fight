@@ -11,7 +11,7 @@
 #include "../Object/Bone.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
-	:GameObject(_pParent, "PlayScene"), boneCount_(0), isCreateBone_(false), playerFirstCreatWoodBoxNum_(0), playerSecondsCreatWoodBoxNum_(0)
+	:GameObject(_pParent, "PlayScene"), boneCount_(0), isCreateBone_(false), woodBoxCount_(0)
 	, attackPlayerPosition_{}, attackPlayerDirection_{},frontPosition_(10.0f), blockOrCollect_(0)
 	,pObjectManager_(nullptr), pSky_(nullptr)
 {
@@ -27,7 +27,7 @@ void PlayScene::Initialize()
 	Instantiate<Stage>(this);
 	floorPosition_[0].position_ = { 30.0f,0.8f,3.0f };
 	floorPosition_[1].position_ = { 6.0f,0.5f,20.0f };
-	floorPosition_[2].position_ = { 25.0f, -0.3f,-20.0f };
+	floorPosition_[2].position_ = { -45.0f, 0.3f,-45.0f };
 	XMFLOAT3 scale		   = { 3.0f,1.0f,3.0f };
 	XMFLOAT3 DefaultData[2] = { XMFLOAT3(0.0f,0.0f,0.0f)	//0Ç≈èâä˙âª
 							   ,XMFLOAT3(1.0f,1.0f,1.0f) };	//1Ç≈èâä˙âª
@@ -80,7 +80,7 @@ void PlayScene::Update()
 			boneCount_ += 1;
 		}
 	}
-	if (playerSecondsCreatWoodBoxNum_ < 5)
+	if (woodBoxCount_ <= 5)
 	{
 		if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y))
 		{
@@ -91,51 +91,41 @@ void PlayScene::Update()
 			attackPlayerPosition_.x = attackPlayerPosition_.x + frontPosition_ * XMVectorGetX(attackPlayerDirection_);
 			attackPlayerPosition_.z = attackPlayerPosition_.z + frontPosition_ * XMVectorGetZ(attackPlayerDirection_);
 			pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, attackPlayerPosition_, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
-			playerSecondsCreatWoodBoxNum_ += 1;
+			woodBoxCount_ += 1;
 		}
 	}
+
+	static float RotationX[2] = {};
+	static float RotationY[2] = {};
+	static float vecLength[2] = {};
+	static float prevLen[2] = {};
+	static float prevRotX[2] = {};
+
+	mouse = Input::GetMouseMove();
+	controller = Input::GetPadStickR();
+	RotationX[0] = controller.x;
+	RotationY[0] = -controller.y;
+	RotationX[1] = mouse.x;
+	RotationY[1] = mouse.y;
+	vecLength[0] -= (mouse.z) / 50;
+
+	vPos[0] = pCollectPlayer_->GetVecPos();
+	vPos[1] = pAttackPlayer_->GetVecPos();
+	playerPos[0] = pCollectPlayer_->GetPosition();
+	playerPos[1] = pAttackPlayer_->GetPosition();
+
 	for (int i = 0u; i <= 1u; i++)
 	{
-		XMFLOAT3 Init				= { 0.0f,0.0f,0.0f };
-		XMVECTOR vPos[2]			= {};
-		XMFLOAT3 mouse				= Init;
-		XMFLOAT3 controller			= {};
-		XMFLOAT3 rDir				= { 0.0f,0.0f,1.0f };
-		XMVECTOR Dir[2]				= {};
-		float sigmaRotY[2]			= {};
-		float sigmaRotX[2]			= {};
-		XMMATRIX mxRotX[2]			= {};
-		XMMATRIX mxRotY[2]			= {};
-		XMMATRIX rot[2]				= {};
-		XMFLOAT3 playerPos[2]		= {};
-		XMFLOAT3 floatDir[2]		= {};
-		vPos[0]						= pCollectPlayer_->GetVecPos();
-		vPos[1]						= pAttackPlayer_->GetVecPos();
-		mouse						= Input::GetMouseMove();
-		controller					= Input::GetPadStickR();
-
-		const float mouseSens		= 400;
-		const float controllerSens	= 50;
-		static float RotationX[2]	= {};
-		static float RotationY[2]	= {};
-		static float vecLength[2]	= {};
-		static float prevLen[2]		= {};
-		static float prevRotX[2]	= {};
-
-		RotationX[0]				= controller.x;
-		RotationY[0]				= -controller.y;
-		RotationX[1]				= mouse.x;
-		RotationY[1]				= mouse.y;
-		vecLength[0]			   -= (mouse.z) / 50;
 
 		Dir[i] = XMLoadFloat3(&rDir);
 
 		//Dir = Dir * (pPlayer_[i]->GetRotate().x + RotationX[i]) * (pPlayer_[i]->GetRotate().y + RotationY[i]);
 		//Dir = Dir + (vecLength * 2);
-		camVec_[1].x			   += RotationY[0] / controllerSens;
-		camVec_[1].y			   += RotationX[0] / controllerSens;
-		camVec_[0].x			   += RotationY[1] / mouseSens;
-		camVec_[0].y			   += RotationX[1] / mouseSens;
+
+		camVec_[1].x += RotationY[0] / controllerSens;
+		camVec_[1].y += RotationX[0] / controllerSens;
+		camVec_[0].x += RotationY[1] / mouseSens;
+		camVec_[0].y += RotationX[1] / mouseSens;
 
 		sigmaRotY[i]				= camVec_[i].y;// +pPlayer_[i]->GetRotate().y;
 		sigmaRotX[i]				= -camVec_[i].x;// + EasingX[i]; +pPlayer_[i]->GetRotate().x;
@@ -158,8 +148,6 @@ void PlayScene::Update()
 		mxRotY[i] = XMMatrixRotationY(sigmaRotY[i]);
 
 		rot[i] = mxRotX[i] * mxRotY[i];
-		playerPos[0] = pCollectPlayer_->GetPosition();
-		playerPos[1] = pAttackPlayer_->GetPosition();
 
 		Dir[i] = XMVector3Transform(Dir[i], rot[i]);
 		Dir[i] = XMVector3Normalize(Dir[i]);
@@ -174,11 +162,10 @@ void PlayScene::Update()
 		//pCamera_->SetTarget(pPlayer_[i]->GetPosition(), i)
 		XMStoreFloat3(&floatDir[i], Dir[i]);
 		Camera::SetPosition(floatDir[i], i);
-		Camera::SetTarget(pAttackPlayer_->GetPosition(), 1);
-		Camera::SetTarget(pCollectPlayer_->GetPosition(), 0);
-
 		prevLen[i] = vecLength[i];
 	}
+	Camera::SetTarget(pAttackPlayer_->GetPosition(), 1);
+	Camera::SetTarget(pCollectPlayer_->GetPosition(), 0);
 }
 
 void PlayScene::Draw()

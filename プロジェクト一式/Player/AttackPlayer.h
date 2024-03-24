@@ -23,6 +23,7 @@ class AttackPlayer : public PlayerBase
 {
 private:
 	int hModel_;					//モデル番号
+	int hSound_[4];					//サウンド番号
 	int stageHModel_;
 	int floorHModel_;
 	int number_;

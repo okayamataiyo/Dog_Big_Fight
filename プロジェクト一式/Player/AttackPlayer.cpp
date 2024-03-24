@@ -4,6 +4,7 @@
 #include "../Engine/Direct3D.h"
 #include "../Engine/ImGui/imgui.h"
 #include "../Engine/Text.h"
+#include "../Engine/Audio.h"
 #include "AttackPlayer.h"
 #include "CollectPlayer.h"
 #include "../Stage.h"
@@ -11,7 +12,7 @@
 #include "../Object/WoodBox.h"
 
 AttackPlayer::AttackPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 },stageHModel_(0),floorHModel_(0), number_(0), scoreTimeCounter_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
+    :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1 }, stageHModel_(0),floorHModel_(0), number_(0), scoreTimeCounter_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
     , pParent_(nullptr), pPlayScene_(nullptr), pCollectPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr),pStage_(nullptr),pFloor_(nullptr)
 {
     pParent_ = _pParent;
@@ -58,8 +59,19 @@ AttackPlayer::~AttackPlayer()
 
 void AttackPlayer::Initialize()
 {
+    //サウンドデータのロード
+    hSound_[0] = Audio::Load("Sound/Stun.wav");
+    assert(hSound_[0] >= 0);
+    hSound_[1] = Audio::Load("Sound/Walk.wav");
+    assert(hSound_[1] >= 0);
+    hSound_[2] = Audio::Load("Sound/Jump.wav");
+    assert(hSound_[2] >= 0);
+    hSound_[3] = Audio::Load("Sound/Run.wav");
+    assert(hSound_[3] >= 0);
+
     //モデルデータのロード
-    hModel_ = Model::Load("AttackPlayer.fbx");
+    std::string ModelName = attackPlayerName + (std::string)".fbx";
+    hModel_ = Model::Load(ModelName);
     assert(hModel_ >= 0);
     transform_.scale_ = { 0.4,0.4,0.4 };
     positionY_ = transform_.position_.y;
@@ -99,12 +111,26 @@ void AttackPlayer::Release()
 
 void AttackPlayer::UpdateReady()
 {
+    RayCastData stageDataDown;
+    stageHModel_ = pStage_->GetModelHandle();         //モデル番号を取得
+    floorHModel_ = pFloor_->GetModelHandle();
+    //▼下の法線(地面に張り付き)
+    stageDataDown.start = transform_.position_;  //レイの発射位置
+    stageDataDown.start.y = 0;
+    stageDataDown.dir = XMFLOAT3(0, -1, 0);       //レイの方向
+    Model::RayCast(stageHModel_, &stageDataDown); //レイを発射
+    rayStageDistDown_ = stageDataDown.dist;
+    if (stageDataDown.hit)
+    {
+        transform_.position_.y = -stageDataDown.dist + 0.6;
+    }
     ++timeCounter_;
     if (timeCounter_ >= 60)
     {
         gameState_ = GAMESTATE::PLAY;
         timeCounter_ = 0;
     }
+    positionY_ = transform_.position_.y;
 }
 
 void AttackPlayer::UpdatePlay()
@@ -129,7 +155,7 @@ void AttackPlayer::UpdatePlay()
     PlayerRayCast();
     PlayerKnockback();
     transform_.position_.y = positionY_;
-    if (isStun_ == true)
+    if (isStun_)
     {
         stunTimeCounter_++;
         if (stunTimeCounter_ >= stunLimit_)
@@ -161,17 +187,22 @@ void AttackPlayer::UpdatePlay()
     ImGui::Text("prevPosition_.z=%f", prevPosition_.z);*/
     //ImGui::Text("angleDegrees_=%f", angleDegrees_);
     //ImGui::Text("timeCounter_=%i", timeCounter_);
-    if (IsMoving())
+    if (IsMoving() && !isJump_ && !isDash_)
     {
         playerState_ = PLAYERSTATE::WALK;
+        Audio::Play(hSound_[1],0.5f);
     }
-    else if (!isJump_)
+    if (!IsMoving() && !isJump_)
     {
         playerState_ = PLAYERSTATE::WAIT;
+        Audio::Stop(hSound_[1]);
+        Audio::Stop(hSound_[3]);
     }
-    if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !isJump_)
+    if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !isJump_ && IsMoving())
     {
         playerState_ = PLAYERSTATE::RUN;
+        Audio::Stop(hSound_[1]);
+        Audio::Play(hSound_[3], 0.2f);
         isDash_ = true;
     }
     else
@@ -220,13 +251,9 @@ void AttackPlayer::OnCollision(GameObject* _pTarget)
         if (angleDegrees_ <= 80)
         {
             PlayerJump();
-            pWoodBox_->KillMe();
-            pPlayScene_->AddPlayerFirstWoodBoxNum(-1);
+            pWoodBox_->SetWoodBoxBreak();
+            pPlayScene_->AddWoodBoxCount(-1);
         }
-    }
-    //WoodBoxという名前を持つ全てのオブジェクトの機能を実装
-    if (_pTarget->GetObjectName().find("WoodBox") != std::string::npos)
-    {
         if (angleDegrees_ > 80)
         {
             transform_.position_ = positionPrev_;
@@ -338,6 +365,17 @@ void AttackPlayer::PlayerMove()
     if (Input::IsPadButton(XINPUT_GAMEPAD_A) && isJump_ == false)
     {
         PlayerJump();
+        Audio::Stop(hSound_[1]);
+        Audio::Stop(hSound_[3]);
+        Audio::Play(hSound_[2],0.5f);
+    }
+    if (transform_.position_.z <= -99.0f || transform_.position_.z >= 99.0f)
+    {
+        transform_.position_.z = positionPrev_.z;
+    }
+    if (transform_.position_.x <= -99.0f || transform_.position_.x >= 99.0f)
+    {
+        transform_.position_.x = positionPrev_.x;
     }
 }
 
