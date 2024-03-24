@@ -63,6 +63,7 @@ public:
     void Release() override;
     std::vector<int> GetWoodBoxs() { return pObjectManager_->GetWoodBoxs(); }
     int GetBlockOrCollect() { return blockOrCollect_; }
+    XMFLOAT3 GetAttackPlayerPosition() { return attackPlayerPosition_; }
     void AddBoneCount(int _boneCount) { boneCount_ += _boneCount; }
     void AddWoodBoxCount(int _woodBoxCount) { woodBoxCount_ += _woodBoxCount; }
 };

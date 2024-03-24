@@ -254,6 +254,10 @@ void AttackPlayer::OnCollision(GameObject* _pTarget)
             pWoodBox_->SetWoodBoxBreak();
             pPlayScene_->AddWoodBoxCount(-1);
         }
+    }
+    //WoodBoxという名前を持つ全てのオブジェクトを参照
+    if (_pTarget->GetObjectName().find("WoodBox") != std::string::npos)
+    {
         if (angleDegrees_ > 80)
         {
             transform_.position_ = positionPrev_;

@@ -168,6 +168,9 @@
     <ClCompile Include="StageObject\Stage.cpp">
       <Filter>StageObject</Filter>
     </ClCompile>
+    <ClCompile Include="Object\FrameBox.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -308,6 +311,9 @@
     </ClInclude>
     <ClInclude Include="StageObject\Stage.h">
       <Filter>StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\FrameBox.h">
+      <Filter>Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

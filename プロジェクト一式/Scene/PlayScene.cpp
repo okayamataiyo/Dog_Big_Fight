@@ -6,6 +6,7 @@
 #include "../Player/CollectPlayer.h"
 #include "../Object/Floor.h"
 #include "../Object/WoodBox.h"
+#include "../Object/FrameBox.h"
 #include "../Object/Bone.h"
 #include "../StageObject/Stage.h"
 #include "../StageObject/Sky.h"
@@ -52,6 +53,7 @@ void PlayScene::Initialize()
 	camVec_[1].x = 0;
 	camVec_[1].y = 5;
 	camVec_[1].z = -10;
+	pObjectManager_->CreateObject(OBJECTSTATE::FRAMEBOX);
 	pAttackPlayer_->SetCollectPlayer(pCollectPlayer_);
 	pCollectPlayer_->SetAttackPlayer(pAttackPlayer_);
 	pAttackPlayer_->SetPosition(firstPPos);
@@ -60,7 +62,12 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
-
+	attackPlayerPosition_ = pAttackPlayer_->GetPosition();
+	attackPlayerDirection_ = XMLoadFloat3(&attackPlayerPosition_) - Camera::VecGetPosition(1);
+	attackPlayerDirection_ = XMVectorSetY(attackPlayerDirection_, 0);
+	attackPlayerDirection_ = XMVector3Normalize(attackPlayerDirection_);
+	attackPlayerPosition_.x = attackPlayerPosition_.x + frontPosition_ * XMVectorGetX(attackPlayerDirection_);
+	attackPlayerPosition_.z = attackPlayerPosition_.z + frontPosition_ * XMVectorGetZ(attackPlayerDirection_);
 	//Input::SetMousePosition(600, 600);
 	//SetCursorPos(600, 600);
 	if (boneCount_ == 0)
@@ -84,12 +91,6 @@ void PlayScene::Update()
 	{
 		if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y))
 		{
-			attackPlayerPosition_ = pAttackPlayer_->GetPosition();
-			attackPlayerDirection_ = XMLoadFloat3(&attackPlayerPosition_) - Camera::VecGetPosition(1);
-			attackPlayerDirection_ = XMVectorSetY(attackPlayerDirection_, 0);
-			attackPlayerDirection_ = XMVector3Normalize(attackPlayerDirection_);
-			attackPlayerPosition_.x = attackPlayerPosition_.x + frontPosition_ * XMVectorGetX(attackPlayerDirection_);
-			attackPlayerPosition_.z = attackPlayerPosition_.z + frontPosition_ * XMVectorGetZ(attackPlayerDirection_);
 			pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, attackPlayerPosition_, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
 			woodBoxCount_ += 1;
 		}

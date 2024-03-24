@@ -164,6 +164,7 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="Object\Bone.cpp" />
     <ClCompile Include="Object\Floor.cpp" />
+    <ClCompile Include="Object\FrameBox.cpp" />
     <ClCompile Include="Object\ObjectManager.cpp" />
     <ClCompile Include="Object\WoodBox.cpp" />
     <ClCompile Include="Player\AttackPlayer.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="Object\Bone.h" />
     <ClInclude Include="Object\Floor.h" />
+    <ClInclude Include="Object\FrameBox.h" />
     <ClInclude Include="Object\ObjectBase.h" />
     <ClInclude Include="Object\ObjectManager.h" />
     <ClInclude Include="Object\WoodBox.h" />

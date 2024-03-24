@@ -2,10 +2,12 @@
 //インクルード
 #include "ObjectBase.h"
 #include <vector>
+
 enum class OBJECTSTATE
 {
     FLOOR = 0,
     WOODBOX,
+    FRAMEBOX,
     BONE
 };
 

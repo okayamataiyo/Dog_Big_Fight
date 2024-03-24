@@ -257,12 +257,15 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
             pPlayScene_->AddWoodBoxCount(-1);
 
         }
+    }
+    //WoodBoxという名前を持つ全てのオブジェクトを参照
+    if (_pTarget->GetObjectName().find("WoodBox") != std::string::npos)
+    {
         if (angleDegrees_ > 80)
         {
             transform_.position_ = positionPrev_;
         }
     }
-
     isBoneTatch_ = (_pTarget->GetObjectName() == boneName);
     ++number_;
     if (number_ >= woodBoxs.size())

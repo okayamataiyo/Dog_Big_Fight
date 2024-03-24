@@ -3,6 +3,7 @@
 #include "ObjectManager.h"
 #include "Floor.h"
 #include "WoodBox.h"
+#include "FrameBox.h"
 #include "Bone.h"
 
 
@@ -21,6 +22,9 @@ void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT
 		woodBoxs_.push_back(pObjectBase_->GetModelHandle());
 		pObjectBase_->SetObjectName(woodBoxNumber);
 		number_++;
+		break;
+	case OBJECTSTATE::FRAMEBOX:
+		pObjectBase_ = Instantiate<FrameBox>(pParent_);
 		break;
 	case OBJECTSTATE::BONE:
 		pObjectBase_ = Instantiate<Bone>(pParent_);

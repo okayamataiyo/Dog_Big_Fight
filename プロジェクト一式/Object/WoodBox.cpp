@@ -43,7 +43,7 @@ void WoodBox::Draw()
 {
     //for (int i = 0u; i <= 1; i++)
     {
-        Direct3D::SetBlendMode(Direct3D::BLEND_ADD);
+        //Direct3D::SetShader(Direct3D::SHADER_NORMALMAP);
         Model::SetTransform(hModel_, transform_);
         //Å‰‚É3D‚Å•`‰æŒãA˜g‚Ã‚¯‚à•`‰æ
         /*for (int j = 0; j <= 4; j += 4)
@@ -52,6 +52,7 @@ void WoodBox::Draw()
             Model::Draw(hModel_[i]);
         }*/
         Model::Draw(hModel_);
+        //Direct3D::SetShader(Direct3D::SHADER_3D);
     }
 }
 
