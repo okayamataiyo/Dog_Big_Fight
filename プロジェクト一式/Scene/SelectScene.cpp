@@ -2,7 +2,9 @@
 #include "../Engine/SceneManager.h"
 #include "../Engine/Direct3D.h"
 #include "SelectScene.h"
-#include "../Sky.h"
+#include "../StageObject/SolidText.h"
+#include "../StageObject/Sky.h"
+
 SelectScene::SelectScene(GameObject* _pParent)
 	:GameObject(_pParent, "SelectScene")
 {
@@ -25,6 +27,11 @@ void SelectScene::Update()
 	camPos_.z -= 15;
 	Camera::SetPosition(camPos_, 0);
 	Camera::SetTarget(pText_->GetPosition(), 0);
+	Camera::SetPosition(camPos_, 1);
+	Camera::SetTarget(pText_->GetPosition(), 1);
+
+	transform_.rotate_.y += 0.3f;
+
 	XMFLOAT3 pos = Input::GetMousePosition();
 //	if (buttonStart_->MouseInArea(pos))
 	{

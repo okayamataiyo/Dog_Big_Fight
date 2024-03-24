@@ -1,4 +1,5 @@
 #include "SolidText.h"
+#include "../Engine/Direct3D.h"
 
 SolidText::SolidText(GameObject* _pParent)
 	:GameObject(_pParent, "Text"), hModel_{ -1,-1, -1 },textState_(Select)
@@ -29,8 +30,10 @@ void SolidText::Draw()
 		Model::Draw(hModel_[0]);
 		break;
 	case TEXTSTATE::Select:
+		Direct3D::SetShader(Direct3D::SHADER_CULLNONEBOARD);
 		Model::SetTransform(hModel_[1], transform_);
 		Model::Draw(hModel_[1]);
+		Direct3D::SetShader(Direct3D::SHADER_3D);
 		break;
 	case TEXTSTATE::GameTitle:
 		Model::SetTransform(hModel_[2], transform_);

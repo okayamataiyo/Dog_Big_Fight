@@ -1,7 +1,7 @@
 #pragma once
 //インクルード
-#include "Engine/Model.h"
-#include "Engine/GameObject.h"
+#include "../Engine/Model.h"
+#include "../Engine/GameObject.h"
 
 class SolidText : public GameObject
 {

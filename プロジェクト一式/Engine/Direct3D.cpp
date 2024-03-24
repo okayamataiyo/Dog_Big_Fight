@@ -164,12 +164,12 @@ namespace Direct3D
 			ZeroMemory(&BlendDesc, sizeof(BlendDesc));
 			BlendDesc.AlphaToCoverageEnable = FALSE;
 			BlendDesc.IndependentBlendEnable = FALSE;
-			BlendDesc.RenderTarget[0].BlendEnable = TRUE;
 
+			BlendDesc.RenderTarget[0].BlendEnable = TRUE;
 			BlendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 			BlendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-
 			BlendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+
 			BlendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 			BlendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 			BlendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
@@ -410,6 +410,76 @@ namespace Direct3D
 			rdc.FillMode = D3D11_FILL_SOLID;
 			rdc.FrontCounterClockwise = FALSE;	//反時計回りは表面じゃない
 			pDevice_->CreateRasterizerState(&rdc, &shaderBundle[SHADER_SKY].pRasterizerState);
+		}
+
+		//CULLNONEBOARD
+		{
+			// 頂点シェーダの作成（コンパイル）
+			ID3DBlob* pCompileVS = NULL;
+			D3DCompileFromFile(L"Shader/CullNoneBoard.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+			pDevice_->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shaderBundle[SHADER_CULLNONEBOARD].pVertexShader);
+
+
+			// ピクセルシェーダの作成（コンパイル）
+			ID3DBlob* pCompilePS = NULL;
+			D3DCompileFromFile(L"Shader/CullNoneBoard.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
+			pDevice_->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &shaderBundle[SHADER_CULLNONEBOARD].pPixelShader);
+
+
+			// 頂点レイアウトの作成（1頂点の情報が何のデータをどんな順番で持っているか）
+			D3D11_INPUT_ELEMENT_DESC layout[] = {
+				{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, vectorSize * 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },	//頂点位置
+				{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, vectorSize * 1, D3D11_INPUT_PER_VERTEX_DATA, 0 },	//法線
+				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, vectorSize * 2, D3D11_INPUT_PER_VERTEX_DATA, 0 },	//テクスチャ（UV）座標
+			};
+			pDevice_->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shaderBundle[SHADER_CULLNONEBOARD].pVertexLayout);
+
+
+			//シェーダーが無事作成できたので、コンパイルしたやつはいらない
+			pCompileVS->Release();
+			pCompilePS->Release();
+
+			//ラスタライザ作成
+			D3D11_RASTERIZER_DESC rdc = {};
+			rdc.CullMode = D3D11_CULL_NONE;
+			rdc.FillMode = D3D11_FILL_SOLID;
+			rdc.FrontCounterClockwise = FALSE;	//反時計回りは表面じゃない
+			pDevice_->CreateRasterizerState(&rdc, &shaderBundle[SHADER_CULLNONEBOARD].pRasterizerState);
+		}
+
+		//NORMALMAP
+		{
+			//頂点シェーダの作成(コンパイル)
+			ID3DBlob* pCompileVS = nullptr;
+			D3DCompileFromFile(L"Shader/NormalMapping.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+			pDevice_->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),NULL, &(shaderBundle[SHADER_NORMALMAP].pVertexShader));
+
+			//ピクセルシェーダの作成（コンパイル）
+			ID3DBlob* pCompilePS = nullptr;
+			D3DCompileFromFile(L"Shader/NormalMapping.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
+			pDevice_->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &(shaderBundle[SHADER_NORMALMAP].pPixelShader));
+
+			//頂点インプットレイアウト
+			D3D11_INPUT_ELEMENT_DESC layout[] = {
+				{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 0 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },	//位置
+				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,	  0, sizeof(DirectX::XMVECTOR) * 1 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },	//UV座標
+				{ "NORMAL",	  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },	//法線
+				{ "TANGENT",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 3 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },	//接線
+			};
+			pDevice_->CreateInputLayout(layout, ARRAYSIZE(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),&(shaderBundle[SHADER_NORMALMAP].pVertexLayout));
+
+			//シェーダーが無事作成できたので、コンパイルしたやつはいらない
+			pCompileVS->Release();
+			pCompilePS->Release();
+
+			//ラスタライザ作成
+			D3D11_RASTERIZER_DESC rdc = {};
+			rdc.CullMode = D3D11_CULL_BACK;
+			rdc.FillMode = D3D11_FILL_SOLID;
+			rdc.FrontCounterClockwise = FALSE;
+			rdc.ScissorEnable = false;
+			rdc.MultisampleEnable = false;
+			pDevice_->CreateRasterizerState(&rdc, &(shaderBundle[SHADER_NORMALMAP].pRasterizerState));
 		}
 	}
 

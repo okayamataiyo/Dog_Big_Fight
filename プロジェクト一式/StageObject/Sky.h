@@ -1,6 +1,6 @@
 #pragma once
 //インクルード
-#include "Engine/GameObject.h"
+#include "../Engine/GameObject.h"
 
 //Skyを管理するクラス
 class Sky : public GameObject

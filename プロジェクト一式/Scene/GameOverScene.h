@@ -2,7 +2,8 @@
 //インクルード
 #include "../Engine/GameObject.h"
 #include "../Engine/Camera.h"
-#include "../SolidText.h"
+
+class SolidText;
 
 class GameOverScene : public GameObject
 {

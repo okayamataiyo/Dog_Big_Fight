@@ -2,11 +2,14 @@
 //インクルード
 #include "../Engine/GameObject.h"
 #include "../Engine/Camera.h"
-#include "../SolidText.h"
+
+class SolidText;
+class Stage;
 
 class GameTitleScene : public GameObject
 {
 	SolidText* pText_;
+	Stage* pStage_;
 	XMFLOAT3 camPos_;
 public:
 	GameTitleScene(GameObject* _pParent);

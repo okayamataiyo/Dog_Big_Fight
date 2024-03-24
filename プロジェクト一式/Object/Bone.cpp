@@ -2,10 +2,10 @@
 #include "../Engine/Model.h"
 #include "../Engine/Audio.h"
 #include "Bone.h"
-#include "../Stage.h"
 #include "../Player/PlayerBase.h"
 #include "../Player/CollectPlayer.h"
 #include "../Scene/PlayScene.h"
+#include "../StageObject/Stage.h"
 
 Bone::Bone(GameObject* _parent)
 	:ObjectBase(_parent, "Bone"), hModel_(-1),hSound_{-1},pPlayScene_{nullptr}

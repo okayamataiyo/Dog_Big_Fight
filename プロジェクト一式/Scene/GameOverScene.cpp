@@ -3,7 +3,8 @@
 #include "../Engine/Direct3D.h"
 #include "../Engine/Image.h"
 #include "GameOverScene.h"
-#include "../Sky.h"
+#include "../StageObject/Sky.h"
+#include "../StageObject/SolidText.h"
 GameOverScene::GameOverScene(GameObject* _pParent)
 	:GameObject(_pParent, "GameOverScene")
 {

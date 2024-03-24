@@ -2,8 +2,9 @@
 //インクルード
 #include "../Engine/GameObject.h"
 #include "../Engine/Camera.h"
-#include "../SolidText.h"
 #include "../Button.h"
+
+class SolidText;
 
 class SelectScene : public GameObject
 {

@@ -8,10 +8,10 @@
 #include "../Engine/VFX.h"
 #include "CollectPlayer.h"
 #include "AttackPlayer.h"
-#include "../Stage.h"
 #include "../Object/Floor.h"
 #include "../Object/WoodBox.h"
 #include "../Object/Bone.h"
+#include "../StageObject/Stage.h"
 
 CollectPlayer::CollectPlayer(GameObject* _pParent)
     :PlayerBase(_pParent, collectPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1 },stageHModel_(-1), floorHModel_(-1), number_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)

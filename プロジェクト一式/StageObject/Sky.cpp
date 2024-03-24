@@ -1,6 +1,6 @@
 #include "Sky.h"
-#include "Engine/Model.h"
-#include "Engine/Direct3D.h"
+#include "../Engine/Model.h"
+#include "../Engine/Direct3D.h"
 
 Sky::Sky(GameObject* _parent)
 	:GameObject(_parent, "Sky"), hModel_(-1)

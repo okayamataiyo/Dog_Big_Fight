@@ -5,8 +5,9 @@
 #include "../Engine/ImGui/imgui.h"
 #include "../Engine/Audio.h"
 #include "WoodBox.h"
-#include "../Stage.h"
 #include "ObjectManager.h"
+#include "../StageObject/Stage.h"
+
 WoodBox::WoodBox(GameObject* _pParent)
     :ObjectBase(_pParent, "WoodBox"), hModel_(-1), hSound_{ -1 },isOnWoodBox_(0)
 {
@@ -40,8 +41,9 @@ void WoodBox::Update()
 
 void WoodBox::Draw()
 {
-    for (int i = 0u; i <= 1; i++)
+    //for (int i = 0u; i <= 1; i++)
     {
+        Direct3D::SetBlendMode(Direct3D::BLEND_ADD);
         Model::SetTransform(hModel_, transform_);
         //Å‰‚É3D‚Å•`‰æŒãA˜g‚Ã‚¯‚à•`‰æ
         /*for (int j = 0; j <= 4; j += 4)

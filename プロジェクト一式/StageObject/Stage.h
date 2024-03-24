@@ -1,8 +1,8 @@
 #pragma once
 //インクルード
 #include <string>
-#include "Engine/GameObject.h"
-#include "Engine/Direct3D.h"
+#include "../Engine/GameObject.h"
+#include "../Engine/Direct3D.h"
 
 using std::string;
 //Stageを管理するクラス

@@ -4,11 +4,11 @@
 #include "PlayScene.h"
 #include "../Player/AttackPlayer.h"
 #include "../Player/CollectPlayer.h"
-#include "../Sky.h"
 #include "../Object/Floor.h"
 #include "../Object/WoodBox.h"
-#include "../Stage.h"
 #include "../Object/Bone.h"
+#include "../StageObject/Stage.h"
+#include "../StageObject/Sky.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
 	:GameObject(_pParent, "PlayScene"), boneCount_(0), isCreateBone_(false), woodBoxCount_(0)

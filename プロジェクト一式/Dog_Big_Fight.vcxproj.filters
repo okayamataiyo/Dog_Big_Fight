@@ -36,6 +36,9 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{85b8fbd8-eb1c-4f95-808d-97da4e7650fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="StageObject">
+      <UniqueIdentifier>{6578c92d-fd63-4d1c-b692-c75d954a1052}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -107,7 +110,6 @@
     <ClCompile Include="Engine\VFX.cpp">
       <Filter>Engine\ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="Sky.cpp" />
     <ClCompile Include="Engine\ImGui\imgui.cpp">
       <Filter>Engine\ImGui</Filter>
     </ClCompile>
@@ -126,8 +128,6 @@
     <ClCompile Include="Engine\ImGui\imgui_widgets.cpp">
       <Filter>Engine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="SolidText.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Object\Bone.cpp">
       <Filter>Object</Filter>
@@ -158,6 +158,15 @@
     </ClCompile>
     <ClCompile Include="Scene\SelectScene.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="StageObject\Sky.cpp">
+      <Filter>StageObject</Filter>
+    </ClCompile>
+    <ClCompile Include="StageObject\SolidText.cpp">
+      <Filter>StageObject</Filter>
+    </ClCompile>
+    <ClCompile Include="StageObject\Stage.cpp">
+      <Filter>StageObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,7 +236,6 @@
     <ClInclude Include="Engine\VFX.h">
       <Filter>Engine\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="Sky.h" />
     <ClInclude Include="Engine\ImGui\imconfig.h">
       <Filter>Engine\ImGui</Filter>
     </ClInclude>
@@ -252,11 +260,9 @@
     <ClInclude Include="Engine\ImGui\imstb_truetype.h">
       <Filter>Engine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Stage.h" />
     <ClInclude Include="Engine\SceneManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="SolidText.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Object\Bone.h">
       <Filter>Object</Filter>
@@ -294,6 +300,15 @@
     <ClInclude Include="Scene\SelectScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="StageObject\Sky.h">
+      <Filter>StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject\SolidText.h">
+      <Filter>StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject\Stage.h">
+      <Filter>StageObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">
@@ -314,7 +329,10 @@
     <FxCompile Include="Assets\Shader\Sky.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="NormalMapping.hlsl">
+    <FxCompile Include="Assets\Shader\NormalMapping.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Assets\Shader\CullNoneBoard.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

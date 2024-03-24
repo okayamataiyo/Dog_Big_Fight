@@ -7,9 +7,9 @@
 #include "../Engine/Audio.h"
 #include "AttackPlayer.h"
 #include "CollectPlayer.h"
-#include "../Stage.h"
 #include "../Object/Floor.h"
 #include "../Object/WoodBox.h"
+#include "../StageObject/Stage.h"
 
 AttackPlayer::AttackPlayer(GameObject* _pParent)
     :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1 }, stageHModel_(0),floorHModel_(0), number_(0), scoreTimeCounter_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
