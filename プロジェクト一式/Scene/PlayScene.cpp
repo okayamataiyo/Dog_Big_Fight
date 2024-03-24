@@ -35,6 +35,7 @@ void PlayScene::Initialize()
 	XMFLOAT3 WoodBox[3]		= {XMFLOAT3(30.0f,-5.0f,40.0f)
 							  ,XMFLOAT3(20.0f,-10.0f,40.0f)
 							  ,XMFLOAT3(10.0f,-20.0f,40.0f) };
+	XMFLOAT3 FrameBox = { XMFLOAT3(5.0f,5.0f,5.0f) };
 	//for (int i = 0u; i <= 1; i++)
 	//{
 	//	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPosition_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), XMFLOAT3(4.0f,1.0f,4.0f));
@@ -53,7 +54,7 @@ void PlayScene::Initialize()
 	camVec_[1].x = 0;
 	camVec_[1].y = 5;
 	camVec_[1].z = -10;
-	pObjectManager_->CreateObject(OBJECTSTATE::FRAMEBOX);
+	pObjectManager_->CreateObject(OBJECTSTATE::FRAMEBOX,DefaultData[0], DefaultData[1], FrameBox);
 	pAttackPlayer_->SetCollectPlayer(pCollectPlayer_);
 	pCollectPlayer_->SetAttackPlayer(pAttackPlayer_);
 	pAttackPlayer_->SetPosition(firstPPos);

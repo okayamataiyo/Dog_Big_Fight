@@ -26,11 +26,11 @@ void FrameBox::Initialize()
     //hSound_ = Audio::Load("Sound/FrameBoxBreak.wav");
     //assert(hSound_ >= 0);
     //モデルデータのロード
-    //hModel_ = Model::Load("FrameBox.fbx");
-    //assert(hModel_ >= 0);
-    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f));
+    hModel_ = Model::Load("DebugCollision/BoxCollider.fbx");
+    assert(hModel_ >= 0);
+    //BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f));
     //SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.5);
-    AddCollider(pCollision);
+    //AddCollider(pCollision);
     pPlayScene_ = (PlayScene*)FindObject("PlayScene");
     pAttackPlayer_ = (AttackPlayer*)FindObject(attackPlayerName);
 }
@@ -42,8 +42,10 @@ void FrameBox::Update()
 
 void FrameBox::Draw()
 {
-    //Model::SetTransform(hModel_, transform_);
-    //Model::Draw(hModel_);
+    Direct3D::SetShader(Direct3D::SHADER_UNLIT);
+    Model::SetTransform(hModel_, transform_);
+    Model::Draw(hModel_);
+    Direct3D::SetShader(Direct3D::SHADER_3D);
 }
 
 void FrameBox::Release()

@@ -25,6 +25,7 @@ public:
 	int timeCounter_;
 	int score_;			//得点
 	//▼移動で使うメンバ変数
+	XMVECTOR CamPositionVec_;
 	XMFLOAT3 positionPrev_;		//1フレーム前の位置座標
 	float controllerMoveSpeed_;
 	float mouseMoveSpeed_;

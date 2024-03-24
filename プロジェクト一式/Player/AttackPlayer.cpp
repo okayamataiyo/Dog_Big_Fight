@@ -18,6 +18,7 @@ AttackPlayer::AttackPlayer(GameObject* _pParent)
     pParent_ = _pParent;
     timeCounter_ = 0;
     score_ = 0;
+    CamPositionVec_ = {};
     positionPrev_ = { 0.0f,0.0f,0.0f };
     controllerMoveSpeed_ = 0.3f;
     mouseMoveSpeed_ = 0.3f;
@@ -301,6 +302,7 @@ void AttackPlayer::PlayerMove()
     if (!(Input::IsPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER)))
     {
         XMVECTOR vecCam = {};
+        CamPositionVec_ = Camera::VecGetPosition(1);
         vecCam = -(Camera::VecGetPosition(1) - Camera::VecGetTarget(1));
         XMFLOAT3 camRot = {};
         XMStoreFloat3(&camRot, vecCam);
