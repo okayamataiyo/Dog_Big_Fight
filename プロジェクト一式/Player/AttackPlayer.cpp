@@ -136,6 +136,10 @@ void AttackPlayer::UpdateReady()
 
 void AttackPlayer::UpdatePlay()
 {
+    if (transform_.position_.y <= -100)
+    {
+        transform_.position_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    }
     if (playerStatePrev_ != playerState_)
     {
         switch (playerState_)

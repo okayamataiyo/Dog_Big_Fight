@@ -116,8 +116,10 @@ public:
 
 	int GetScore() { return score_; }
 
-	bool IsMoving() override;
-
 	int GetModelHandle() override { return hModel_; };
+
+	int GetIsJump() { return isJump_; }
+
+	bool IsMoving() override;
 };
 

@@ -23,6 +23,9 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     score_ = 0;
     time_ = 0;
     timeWait_ = 30;
+    isPush_ = false;
+    pushTime_ = 0;
+    pushTimeWait_ = 30;
     positionPrev_ = { 0.0f,0.0f,0.0f };
     controllerMoveSpeed_ = 0.3f;
     mouseMoveSpeed_ = 0.3f;
@@ -142,6 +145,37 @@ void CollectPlayer::UpdateReady()
 
 void CollectPlayer::UpdatePlay()
 {
+    if (transform_.position_.y <= -100)
+    {
+        transform_.position_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    }
+
+    if (Input::IsMouseButtonDown(0))
+    {
+        isPush_ = true;
+    }
+    if (isPush_)
+    {
+        ++pushTime_;
+        if (pushTime_ <= 1)
+        {
+            PushJump();
+        }
+
+        XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
+        vecDirection = XMVectorSetY(vecDirection, 1);
+        vecDirection = XMVector3Normalize(vecDirection);
+        float PushSpeed = 0.6f;
+        transform_.position_.x = transform_.position_.x + PushSpeed * XMVectorGetX(vecDirection);
+        //transform_.position_.y = transform_.position_.y + PushSpeed * XMVectorGetY(vecDirection);
+        transform_.position_.z = transform_.position_.z + PushSpeed * XMVectorGetZ(vecDirection);
+        if (pushTime_ >= pushTimeWait_)
+        {
+            isPush_ = false;
+            pushTime_ = 0;
+        }
+    }
+
     if (playerStatePrev_ != playerState_)
     {
         switch (playerState_)
@@ -168,7 +202,7 @@ void CollectPlayer::UpdatePlay()
             stunTimeCounter_ = 0;
         }
     }
-    if (!isStun_)
+    if (!isStun_ || !isPush_)
     {
         PlayerMove();
     }
@@ -222,7 +256,7 @@ void CollectPlayer::UpdatePlay()
 
     if (isBoneTatch_)
     {
-        time_++;
+        ++time_;
         if (time_ >= timeWait_)
         {
             score_ += 10;
@@ -411,6 +445,14 @@ void CollectPlayer::PlayerJump()
     isJump_ = true;
     positionPrevY_ = positionY_;
     positionY_ = positionY_ + 0.3;
+}
+
+void CollectPlayer::PushJump()
+{
+    //ÉWÉÉÉìÉvÇÃèàóù
+    isJump_ = true;
+    positionPrevY_ = positionY_;
+    positionY_ = positionY_ + 0.1;
 }
 
 void CollectPlayer::PlayerKnockback()

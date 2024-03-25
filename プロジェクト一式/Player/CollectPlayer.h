@@ -32,6 +32,9 @@ private:
 	int number_;
 	int time_;
 	int timeWait_;
+	bool isPush_;
+	int pushTime_;
+	int pushTimeWait_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
 	GAMESTATE gameState_;
@@ -101,6 +104,8 @@ public:
 	/// プレイヤーのジャンプ関数
 	/// </summary>
 	void PlayerJump() override;
+
+	void PushJump();
 
 	void PlayerKnockback() override;
 

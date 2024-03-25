@@ -117,7 +117,7 @@ void PlayScene::Update()
 	}
 	if (woodBoxCount_ <= 5)
 	{
-		if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y))
+		if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y) && !pAttackPlayer_->GetIsJump())
 		{
 			pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, attackPlayerPosition_, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
 			woodBoxCount_ += 1;
