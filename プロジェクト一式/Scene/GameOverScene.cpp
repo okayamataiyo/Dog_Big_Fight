@@ -2,18 +2,22 @@
 #include "../Engine/SceneManager.h"
 #include "../Engine/Direct3D.h"
 #include "../Engine/Image.h"
+#include "../Engine/Audio.h"
 #include "GameOverScene.h"
 #include "../StageObject/StageObjectManager.h"
 #include "../StageObject/SolidText.h"
 
 GameOverScene::GameOverScene(GameObject* _pParent)
-	:GameObject(_pParent, "GameOverScene"),pStageObjectManager_(nullptr)
+	:GameObject(_pParent, "GameOverScene"),pStageObjectManager_(nullptr),hSound_(-1)
 {
 
 }
 
 void GameOverScene::Initialize()
 {
+	//サウンドデータのロード
+	hSound_ = Audio::Load("Sound/GameOverBGM.wav");
+	assert(hSound_ >= 0);
 	//画像データのロード
 	pText_ = Instantiate<SolidText>(this);
 	pText_->SetMode(0);
@@ -23,6 +27,7 @@ void GameOverScene::Initialize()
 
 void GameOverScene::Update()
 {
+	Audio::Play(hSound_, 0.1f);
 	camPos_ = pText_->GetPosition();
 	camPos_.y += 2;
 	camPos_.z -= 15;

@@ -88,7 +88,7 @@ void PlayScene::Update()
 	{
 
 		Audio::Stop(hSound_[0]);
-		Audio::Play(hSound_[random_value_],0.1f);
+		Audio::Play(hSound_[random_value_],0.05f);
 	}
 	attackPlayerPosition_ = pAttackPlayer_->GetPosition();
 	attackPlayerDirection_ = XMLoadFloat3(&attackPlayerPosition_) - Camera::VecGetPosition(1);

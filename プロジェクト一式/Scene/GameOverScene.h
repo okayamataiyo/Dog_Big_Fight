@@ -8,6 +8,7 @@ class StageObjectManager;
 
 class GameOverScene : public GameObject
 {
+	int hSound_;
 	SolidText* pText_;
 	StageObjectManager* pStageObjectManager_;
 	XMFLOAT3 camPos_;

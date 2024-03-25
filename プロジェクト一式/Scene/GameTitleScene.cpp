@@ -2,18 +2,22 @@
 #include "../Engine/SceneManager.h"
 #include "../Engine/Direct3D.h"
 #include "../Engine/Image.h"
+#include "../Engine/Audio.h"
 #include "GameTitleScene.h"
 #include "../StageObject/StageObjectManager.h"
 #include "../StageObject/SolidText.h"
 
 GameTitleScene::GameTitleScene(GameObject* _pParent)
-	:GameObject(_pParent, "GameTitleScene"),pText_(nullptr),pStageObjectManager_(nullptr)
+	:GameObject(_pParent, "GameTitleScene"),pText_(nullptr),pStageObjectManager_(nullptr),hSound_(-1)
 {
 
 }
 
 void GameTitleScene::Initialize()
 {
+	//サウンドデータのロード
+	hSound_ = Audio::Load("Sound/TitleBGM.wav");
+	assert(hSound_ >= 0);
 	Direct3D::SetIsChangeView(1);
 	pText_ = Instantiate<SolidText>(this);
 	pText_->SetMode(2);
@@ -25,6 +29,7 @@ void GameTitleScene::Initialize()
 
 void GameTitleScene::Update()
 {
+	Audio::Play(hSound_, 0.1f);
 	camPos_ = pText_->GetPosition();
 	camPos_.y += 2;
 	camPos_.z -= 15;
