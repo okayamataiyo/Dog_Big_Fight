@@ -9,6 +9,7 @@ class SphereCollider;
 class WoodBox;
 class Text;
 class Stage;
+class StageBlock;
 class Floor;
 
 namespace
@@ -23,11 +24,14 @@ class CollectPlayer : public PlayerBase
 {
 private:
 	int hModel_;					//モデル番号
-	int hSound_[4];					//サウンド番号
+	int hSound_[5];					//サウンド番号
+	int stageBlockHModel_;
 	int stageHModel_;
 	int floorHModel_;
 	bool isBoneTatch_;
 	int number_;
+	int time_;
+	int timeWait_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
 	GAMESTATE gameState_;
@@ -38,6 +42,7 @@ private:
 	WoodBox* pWoodBox_;
 	Text* pText_;
 	Stage* pStage_;
+	StageBlock* pStageBlock_;
 	Floor* pFloor_;
 public:
 
@@ -113,6 +118,8 @@ public:
 	XMVECTOR GetVecPos() override { return XMLoadFloat3(&transform_.position_); }
 
 	PLAYERSTATE GetPlayerState() override { return playerState_; }
+
+	int GetScore() { return score_; }
 
 	bool IsMoving() override;
 

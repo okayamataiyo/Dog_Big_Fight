@@ -3,7 +3,7 @@
 #include "../Engine/Direct3D.h"
 
 Sky::Sky(GameObject* _parent)
-	:GameObject(_parent, "Sky"), hModel_(-1)
+	:StageObjectBase(_parent, "Sky"), hModel_(-1)
 {
 
 }

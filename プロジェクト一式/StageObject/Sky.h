@@ -1,9 +1,9 @@
 #pragma once
 //インクルード
-#include "../Engine/GameObject.h"
+#include "StageObjectBase.h"
 
 //Skyを管理するクラス
-class Sky : public GameObject
+class Sky : public StageObjectBase
 {
     int hModel_;    //モデル番号
 public:
@@ -32,4 +32,6 @@ public:
     //bool IsWall(int x, int z);
     //▼セッター・ゲッター
     void SetRotate(XMFLOAT3 _rotate) { transform_.rotate_ = _rotate; }
+
+    int GetModelHandle() { return hModel_; }
 };

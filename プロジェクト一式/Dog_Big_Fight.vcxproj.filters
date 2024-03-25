@@ -171,6 +171,12 @@
     <ClCompile Include="Object\FrameBox.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="StageObject\StageBlock.cpp">
+      <Filter>StageObject</Filter>
+    </ClCompile>
+    <ClCompile Include="StageObject\StageObjectManager.cpp">
+      <Filter>StageObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -314,6 +320,15 @@
     </ClInclude>
     <ClInclude Include="Object\FrameBox.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject\StageBlock.h">
+      <Filter>StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject\StageObjectBase.h">
+      <Filter>StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject\StageObjectManager.h">
+      <Filter>StageObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

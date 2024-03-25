@@ -409,11 +409,11 @@ void AttackPlayer::PlayerRayCast()
 {
     RayCastData floorDataUp;
     RayCastData floorDataDown;
-    RayCastData stageDataDownDown;
-    RayCastData stageDataDownFront;
-    RayCastData stageDataDownBack;
-    RayCastData stageDataDownLeft;
-    RayCastData stageDataDownRight;                             //プレイヤーが地面からどのくらい離れていたら浮いている判定にするか
+    RayCastData stageDataDown;
+    RayCastData stageDataFront;
+    RayCastData stageDataBack;
+    RayCastData stageDataLeft;
+    RayCastData stageDataRight;                             //プレイヤーが地面からどのくらい離れていたら浮いている判定にするか
     stageHModel_ = pStage_->GetModelHandle();         //モデル番号を取得
     floorHModel_ = pFloor_->GetModelHandle();
     if (isJump_ == true)
@@ -462,11 +462,11 @@ void AttackPlayer::PlayerRayCast()
 
     }
     //▼下の法線(地面に張り付き)
-    stageDataDownDown.start = transform_.position_;  //レイの発射位置
-    stageDataDownDown.start.y = 0;
-    stageDataDownDown.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-    Model::RayCast(stageHModel_, &stageDataDownDown); //レイを発射
-    rayStageDistDown_ = stageDataDownDown.dist;
+    stageDataDown.start = transform_.position_;  //レイの発射位置
+    stageDataDown.start.y = 0;
+    stageDataDown.dir = XMFLOAT3(0, -1, 0);       //レイの方向
+    Model::RayCast(stageHModel_, &stageDataDown); //レイを発射
+    rayStageDistDown_ = stageDataDown.dist;
     //プレイヤーが浮いていないとき
     //ImGui::Text("rayGravityDist_=%f", rayGravityDist_);
     if (rayStageDistDown_ + positionY_ <= isFling_)
@@ -475,7 +475,7 @@ void AttackPlayer::PlayerRayCast()
         if (isJump_ == false && isOnFloor_ == 0)
         {
             //地面に張り付き
-            positionY_ = -stageDataDownDown.dist + 0.6;
+            positionY_ = -stageDataDown.dist + 0.6;
             positionTempY_ = positionY_;
             positionPrevY_ = positionTempY_;
         }
@@ -485,10 +485,10 @@ void AttackPlayer::PlayerRayCast()
         isJump_ = true;
     }
     //▼前の法線(壁の当たり判定)
-    stageDataDownFront.start = transform_.position_;       //レイの発射位置
-    stageDataDownFront.dir = XMFLOAT3(0, 1, 1);            //レイの方向
-    Model::RayCast(stageHModel_, &stageDataDownFront);  //レイを発射
-    rayStageDistFront_ = stageDataDownFront.dist;
+    stageDataFront.start = transform_.position_;       //レイの発射位置
+    stageDataFront.dir = XMFLOAT3(0, 1, 1);            //レイの方向
+    Model::RayCast(stageHModel_, &stageDataFront);  //レイを発射
+    rayStageDistFront_ = stageDataFront.dist;
     //ImGui::Text("rayStageDistFront_=%f", rayStageDistFront_);
     if (rayStageDistFront_ <= 1.5f)
     {
@@ -496,10 +496,10 @@ void AttackPlayer::PlayerRayCast()
         transform_.position_.z = positionPrev_.z;
     }
     //▼後ろの法線(壁の当たり判定)
-    stageDataDownBack.start = transform_.position_;       //レイの発射位置
-    stageDataDownBack.dir = XMFLOAT3(0, 1, -1);           //レイの方向
-    Model::RayCast(stageHModel_, &stageDataDownBack);  //レイを発射
-    rayStageDistBack_ = stageDataDownBack.dist;
+    stageDataBack.start = transform_.position_;       //レイの発射位置
+    stageDataBack.dir = XMFLOAT3(0, 1, -1);           //レイの方向
+    Model::RayCast(stageHModel_, &stageDataBack);  //レイを発射
+    rayStageDistBack_ = stageDataBack.dist;
     //ImGui::Text("rayStageDistBack_=%f", rayStageDistBack_);
     if (rayStageDistBack_ <= 1.5f)
     {
@@ -507,10 +507,10 @@ void AttackPlayer::PlayerRayCast()
         transform_.position_.z = positionPrev_.z;
     }
     //▼左の法線(壁の当たり判定)
-    stageDataDownLeft.start = transform_.position_;       //レイの発射位置
-    stageDataDownLeft.dir = XMFLOAT3(-1, 1, 0);           //レイの方向
-    Model::RayCast(stageHModel_, &stageDataDownLeft);  //レイを発射
-    rayStageDistLeft_ = stageDataDownLeft.dist;
+    stageDataLeft.start = transform_.position_;       //レイの発射位置
+    stageDataLeft.dir = XMFLOAT3(-1, 1, 0);           //レイの方向
+    Model::RayCast(stageHModel_, &stageDataLeft);  //レイを発射
+    rayStageDistLeft_ = stageDataLeft.dist;
     //ImGui::Text("rayStageDistLeft_=%f", rayStageDistLeft_);
     if (rayStageDistLeft_ <= 1.5f)
     {
@@ -518,10 +518,10 @@ void AttackPlayer::PlayerRayCast()
         transform_.position_.x = positionPrev_.x;
     }
     //▼右の法線(壁の当たり判定)
-    stageDataDownRight.start = transform_.position_;       //レイの発射位置
-    stageDataDownRight.dir = XMFLOAT3(1, 1, 0);           //レイの方向
-    Model::RayCast(stageHModel_, &stageDataDownRight);  //レイを発射
-    rayStageDistRight_ = stageDataDownRight.dist;
+    stageDataRight.start = transform_.position_;       //レイの発射位置
+    stageDataRight.dir = XMFLOAT3(1, 1, 0);           //レイの方向
+    Model::RayCast(stageHModel_, &stageDataRight);  //レイを発射
+    rayStageDistRight_ = stageDataRight.dist;
     //ImGui::Text("rayStageDistRight_=%f", rayStageDistRight_);
     if (rayStageDistRight_ <= 1.5f)
     {

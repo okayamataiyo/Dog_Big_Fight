@@ -1,12 +1,12 @@
 #pragma once
 //インクルード
 #include <string>
-#include "../Engine/GameObject.h"
+#include "StageObjectBase.h"
 #include "../Engine/Direct3D.h"
 
 using std::string;
 //Stageを管理するクラス
-class Stage : public GameObject
+class Stage : public StageObjectBase
 {
     int hModel_;    //モデル番号
 public:

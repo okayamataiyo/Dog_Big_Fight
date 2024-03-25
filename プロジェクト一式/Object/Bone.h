@@ -16,7 +16,6 @@ class Bone : public ObjectBase
 {
 protected:
 	int hModel_;
-	int hSound_;
 	PlayScene* pPlayScene_;
 	float rayDist_;
 public:

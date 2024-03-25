@@ -62,6 +62,7 @@ public:
 	//▼壁判定で使うメンバ変数
 	float rayFloorDistUp_;			//上のすり抜け床とプレイヤーの差距離
 	float rayFloorDistDown_;		//下のすり抜け床とプレイヤーの差距離
+	float rayStageBlockDistDown_;
 	float rayStageDistDown_;		//地面とプレイヤーの差距離
 	float rayStageDistFront_;		//前壁とプレイヤーの差距離
 	float rayStageDistBack_;		//後壁とプレイヤーの差距離

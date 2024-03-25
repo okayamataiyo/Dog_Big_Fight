@@ -3,12 +3,11 @@
 #include "../Engine/Direct3D.h"
 #include "../Engine/Image.h"
 #include "GameTitleScene.h"
+#include "../StageObject/StageObjectManager.h"
 #include "../StageObject/SolidText.h"
-#include "../StageObject/Sky.h"
-#include "../StageObject/Stage.h"
 
 GameTitleScene::GameTitleScene(GameObject* _pParent)
-	:GameObject(_pParent, "GameTitleScene"),pText_(nullptr),pStage_(nullptr)
+	:GameObject(_pParent, "GameTitleScene"),pText_(nullptr),pStageObjectManager_(nullptr)
 {
 
 }
@@ -18,9 +17,10 @@ void GameTitleScene::Initialize()
 	Direct3D::SetIsChangeView(1);
 	pText_ = Instantiate<SolidText>(this);
 	pText_->SetMode(2);
-	Instantiate<Sky>(this);
-	pStage_ = Instantiate<Stage>(this);
-	pStage_->SetPosition(XMFLOAT3(0.0f, 0.0f, 120.0f));
+	XMFLOAT3 positionStage = { 0.0f,0.0f,120.0f };
+	pStageObjectManager_ = new StageObjectManager(this);
+	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::Sky);
+	pStageObjectManager_->CreateStageObject(STAGEOBJECTSTATE::Stage, positionStage);
 }
 
 void GameTitleScene::Update()

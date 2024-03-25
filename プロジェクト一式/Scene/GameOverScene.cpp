@@ -3,10 +3,11 @@
 #include "../Engine/Direct3D.h"
 #include "../Engine/Image.h"
 #include "GameOverScene.h"
-#include "../StageObject/Sky.h"
+#include "../StageObject/StageObjectManager.h"
 #include "../StageObject/SolidText.h"
+
 GameOverScene::GameOverScene(GameObject* _pParent)
-	:GameObject(_pParent, "GameOverScene")
+	:GameObject(_pParent, "GameOverScene"),pStageObjectManager_(nullptr)
 {
 
 }
@@ -16,7 +17,8 @@ void GameOverScene::Initialize()
 	//画像データのロード
 	pText_ = Instantiate<SolidText>(this);
 	pText_->SetMode(0);
-	Instantiate<Sky>(this);
+	pStageObjectManager_ = new StageObjectManager(this);
+	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::Sky);
 }
 
 void GameOverScene::Update()

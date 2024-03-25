@@ -176,6 +176,8 @@
     <ClCompile Include="StageObject\Sky.cpp" />
     <ClCompile Include="StageObject\SolidText.cpp" />
     <ClCompile Include="StageObject\Stage.cpp" />
+    <ClCompile Include="StageObject\StageBlock.cpp" />
+    <ClCompile Include="StageObject\StageObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
@@ -226,6 +228,9 @@
     <ClInclude Include="StageObject\Sky.h" />
     <ClInclude Include="StageObject\SolidText.h" />
     <ClInclude Include="StageObject\Stage.h" />
+    <ClInclude Include="StageObject\StageBlock.h" />
+    <ClInclude Include="StageObject\StageObjectBase.h" />
+    <ClInclude Include="StageObject\StageObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">

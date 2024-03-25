@@ -8,7 +8,7 @@
 #include "../StageObject/Stage.h"
 
 Bone::Bone(GameObject* _parent)
-	:ObjectBase(_parent, "Bone"), hModel_(-1),hSound_{-1},pPlayScene_{nullptr}
+	:ObjectBase(_parent, "Bone"), hModel_(-1),pPlayScene_{nullptr}
 {
 }
 
@@ -18,9 +18,6 @@ Bone::~Bone()
 
 void Bone::Initialize()
 {
-	//サウンドのロード
-	hSound_ = Audio::Load("Sound/CollectBone.wav");
-	assert(hSound_ >= 0);
 	//モデルのロード
 	hModel_ = Model::Load("Bone.fbx");
 	assert(hModel_ >= 0);
@@ -66,7 +63,6 @@ void Bone::OnCollision(GameObject* _pTarget)
 	//if (_pTarget->GetObjectName().find("CollectPlayer") != std::string::npos)
 	if(_pTarget->GetObjectName() == collectPlayerName)
 	{
-		Audio::Play(hSound_, 0.3f);
 		this->KillMe();
 		pPlayScene_->AddBoneCount(-1);
 	}

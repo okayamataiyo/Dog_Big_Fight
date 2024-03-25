@@ -1,31 +1,41 @@
+#include <random>
 #include "../Engine/Input.h"
 #include "../Engine/SceneManager.h"
 #include "../Engine/ImGui/imgui.h"
+#include "../Engine/Audio.h"
 #include "PlayScene.h"
 #include "../Player/AttackPlayer.h"
 #include "../Player/CollectPlayer.h"
-#include "../Object/Floor.h"
 #include "../Object/WoodBox.h"
 #include "../Object/FrameBox.h"
 #include "../Object/Bone.h"
-#include "../StageObject/Stage.h"
-#include "../StageObject/Sky.h"
+#include "../StageObject/StageObjectManager.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
-	:GameObject(_pParent, "PlayScene"), boneCount_(0), isCreateBone_(false), woodBoxCount_(0)
+	:GameObject(_pParent, "PlayScene"), hSound_{-1,-1,-1}, boneCount_(0), isCreateBone_(false), woodBoxCount_(0)
 	, attackPlayerPosition_{}, attackPlayerDirection_{},frontPosition_(10.0f), blockOrCollect_(0)
-	,pObjectManager_(nullptr), pSky_(nullptr)
+	,pObjectManager_(nullptr),pStageObjectManager_(nullptr)
 {
 
 }
 
 void PlayScene::Initialize()
 {
+	//サウンドデータのロード
+	hSound_[0] = Audio::Load("Sound/BGM.wav");
+	assert(hSound_[0] >= 0);
+	hSound_[1] = Audio::Load("Sound/LastBGM.wav");
+	assert(hSound_[1] >= 0);
+	hSound_[2] = Audio::Load("Sound/LastBGM2.wav");
+	assert(hSound_[2] >= 0);
 	pObjectManager_ = new ObjectManager(this);
-	pSky_ = Instantiate<Sky>(this);
-	XMFLOAT3 firstPPos = { -3,0,0 };
-	XMFLOAT3 secondsPPos = { 3,0,0 };
-	Instantiate<Stage>(this);
+	pStageObjectManager_ = new StageObjectManager(this);
+	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::Sky);
+	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::Stage);
+	for (int i = 0; i <= 2; i++)
+	{
+		pStageObjectManager_->CreateStageObject(STAGEOBJECTSTATE::StageBlock, -100.0f, 100.0f, -100.0f, 100.0f);
+	}
 	floorPosition_[0].position_ = { 30.0f,0.8f,3.0f };
 	floorPosition_[1].position_ = { 6.0f,0.5f,20.0f };
 	floorPosition_[2].position_ = { -45.0f, 0.3f,-45.0f };
@@ -57,12 +67,29 @@ void PlayScene::Initialize()
 	pObjectManager_->CreateObject(OBJECTSTATE::FRAMEBOX,DefaultData[0], DefaultData[1], FrameBox);
 	pAttackPlayer_->SetCollectPlayer(pCollectPlayer_);
 	pCollectPlayer_->SetAttackPlayer(pAttackPlayer_);
+	XMFLOAT3 firstPPos = { -3,0,0 };
+	XMFLOAT3 secondsPPos = { 3,0,0 };
 	pAttackPlayer_->SetPosition(firstPPos);
 	pCollectPlayer_->SetPosition(secondsPPos);
+
+	//乱数生成器の設定
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dis(1, 2);
+
+	//1から2までのランダムな値の作成
+	random_value_ = dis(gen);
 }
 
 void PlayScene::Update()
 {
+	Audio::Play(hSound_[0], 0.1f);
+	if (pAttackPlayer_->GetScore() >= 100 || pCollectPlayer_->GetScore() >= 100)
+	{
+
+		Audio::Stop(hSound_[0]);
+		Audio::Play(hSound_[random_value_],0.1f);
+	}
 	attackPlayerPosition_ = pAttackPlayer_->GetPosition();
 	attackPlayerDirection_ = XMLoadFloat3(&attackPlayerPosition_) - Camera::VecGetPosition(1);
 	attackPlayerDirection_ = XMVectorSetY(attackPlayerDirection_, 0);

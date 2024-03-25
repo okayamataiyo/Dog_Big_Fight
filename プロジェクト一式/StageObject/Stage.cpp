@@ -5,7 +5,7 @@
 #include "Stage.h"
 
 Stage::Stage(GameObject* _parent)
-    :GameObject(_parent, "Stage"), hModel_(-1)
+    :StageObjectBase(_parent, "Stage"), hModel_{ -1 }
 {
 
 }
@@ -18,7 +18,7 @@ Stage::~Stage()
 void Stage::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("Stage.fbx");
+    hModel_ = Model::Load("OldStage.fbx");
     assert(hModel_ >= 0);
     //aaaaaaaaatransform_.position_.y = -10;
     //transform_.rotate_.x= 90;

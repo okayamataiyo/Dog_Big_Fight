@@ -7,8 +7,7 @@
 
 class AttackPlayer;
 class CollectPlayer;
-class Sky;
-class Floor;
+class StageObjectManager;
 
 /// <summary>
 /// 遊べるシーン
@@ -16,11 +15,14 @@ class Floor;
 class PlayScene : public GameObject
 {
 private:
+    //サウンドデータ
+    int hSound_[3];
+    int random_value_;
     //メンバ変数
     AttackPlayer* pAttackPlayer_;
     CollectPlayer* pCollectPlayer_;
-    Sky* pSky_;
     ObjectManager* pObjectManager_;
+    StageObjectManager* pStageObjectManager_;
     XMFLOAT3 camVec_[2];
     Transform floorPosition_[3];
     //▼骨の処理で使うメンバ変数

@@ -2,11 +2,11 @@
 #include "../Engine/SceneManager.h"
 #include "../Engine/Direct3D.h"
 #include "SelectScene.h"
+#include "../StageObject/StageObjectManager.h"
 #include "../StageObject/SolidText.h"
-#include "../StageObject/Sky.h"
 
 SelectScene::SelectScene(GameObject* _pParent)
-	:GameObject(_pParent, "SelectScene")
+	:GameObject(_pParent, "SelectScene"),pStageObjectManager_(nullptr)
 {
 
 }
@@ -17,7 +17,8 @@ void SelectScene::Initialize()
 	pText_ = Instantiate<SolidText>(this);
 	pText_->SetMode(1);
 	//buttonStart_ = Instantiate<Button>(this);
-	Instantiate<Sky>(this);
+	pStageObjectManager_ = new StageObjectManager(this);
+	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::Sky);
 }
 
 void SelectScene::Update()

@@ -4,10 +4,12 @@
 #include "../Engine/Camera.h"
 #include "../Button.h"
 
+class StageObjectManager;
 class SolidText;
 
 class SelectScene : public GameObject
 {
+	StageObjectManager* pStageObjectManager_;
 	SolidText* pText_;
 	Button* buttonStart_;
 	Button* buttonBack_;

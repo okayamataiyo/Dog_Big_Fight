@@ -4,10 +4,12 @@
 #include "../Engine/Camera.h"
 
 class SolidText;
+class StageObjectManager;
 
 class GameOverScene : public GameObject
 {
 	SolidText* pText_;
+	StageObjectManager* pStageObjectManager_;
 	XMFLOAT3 camPos_;
 public:
 	GameOverScene(GameObject* _pParent);
