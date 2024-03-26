@@ -24,6 +24,7 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     time_ = 0;
     timeWait_ = 30;
     isPush_ = false;
+    isPushed_ = false;
     pushTime_ = 0;
     pushTimeWait_ = 30;
     positionPrev_ = { 0.0f,0.0f,0.0f };
@@ -154,7 +155,7 @@ void CollectPlayer::UpdatePlay()
     {
         isPush_ = true;
     }
-    if (isPush_)
+    if (isPush_ && !isPushed_)
     {
         ++pushTime_;
         if (pushTime_ <= 1)
@@ -172,6 +173,7 @@ void CollectPlayer::UpdatePlay()
         if (pushTime_ >= pushTimeWait_)
         {
             isPush_ = false;
+            isPushed_ = true;
             pushTime_ = 0;
         }
     }
@@ -512,8 +514,9 @@ void CollectPlayer::PlayerRayCast()
         {
             if (isJump_ == false)
             {
-                positionY_ = -floorDataDown.dist + 0.6f;
                 isOnFloor_ = 1;
+                isPushed_ = false;
+                positionY_ = -floorDataDown.dist + 0.6f;
                 positionTempY_ = positionY_;
                 positionPrevY_ = positionTempY_;
             }
@@ -561,6 +564,7 @@ void CollectPlayer::PlayerRayCast()
         if (isJump_ == false && isOnFloor_ == 0)
         {
             //’n–Ê‚É’£‚è•t‚«
+            isPushed_ = false;
             positionY_ = -stageDataDown.dist + 0.6;
             positionTempY_ = positionY_;
             positionPrevY_ = positionTempY_;

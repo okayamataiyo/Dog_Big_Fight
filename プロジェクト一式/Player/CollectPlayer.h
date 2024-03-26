@@ -33,6 +33,7 @@ private:
 	int time_;
 	int timeWait_;
 	bool isPush_;
+	bool isPushed_;
 	int pushTime_;
 	int pushTimeWait_;
 	PLAYERSTATE playerState_;
