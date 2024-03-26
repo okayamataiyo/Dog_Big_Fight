@@ -2,17 +2,17 @@
 #include "../Engine/Direct3D.h"
 
 SolidText::SolidText(GameObject* _pParent)
-	:GameObject(_pParent, "Text"), hModel_{ -1,-1, -1 },textState_(Select)
+	:GameObject(_pParent, solidTextName), hModel_{ -1,-1, -1 },textState_(Select)
 {
 }
 
 void SolidText::Initialize()
 {
-	hModel_[0] = Model::Load("GameOverText.fbx");
+	hModel_[0] = Model::Load("Model&Picture/GameOverText.fbx");
 	assert(hModel_[0] >= 0);
-	hModel_[1] = Model::Load("SelectText.fbx");
+	hModel_[1] = Model::Load("Model&Picture/SelectText.fbx");
 	assert(hModel_[1] >= 0);
-	hModel_[2] = Model::Load("GameTitleText.fbx");
+	hModel_[2] = Model::Load("Model&Picture/GameTitleText.fbx");
 	assert(hModel_[2] >= 0);
 	transform_.rotate_.y = 180;
 }

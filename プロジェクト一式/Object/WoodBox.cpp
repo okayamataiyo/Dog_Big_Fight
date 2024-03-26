@@ -9,7 +9,7 @@
 #include "../StageObject/Stage.h"
 
 WoodBox::WoodBox(GameObject* _pParent)
-    :ObjectBase(_pParent, "WoodBox"), hModel_(-1), hSound_{ -1 },isOnWoodBox_(0)
+    :ObjectBase(_pParent, woodBoxName), hModel_(-1), hSound_{ -1 },isOnWoodBox_(0)
 {
     pParent_ = _pParent;
 }
@@ -25,7 +25,8 @@ void WoodBox::Initialize()
     hSound_ = Audio::Load("Sound/WoodBoxBreak.wav");
     assert(hSound_ >= 0);
     //モデルデータのロード
-    hModel_ = Model::Load("WoodBox.fbx");
+    std::string ModelName = (std::string)"Model&Picture/" + woodBoxName + (std::string)".fbx";
+    hModel_ = Model::Load(ModelName);
     assert(hModel_ >= 0);
     BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(4.0f, 4.0f, 4.0f));
     //SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.5);

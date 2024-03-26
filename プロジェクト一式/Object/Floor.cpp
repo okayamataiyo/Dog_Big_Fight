@@ -6,7 +6,7 @@
 #include "ObjectBase.h"
 
 Floor::Floor(GameObject* _parent)
-    :ObjectBase(_parent, "Floor"), hModel_(-1),upOrDown_(0)
+    :ObjectBase(_parent, floorName), hModel_(-1),upOrDown_(0)
 {
 
 }
@@ -19,7 +19,8 @@ Floor::~Floor()
 void Floor::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("Floor.fbx");
+    std::string ModelName = (std::string)"Model&Picture/" + floorName + (std::string)".fbx";
+    hModel_ = Model::Load(ModelName);
     assert(hModel_ >= 0);
     transform_.scale_ = { 1,1,1 };
 }

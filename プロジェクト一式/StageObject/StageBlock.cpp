@@ -5,7 +5,7 @@
 #include "StageBlock.h"
 
 StageBlock::StageBlock(GameObject* _parent)
-    :StageObjectBase(_parent, "StageBlock"), hModel_{ -1 }
+    :StageObjectBase(_parent, stageBlockName), hModel_{ -1 }
 {
 
 }
@@ -17,8 +17,9 @@ StageBlock::~StageBlock()
 
 void StageBlock::Initialize()
 {
-    //モデルデータのロード
-    hModel_ = Model::Load("StageBlock.fbx");
+    //モデルデータのロード[
+    std::string ModelName = (std::string)"Model&Picture/" + stageBlockName + (std::string)".fbx";
+    hModel_ = Model::Load(ModelName);
     assert(hModel_ >= 0);
     //aaaaaaaaatransform_.position_.y = -10;
     //transform_.rotate_.x= 90;

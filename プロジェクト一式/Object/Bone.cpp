@@ -8,7 +8,7 @@
 #include "../StageObject/Stage.h"
 
 Bone::Bone(GameObject* _parent)
-	:ObjectBase(_parent, "Bone"), hModel_(-1),pPlayScene_{nullptr}
+	:ObjectBase(_parent, boneName), hModel_(-1),pPlayScene_{nullptr}
 {
 }
 
@@ -19,7 +19,8 @@ Bone::~Bone()
 void Bone::Initialize()
 {
 	//ƒ‚ƒfƒ‹‚Ìƒ[ƒh
-	hModel_ = Model::Load("Bone.fbx");
+	std::string ModelName = (std::string)"Model&Picture/" + boneName + (std::string)".fbx";
+	hModel_ = Model::Load(ModelName);
 	assert(hModel_ >= 0);
 
 	SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);

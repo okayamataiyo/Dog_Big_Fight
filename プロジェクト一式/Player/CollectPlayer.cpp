@@ -81,7 +81,7 @@ void CollectPlayer::Initialize()
     assert(hSound_[4] >= 0);
 
     //モデルデータのロード
-    std::string ModelName = collectPlayerName + (std::string)".fbx";
+    std::string ModelName = (std::string)"Model&Picture/" + collectPlayerName + (std::string)".fbx";
     hModel_ = Model::Load(ModelName);
     assert(hModel_ >= 0);
     transform_.scale_ = { 0.4,0.4,0.4 };

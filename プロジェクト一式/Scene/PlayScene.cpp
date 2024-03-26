@@ -97,7 +97,8 @@ void PlayScene::Update()
 	attackPlayerPosition_.x = attackPlayerPosition_.x + frontPosition_ * XMVectorGetX(attackPlayerDirection_);
 	attackPlayerPosition_.z = attackPlayerPosition_.z + frontPosition_ * XMVectorGetZ(attackPlayerDirection_);
 	//Input::SetMousePosition(600, 600);
-	//SetCursorPos(600, 600);
+	SetCursorPos(600, 600);
+	HideCursor();
 	if (boneCount_ == 0)
 	{
 		isCreateBone_ = true;
@@ -195,6 +196,11 @@ void PlayScene::Update()
 	}
 	Camera::SetTarget(pAttackPlayer_->GetPosition(), 1);
 	Camera::SetTarget(pCollectPlayer_->GetPosition(), 0);
+	if (Input::IsKeyDown(DIK_L))
+	{
+		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		pSceneManager->ChangeScene(SCENE_ID_SELECT);
+	}
 }
 
 void PlayScene::Draw()

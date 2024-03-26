@@ -71,7 +71,7 @@ void AttackPlayer::Initialize()
     assert(hSound_[3] >= 0);
 
     //モデルデータのロード
-    std::string ModelName = attackPlayerName + (std::string)".fbx";
+    std::string ModelName = (std::string)"Model&Picture/" + attackPlayerName + (std::string)".fbx";
     hModel_ = Model::Load(ModelName);
     assert(hModel_ >= 0);
     transform_.scale_ = { 0.4,0.4,0.4 };

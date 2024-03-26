@@ -3,6 +3,11 @@
 #include "../Engine/Model.h"
 #include "../Engine/GameObject.h"
 
+namespace
+{
+	std::string solidTextName = "SolidText";
+}
+
 class SolidText : public GameObject
 {
 private:

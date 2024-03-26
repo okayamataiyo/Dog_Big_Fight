@@ -2,6 +2,11 @@
 //インクルード
 #include "StageObjectBase.h"
 
+namespace
+{
+    std::string skyName = "Sky";
+}
+
 //Skyを管理するクラス
 class Sky : public StageObjectBase
 {

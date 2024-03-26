@@ -4,6 +4,11 @@
 #include "../Engine/Direct3D.h"
 #include "ObjectBase.h"
 
+namespace
+{
+    std::string floorName = "Floor";
+}
+
 //Floor‚ğŠÇ—‚·‚éƒNƒ‰ƒX
 class Floor : public ObjectBase
 {

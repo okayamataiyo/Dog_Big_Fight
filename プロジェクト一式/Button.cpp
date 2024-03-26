@@ -16,8 +16,8 @@ void Button::Initialize()
 {
 	center_ = { 0,0,0 };
 	size_ = { 0,0,0 };
-	hModel_ = Image::Load("FoodButtonGive.png");
-	hPushModel_ = Image::Load("FoodButtonGiveDisable.png");
+	hModel_ = Image::Load("Model&Picture/FoodButtonGive.png");
+	hPushModel_ = Image::Load("Model&Picture/FoodButtonGiveDisable.png");
 	size_ = Image::GetSize(hModel_);
 }
 

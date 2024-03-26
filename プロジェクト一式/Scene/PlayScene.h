@@ -68,5 +68,7 @@ public:
     XMFLOAT3 GetAttackPlayerPosition() { return attackPlayerPosition_; }
     void AddBoneCount(int _boneCount) { boneCount_ += _boneCount; }
     void AddWoodBoxCount(int _woodBoxCount) { woodBoxCount_ += _woodBoxCount; }
+
+    void HideCursor() { while (::ShowCursor(FALSE) >= 0); }
 };
 

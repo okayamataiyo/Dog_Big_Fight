@@ -3,7 +3,7 @@
 #include "../Engine/Direct3D.h"
 
 Sky::Sky(GameObject* _parent)
-	:StageObjectBase(_parent, "Sky"), hModel_(-1)
+	:StageObjectBase(_parent, skyName), hModel_(-1)
 {
 
 }
@@ -15,7 +15,8 @@ Sky::~Sky()
 void Sky::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("Sky.fbx");
+	std::string ModelName = (std::string)"Model&Picture/" + skyName + (std::string)".fbx";
+	hModel_ = Model::Load(ModelName);
 	assert(hModel_ >= 0);
 	transform_.scale_ = { 500.0f,500.0f,500.0f };
 	transform_.position_.y = -50;

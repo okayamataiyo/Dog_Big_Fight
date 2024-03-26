@@ -5,6 +5,11 @@
 #include "ObjectBase.h"
 #include "../Scene/PlayScene.h"
 
+namespace
+{
+    std::string frameBoxName = "FrameBox";
+}
+
 class AttackPlayer;
 
 //FrameBox‚ğŠÇ—‚·‚éƒNƒ‰ƒX

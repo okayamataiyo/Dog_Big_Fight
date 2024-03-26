@@ -4,6 +4,11 @@
 #include "StageObjectBase.h"
 #include "../Engine/Direct3D.h"
 
+namespace
+{
+    std::string stageName = "Stage";
+}
+
 using std::string;
 //Stage‚ğŠÇ—‚·‚éƒNƒ‰ƒX
 class Stage : public StageObjectBase
