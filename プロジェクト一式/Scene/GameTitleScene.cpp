@@ -29,7 +29,7 @@ void GameTitleScene::Initialize()
 
 void GameTitleScene::Update()
 {
-	Audio::Play(hSound_, 0.1f);
+	Audio::Play(hSound_, 0.05f);
 	camPos_ = pText_->GetPosition();
 	camPos_.y += 2;
 	camPos_.z -= 15;

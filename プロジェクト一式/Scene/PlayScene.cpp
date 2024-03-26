@@ -37,7 +37,7 @@ void PlayScene::Initialize()
 		pStageObjectManager_->CreateStageObject(STAGEOBJECTSTATE::StageBlock, -100.0f, 100.0f, -100.0f, 100.0f);
 	}
 	floorPosition_[0].position_ = { 30.0f,0.8f,3.0f };
-	floorPosition_[1].position_ = { 6.0f,0.5f,20.0f };
+	floorPosition_[1].position_ = { -70.0f,0.5f,50.0f };
 	floorPosition_[2].position_ = { -45.0f, 0.3f,-45.0f };
 	XMFLOAT3 scale		   = { 3.0f,1.0f,3.0f };
 	XMFLOAT3 DefaultData[2] = { XMFLOAT3(0.0f,0.0f,0.0f)	//0‚Å‰Šú‰»
@@ -51,6 +51,7 @@ void PlayScene::Initialize()
 	//	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPosition_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), XMFLOAT3(4.0f,1.0f,4.0f));
 	//}
 	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPosition_[2].position_, XMFLOAT3(0.0f, 90.0f, 0.0f), XMFLOAT3(10.0f, 1.0f, 10.0f));
+	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPosition_[1].position_, XMFLOAT3(0.0f, 90.0f, 0.0f), XMFLOAT3(10.0f, 1.0f, 10.0f));
 
 	//for (int i = 0u; i <= 2; i++)
 	//{
@@ -83,7 +84,7 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
-	Audio::Play(hSound_[0], 0.1f);
+	Audio::Play(hSound_[0], 0.02f);
 	if (pAttackPlayer_->GetScore() >= 100 || pCollectPlayer_->GetScore() >= 100)
 	{
 

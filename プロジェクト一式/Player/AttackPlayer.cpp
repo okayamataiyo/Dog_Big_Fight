@@ -181,17 +181,14 @@ void AttackPlayer::UpdatePlay()
         pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
         Direct3D::SetIsChangeView(1);
     }
-    //ImGui::Text("playerState_=%i", playerState_);
-    //ImGui::Text("positionPrevY_=%f", positionPrevY_);
-    //ImGui::Text("positionTempY_=%f", positionTempY_);
+    /*ImGui::Text("playerState_=%i", playerState_);
+    ImGui::Text("positionPrevY_=%f", positionPrevY_);
+    ImGui::Text("positionTempY_=%f", positionTempY_);
     ImGui::Text("Transform_.position_.x=%f", transform_.position_.x);
     ImGui::Text("Transform_.position_.y=%f", transform_.position_.y);
     ImGui::Text("Transform_.position_.z=%f", transform_.position_.z);
-    /*ImGui::Text("prevPosition_.x=%f", prevPosition_.x);
-    ImGui::Text("prevPosition_.y=%f", prevPosition_.y);
-    ImGui::Text("prevPosition_.z=%f", prevPosition_.z);*/
-    //ImGui::Text("angleDegrees_=%f", angleDegrees_);
-    //ImGui::Text("timeCounter_=%i", timeCounter_);
+    ImGui::Text("angleDegrees_=%f", angleDegrees_);
+    ImGui::Text("timeCounter_=%i", timeCounter_);*/
     if (IsMoving() && !isJump_ && !isDash_)
     {
         playerState_ = PLAYERSTATE::WALK;
@@ -377,7 +374,7 @@ void AttackPlayer::PlayerMove()
         PlayerJump();
         Audio::Stop(hSound_[1]);
         Audio::Stop(hSound_[3]);
-        Audio::Play(hSound_[2],0.5f);
+        Audio::Play(hSound_[2],0.3f);
     }
     if (transform_.position_.z <= -99.0f || transform_.position_.z >= 99.0f)
     {
