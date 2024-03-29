@@ -125,6 +125,8 @@ public:
 
 	PLAYERSTATE GetPlayerState() override { return playerState_; }
 
+	int GetPadID()override { return padID_; }
+
 	int GetScore() { return score_; }
 
 	bool IsMoving() override;

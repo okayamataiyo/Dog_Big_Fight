@@ -6,18 +6,23 @@
 #include "../StageObject/SolidText.h"
 
 SelectScene::SelectScene(GameObject* _pParent)
-	:GameObject(_pParent, "SelectScene"),pStageObjectManager_(nullptr)
+	:GameObject(_pParent, "SelectScene"),pSceneManager_(nullptr), pStageObjectManager_(nullptr)
 {
 
 }
 
 void SelectScene::Initialize()
 {
+	for (int i = 0; i < 4; i++)
+	{
+		padIDMap_[static_cast<PADIDSTATE>(i)] = i;
+	}
 	ShowCursor();
 	Direct3D::SetIsChangeView(1);
 	pText_ = Instantiate<SolidText>(this);
 	pText_->SetMode(1);
 	//buttonStart_ = Instantiate<Button>(this);
+	pSceneManager_ = (SceneManager*)FindObject("SceneManager");
 	pStageObjectManager_ = new StageObjectManager(this);
 	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::Sky);
 }
@@ -34,6 +39,26 @@ void SelectScene::Update()
 
 	transform_.rotate_.y += 0.3f;
 
+	if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padIDMap_[PADIDSTATE::FIRST]))
+	{
+		pSceneManager_->ChangeScene(SCENE_ID_PLAY);
+	}
+
+	if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padIDMap_[PADIDSTATE::FIRST]))
+	{
+		pSceneManager_->ChangeScene(SCENE_ID_PLAY);
+	}
+
+	if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padIDMap_[PADIDSTATE::SECONDS]))
+	{
+
+	}
+
+	if (!Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padIDMap_[PADIDSTATE::SECONDS]))
+	{
+
+	}
+
 	XMFLOAT3 pos = Input::GetMousePosition();
 //	if (buttonStart_->MouseInArea(pos))
 	{
@@ -42,8 +67,7 @@ void SelectScene::Update()
 	if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown(0) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A))
 	{
 		Direct3D::SetIsChangeView(2);
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_PLAY);
+		pSceneManager_->ChangeScene(SCENE_ID_PLAY);
 	}
 	if (Input::IsKeyDown(DIK_R))
 	{

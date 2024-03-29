@@ -14,7 +14,7 @@
 PlayScene::PlayScene(GameObject* _pParent)
 	:GameObject(_pParent, "PlayScene"), hSound_{-1,-1,-1}, length_(30),boneCount_(0), isCreateBone_(false), woodBoxCount_(0)
 	, attackPlayerPosition_{}, attackPlayerDirection_{},frontPosition_(10.0f), blockOrCollect_(0)
-	,pObjectManager_(nullptr),pStageObjectManager_(nullptr)
+	,pSceneManager_(nullptr),pAttackPlayer_(nullptr),pCollectPlayer_(nullptr), pObjectManager_(nullptr), pStageObjectManager_(nullptr)
 {
 
 }
@@ -28,6 +28,7 @@ void PlayScene::Initialize()
 	assert(hSound_[1] >= 0);
 	hSound_[2] = Audio::Load("Sound/LastBGM2.wav");
 	assert(hSound_[2] >= 0);
+	pSceneManager_ = (SceneManager*)FindObject("SceneManager");
 	pObjectManager_ = new ObjectManager(this);
 	pStageObjectManager_ = new StageObjectManager(this);
 	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::Sky);
@@ -119,7 +120,7 @@ void PlayScene::Update()
 	}
 	if (woodBoxCount_ <= 5)
 	{
-		if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y) && !pAttackPlayer_->GetIsJump())
+		if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y,pAttackPlayer_->GetPadID()) && !pAttackPlayer_->GetIsJump())
 		{
 			pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, attackPlayerPosition_, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
 			woodBoxCount_ += 1;
@@ -133,20 +134,29 @@ void PlayScene::Update()
 	static float prevRotX[2] = {};
 
 	mouse = Input::GetMouseMove();
-	controller = Input::GetPadStickR();
-	RotationX[0] = controller.x;
-	RotationY[0] = -controller.y;
-	RotationX[1] = mouse.x;
-	RotationY[1] = mouse.y;
-	vecLength[0] -= (mouse.z) / 50;
+	controller[static_cast<int>(PADIDSTATE::FIRST)] = Input::GetPadStickR(pAttackPlayer_->GetPadID());
+	controller[static_cast<int>(PADIDSTATE::SECONDS)] = Input::GetPadStickR(pCollectPlayer_->GetPadID());
+	RotationX[0] = controller[static_cast<int>(PADIDSTATE::FIRST)].x;
+	RotationY[0] = -controller[static_cast<int>(PADIDSTATE::FIRST)].y;
+	RotationX[1] = controller[static_cast<int>(PADIDSTATE::SECONDS)].x;
+	RotationY[1] = -controller[static_cast<int>(PADIDSTATE::SECONDS)].y;
+	//vecLength[0] -= (mouse.z) / 50;
 	//vecLength[1] -= (mouse.z) / 50;
-	if (Input::IsPadButton(XINPUT_GAMEPAD_DPAD_UP))
+	if (Input::IsPadButton(XINPUT_GAMEPAD_DPAD_UP,pAttackPlayer_->GetPadID()))
 	{
 		vecLength[1] -= 1.0f;
 	}
-	if (Input::IsPadButton(XINPUT_GAMEPAD_DPAD_DOWN))
+	if (Input::IsPadButton(XINPUT_GAMEPAD_DPAD_DOWN,pAttackPlayer_->GetPadID()))
 	{
 		vecLength[1] += 1.0f;
+	}
+	if (Input::IsPadButton(XINPUT_GAMEPAD_DPAD_UP, pCollectPlayer_->GetPadID()))
+	{
+		vecLength[0] -= 1.0f;
+	}
+	if (Input::IsPadButton(XINPUT_GAMEPAD_DPAD_DOWN, pCollectPlayer_->GetPadID()))
+	{
+		vecLength[0] += 1.0f;
 	}
 
 	vPos[0] = pCollectPlayer_->GetVecPos();
@@ -164,8 +174,12 @@ void PlayScene::Update()
 
 		camVec_[1].x += RotationY[0] / controllerSens;
 		camVec_[1].y += RotationX[0] / controllerSens;
-		camVec_[0].x += RotationY[1] / mouseSens;
-		camVec_[0].y += RotationX[1] / mouseSens;
+
+		camVec_[0].x += RotationY[1] / controllerSens;
+		camVec_[0].y += RotationX[1] / controllerSens;
+
+		//camVec_[0].x += RotationY[1] / mouseSens;
+		//camVec_[0].y += RotationX[1] / mouseSens;
 
 		sigmaRotY[i]				= camVec_[i].y;// +pPlayer_[i]->GetRotate().y;
 		sigmaRotX[i]				= -camVec_[i].x;// + EasingX[i]; +pPlayer_[i]->GetRotate().x;
@@ -173,14 +187,16 @@ void PlayScene::Update()
 		if (sigmaRotX[i] > 0 * (3.14 / 180))
 		{
 			sigmaRotX[i]			= 0;
-			camVec_[0].x		   -= RotationY[1] / mouseSens;
-			camVec_[1].x		   -= RotationY[0] / controllerSens;
+			//camVec_[0].x		   -= RotationY[1] / mouseSens;
+			camVec_[0].x -= RotationY[1] / controllerSens;
+			camVec_[1].x -= RotationY[0] / controllerSens;
 		}
 		if (sigmaRotX[i] < -88 * (3.14 / 180))
 		{
 			sigmaRotX[i] = -87.9 * (3.14 / 180);
-			camVec_[0].x		   -= RotationY[1] / mouseSens;
-			camVec_[1].x		   -= RotationY[0] / controllerSens;
+			//camVec_[0].x		   -= RotationY[1] / mouseSens;
+			camVec_[0].x -= RotationY[1] / controllerSens;
+			camVec_[1].x -= RotationY[0] / controllerSens;
 		}
 
 		prevRotX[i] = sigmaRotX[i];
@@ -224,8 +240,7 @@ void PlayScene::Update()
 	Camera::SetTarget(pCollectPlayer_->GetPosition(), 0);
 	if (Input::IsKeyDown(DIK_L))
 	{
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_SELECT);
+		pSceneManager_->ChangeScene(SCENE_ID_SELECT);
 	}
 }
 

@@ -19,6 +19,7 @@ AttackPlayer::AttackPlayer(GameObject* _pParent)
     pParent_ = _pParent;
     timeCounter_ = 0;
     score_ = 0;
+    padID_ = 0;
     CamPositionVec_ = {};
     positionPrev_ = { 0.0f,0.0f,0.0f };
     controllerMoveSpeed_ = 0.3f;
@@ -200,7 +201,7 @@ void AttackPlayer::UpdatePlay()
         Audio::Stop(hSound_[1]);
         Audio::Stop(hSound_[3]);
     }
-    if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) && !isJump_ && IsMoving())
+    if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER,padID_) && !isJump_ && IsMoving())
     {
         playerState_ = PLAYERSTATE::RUN;
         Audio::Stop(hSound_[1]);
@@ -223,7 +224,7 @@ void AttackPlayer::UpdatePlay()
 
 void AttackPlayer::UpdateGameOver()
 {
-    if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A))
+    if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padID_))
     {
         pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
     }
@@ -299,7 +300,7 @@ void AttackPlayer::PlayerMove()
     {
         mouseMoveSpeed_ = 0.5f;
     }
-    if (!(Input::IsPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER)))
+    if (!(Input::IsPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER, padID_)))
     {
         XMVECTOR vecCam = {};
         CamPositionVec_ = Camera::VecGetPosition(1);
@@ -332,7 +333,7 @@ void AttackPlayer::PlayerMove()
         }
     }
     transform_.rotate_.y = XMConvertToDegrees(angle_);
-    if (Input::GetPadStickL().y > 0.3)
+    if (Input::GetPadStickL(padID_).y > 0.3)
     {
         XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
         vecDirection = XMVectorSetY(vecDirection, 0);
@@ -340,7 +341,7 @@ void AttackPlayer::PlayerMove()
         transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(vecDirection);
         transform_.position_.z = transform_.position_.z + mouseMoveSpeed_ * XMVectorGetZ(vecDirection);
     }
-    if (Input::GetPadStickL().y < -0.3)
+    if (Input::GetPadStickL(padID_).y < -0.3)
     {
         XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
         vecDirection = XMVectorSetY(vecDirection, 0);
@@ -348,7 +349,7 @@ void AttackPlayer::PlayerMove()
         transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(-vecDirection);
         transform_.position_.z = transform_.position_.z + mouseMoveSpeed_ * XMVectorGetZ(-vecDirection);
     }
-    if (Input::GetPadStickL().x > 0.3)
+    if (Input::GetPadStickL(padID_).x > 0.3)
     {
         XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
         XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
@@ -358,7 +359,7 @@ void AttackPlayer::PlayerMove()
         transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(tempvec);
         transform_.position_.z = transform_.position_.z + mouseMoveSpeed_ * XMVectorGetZ(tempvec);
     }
-    if (Input::GetPadStickL().x < -0.3)
+    if (Input::GetPadStickL(padID_).x < -0.3)
     {
         XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
         XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
@@ -368,7 +369,7 @@ void AttackPlayer::PlayerMove()
         transform_.position_.x = transform_.position_.x + mouseMoveSpeed_ * XMVectorGetX(tempvec);
         transform_.position_.z = transform_.position_.z + mouseMoveSpeed_ * XMVectorGetZ(tempvec);
     }
-    if (Input::IsPadButton(XINPUT_GAMEPAD_A) && isJump_ == false)
+    if (Input::IsPadButton(XINPUT_GAMEPAD_A, padID_) && isJump_ == false)
     {
         PlayerJump();
         Audio::Stop(hSound_[1]);

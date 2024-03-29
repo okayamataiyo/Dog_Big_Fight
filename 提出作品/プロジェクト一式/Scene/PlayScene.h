@@ -5,6 +5,7 @@
 #include "../Object/ObjectManager.h"
 #include <vector>
 
+class SceneManager;
 class AttackPlayer;
 class CollectPlayer;
 class StageObjectManager;
@@ -15,11 +16,21 @@ class StageObjectManager;
 class PlayScene : public GameObject
 {
 private:
+
+    enum class PADIDSTATE
+    {
+        FIRST = 0,
+        SECONDS,
+        THIRD,
+        FOUR,
+    };
+
     //サウンドデータ
     int hSound_[3];
     float length_;
     int random_value_;
     //メンバ変数
+    SceneManager* pSceneManager_;
     AttackPlayer* pAttackPlayer_;
     CollectPlayer* pCollectPlayer_;
     ObjectManager* pObjectManager_;
@@ -41,7 +52,7 @@ private:
     XMFLOAT3 Init = { 0.0f,0.0f,0.0f };
     XMVECTOR vPos[2] = {};
     XMFLOAT3 mouse = Init;
-    XMFLOAT3 controller = {};
+    XMFLOAT3 controller[2] = {};
     XMFLOAT3 rDir = { 0.0f,0.0f,1.0f };
     XMVECTOR Dir[2] = {};
     float sigmaRotY[2] = {};

@@ -21,6 +21,7 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     pParent_ = _pParent;
     timeCounter_ = 0;
     score_ = 0;
+    padID_ = 1;
     time_ = 0;
     timeWait_ = 30;
     isPush_ = false;
@@ -151,7 +152,7 @@ void CollectPlayer::UpdatePlay()
         transform_.position_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
     }
 
-    if (Input::IsMouseButtonDown(0))
+    if (Input::IsPadButtonDown(XINPUT_GAMEPAD_B,padID_))
     {
         isPush_ = true;
     }
@@ -233,7 +234,7 @@ void CollectPlayer::UpdatePlay()
         Audio::Stop(hSound_[1]);
         Audio::Stop(hSound_[3]);
     }
-    if (Input::IsKey(DIK_LSHIFT) && !isJump_ && IsMoving())
+    if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER, padID_) && !isJump_ && IsMoving())
     {
         playerState_ = PLAYERSTATE::RUN;
         Audio::Stop(hSound_[1]);
@@ -352,7 +353,7 @@ void CollectPlayer::PlayerMove()
     {
         controllerMoveSpeed_ = 0.5f;
     }
-    if (!(Input::IsKey(DIK_F)))
+    if (!(Input::IsPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER, padID_)))
     {
         XMVECTOR vecCam = {};
         vecCam = -(Camera::VecGetPosition(0) - Camera::VecGetTarget(0));
@@ -385,7 +386,7 @@ void CollectPlayer::PlayerMove()
     }
 
     transform_.rotate_.y = XMConvertToDegrees(angle_);
-    if (Input::IsKey(DIK_W))
+    if (Input::GetPadStickL(padID_).y > 0.3)
     {
         XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
         vecDirection = XMVectorSetY(vecDirection, 0);
@@ -393,7 +394,7 @@ void CollectPlayer::PlayerMove()
         transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(vecDirection);
         transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(vecDirection);
     }
-    if (Input::IsKey(DIK_S))
+    if (Input::GetPadStickL(padID_).y < -0.3)
     {
         XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
         vecDirection = XMVectorSetY(vecDirection, 0);
@@ -401,7 +402,7 @@ void CollectPlayer::PlayerMove()
         transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(-vecDirection);
         transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(-vecDirection);
     }
-    if (Input::IsKey(DIK_D))
+    if (Input::GetPadStickL(padID_).x > 0.3)
     {
         XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);                          //XMMatrixRotationY = Yç¿ïWÇíÜêSÇ…âÒì]Ç≥ÇπÇÈçsóÒÇçÏÇÈä÷êî,//XMConvertToRadians = degreeäpÇradianäpÇ…(ÇΩÇæ)ïœä∑Ç∑ÇÈ
         XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
@@ -411,7 +412,7 @@ void CollectPlayer::PlayerMove()
         transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(tempvec);
         transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(tempvec);
     }
-    if (Input::IsKey(DIK_A))
+    if (Input::GetPadStickL(padID_).x < -0.3)
     {
         XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
         XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
@@ -421,7 +422,7 @@ void CollectPlayer::PlayerMove()
         transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(tempvec);
         transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(tempvec);
     }
-    if (Input::IsKeyDown(DIK_SPACE) && isJump_ == false)
+    if (Input::IsPadButton(XINPUT_GAMEPAD_A, padID_) && isJump_ == false)
     {
         PlayerJump();
         Audio::Stop(hSound_[1]);

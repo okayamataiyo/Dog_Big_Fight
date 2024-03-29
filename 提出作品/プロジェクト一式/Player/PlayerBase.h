@@ -24,6 +24,7 @@ public:
 	//▼ゲームの演出で使うメンバ変数
 	int timeCounter_;
 	int score_;			//得点
+	int padID_;
 	//▼移動で使うメンバ変数
 	XMVECTOR CamPositionVec_;
 	XMFLOAT3 positionPrev_;		//1フレーム前の位置座標
@@ -106,6 +107,8 @@ protected:
 	virtual XMVECTOR GetVecPos() = 0;
 
 	virtual PLAYERSTATE GetPlayerState() = 0;
+
+	virtual int GetPadID() = 0;
 
 	virtual bool IsMoving() = 0;
 
