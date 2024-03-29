@@ -38,6 +38,8 @@ void FrameBox::Initialize()
 void FrameBox::Update()
 {
     transform_.position_ = pPlayScene_->GetAttackPlayerPosition();
+    transform_.position_.y = transform_.position_.y + 2.0f;
+    transform_.rotate_.y = XMConvertToDegrees(pAttackPlayer_->GetAngle());
 }
 
 void FrameBox::Draw()
@@ -145,10 +147,10 @@ void FrameBox::RayCast()
         }
     }
     transform_.position_.y = positionY_;
-    ImGui::Text("rayFrameBoxDist_=%f", rayFrameBoxDist_);
-    ImGui::Text("rayStageDistDown_=%f", rayStageDistDown_);
-    ImGui::Text("isJump_=%s", isJump_ ? "true" : "false");
-    ImGui::Text("positionY_=%f", positionY_);
+    //ImGui::Text("rayFrameBoxDist_=%f", rayFrameBoxDist_);
+    //ImGui::Text("rayStageDistDown_=%f", rayStageDistDown_);
+    //ImGui::Text("isJump_=%s", isJump_ ? "true" : "false");
+    //ImGui::Text("positionY_=%f", positionY_);
 }
 
 void FrameBox::OnCollision(GameObject* _pTarget)

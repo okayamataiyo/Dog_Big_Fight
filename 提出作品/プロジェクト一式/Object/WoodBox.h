@@ -10,6 +10,8 @@ namespace
     std::string woodBoxName = "WoodBox";
 }
 
+class AttackPlayer;
+
 //WoodBoxを管理するクラス
 class WoodBox : public ObjectBase
 {
@@ -19,6 +21,7 @@ private:
     bool isBreak_;            //木箱が壊されたか
     GameObject* pParent_;
     PlayScene* pPlayScene_;
+    AttackPlayer* pAttackPlayer_;
     std::vector<int> woodBoxs_;
 
     //▼レイキャストで使うメンバ変数

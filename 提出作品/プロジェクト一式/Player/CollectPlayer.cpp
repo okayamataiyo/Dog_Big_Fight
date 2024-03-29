@@ -15,19 +15,13 @@
 #include "../StageObject/StageBlock.h"
 
 CollectPlayer::CollectPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, collectPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1,-1 },stageBlockHModel_(-1), stageHModel_(-1), floorHModel_(-1), number_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
+    :PlayerBase(_pParent, collectPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1,-1 }, stageBlockHModel_(-1), stageHModel_(-1), floorHModel_(-1), number_(0), time_{ 0 }, timeWait_{ 30 }, isDive_{ false }, isDived_{ false }, diveTime_{ 0 }, diveTimeWait_{ 30 }, vecKnockbackDirection_{},playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
     , pParent_(nullptr), pPlayScene_(nullptr), pAttackPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr),pStage_(nullptr),pStageBlock_(nullptr),pFloor_(nullptr)
 {
     pParent_ = _pParent;
     timeCounter_ = 0;
     score_ = 0;
     padID_ = 1;
-    time_ = 0;
-    timeWait_ = 30;
-    isDive_ = false;
-    isDived_ = false;
-    diveTime_ = 0;
-    diveTimeWait_ = 30;
     positionPrev_ = { 0.0f,0.0f,0.0f };
     controllerMoveSpeed_ = 0.3f;
     mouseMoveSpeed_ = 0.3f;
@@ -340,6 +334,8 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
     {
         Stun(10);
         isKnockBack_ = true;
+        vecKnockbackDirection_ = (XMLoadFloat3(&transform_.position_) - pAttackPlayer_->GetVecPos());
+        vecKnockbackDirection_ = XMVector3Normalize(vecKnockbackDirection_);
     }
 }
 
@@ -459,10 +455,8 @@ void CollectPlayer::PlayerKnockback()
 {
     if (isKnockBack_ == true)
     {
-        XMVECTOR vecKnockbackDirection = (XMLoadFloat3(&transform_.position_) - pAttackPlayer_->GetVecPos());
-        vecKnockbackDirection = XMVector3Normalize(vecKnockbackDirection);
         float knockbackSpeed = 0.3f;
-        SetKnockback(vecKnockbackDirection, knockbackSpeed);
+        SetKnockback(vecKnockbackDirection_, knockbackSpeed);
         Stun(30);
     }
 }

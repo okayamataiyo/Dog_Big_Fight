@@ -5,6 +5,11 @@
 #include "../Object/ObjectManager.h"
 #include <vector>
 
+namespace
+{
+    std::string playSceneName = "PlayScene";
+}
+
 class SceneManager;
 class AttackPlayer;
 class CollectPlayer;

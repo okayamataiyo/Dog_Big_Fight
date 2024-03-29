@@ -7,9 +7,11 @@
 #include "WoodBox.h"
 #include "ObjectManager.h"
 #include "../StageObject/Stage.h"
+#include "../Player/AttackPlayer.h"
 
 WoodBox::WoodBox(GameObject* _pParent)
     :ObjectBase(_pParent, woodBoxName), hModel_(-1), hSound_{ -1 },isOnWoodBox_(0)
+    ,pAttackPlayer_(nullptr)
 {
     pParent_ = _pParent;
 }
@@ -28,10 +30,11 @@ void WoodBox::Initialize()
     std::string ModelName = (std::string)"Model&Picture/" + woodBoxName + (std::string)".fbx";
     hModel_ = Model::Load(ModelName);
     assert(hModel_ >= 0);
-    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(4.0f, 4.0f, 4.0f));
+    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f));
     //SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.5);
     AddCollider(pCollision);
-    pPlayScene_ = (PlayScene*)FindObject("PlayScene");
+    pPlayScene_ = (PlayScene*)FindObject(playSceneName);
+    pAttackPlayer_ = (AttackPlayer*)FindObject(attackPlayerName);
 }
 
 void WoodBox::Update()
@@ -104,31 +107,31 @@ void WoodBox::RayCast()
 
     for (int i = 0; i < woodBoxs_.size();i++)
     {
-        //▼木箱の法線(木箱の上に木箱が乗るため)
-        woodBoxDataDown.start       = transform_.position_;
-        //woodBoxDataDown.start.y     = 0;
-        woodBoxDataDown.dir         = XMFLOAT3(0, -1, 0);
-        if (woodBoxs_.at(i) != woodBoxHModelNow)
-        {
-            int nowData = woodBoxs_.at(i);
-            Model::RayCast(nowData, &woodBoxDataDown);
-        }
-        rayWoodBoxDist_         = woodBoxDataDown.dist;
-        if (rayWoodBoxDist_ <= woodBoxFling)
-        {
-            if (!isJump_)
-            {
-                //positionY_ = -woodBoxDataDown.dist + 0.6;
-                isOnWoodBox_ = 1;
-                positionTempY_ = positionY_;
-                positionPrevY_ = positionTempY_;
-                positionY_ = positionPrevY_;
-            }
-        }
-        else
-        {
-            isOnWoodBox_ = 0;
-        }
+        ////▼木箱の法線(木箱の上に木箱が乗るため)
+        //woodBoxDataDown.start       = transform_.position_;
+        ////woodBoxDataDown.start.y     = 0;
+        //woodBoxDataDown.dir         = XMFLOAT3(0, -1, 0);
+        //if (woodBoxs_.at(i) != woodBoxHModelNow)
+        //{
+        //    int nowData = woodBoxs_.at(i);
+        //    Model::RayCast(nowData, &woodBoxDataDown);
+        //}
+        //rayWoodBoxDist_         = woodBoxDataDown.dist;
+        //if (rayWoodBoxDist_ <= woodBoxFling)
+        //{
+        //    if (!isJump_)
+        //    {
+        //        //positionY_ = -woodBoxDataDown.dist + 0.6;
+        //        isOnWoodBox_ = 1;
+        //        positionTempY_ = positionY_;
+        //        positionPrevY_ = positionTempY_;
+        //        positionY_ = positionPrevY_;
+        //    }
+        //}
+        //else
+        //{
+        //    isOnWoodBox_ = 0;
+        //}
         //▼ステージの法線(地面に張り付き)
         stageDataDown.start = transform_.position_;             //レイの発射位置
         //stageDataDown.start.y = 0;

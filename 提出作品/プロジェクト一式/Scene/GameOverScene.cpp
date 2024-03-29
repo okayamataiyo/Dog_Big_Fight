@@ -8,7 +8,8 @@
 #include "../StageObject/SolidText.h"
 
 GameOverScene::GameOverScene(GameObject* _pParent)
-	:GameObject(_pParent, "GameOverScene"),pStageObjectManager_(nullptr),hSound_(-1)
+	:GameObject(_pParent, "GameOverScene"), hSound_{ -1 }, inputWait_{0}
+	, pStageObjectManager_(nullptr)
 {
 
 }
@@ -34,11 +35,16 @@ void GameOverScene::Update()
 	camPos_.z -= 15;
 	Camera::SetPosition(camPos_, 0);
 	Camera::SetTarget(pText_->GetPosition(), 0);
-	if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown(0)|| Input::IsPadButtonDown(XINPUT_GAMEPAD_A))
+	++inputWait_;
+	if (inputWait_ >= 60)
 	{
-		Direct3D::SetIsChangeView(2);
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_GAMETITLE);
+		if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown(0) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, 0), Input::IsPadButtonDown(XINPUT_GAMEPAD_A, 1))
+		{
+			Direct3D::SetIsChangeView(2);
+			SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+			pSceneManager->ChangeScene(SCENE_ID_GAMETITLE);
+			inputWait_ = 0;
+		}
 	}
 }
 

@@ -35,7 +35,7 @@ void GameTitleScene::Update()
 	camPos_.z -= 15;
 	Camera::SetPosition(camPos_, 0);
 	Camera::SetTarget(pText_->GetPosition(), 0);
-	if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown(0) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A))
+	if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown(0) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A,0) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A,1))
 	{
 		Direct3D::SetIsChangeView(2);
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");

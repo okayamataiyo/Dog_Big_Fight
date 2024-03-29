@@ -122,7 +122,10 @@ void PlayScene::Update()
 	{
 		if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y,pAttackPlayer_->GetPadID()) && !pAttackPlayer_->GetIsJump())
 		{
-			pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, attackPlayerPosition_, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f));
+			//attackPlayerPosition_.y = attackPlayerPosition_.y + 2.0f;
+			XMFLOAT3 woodBoxRotate = {};
+			woodBoxRotate.y = XMConvertToDegrees(pAttackPlayer_->GetAngle());
+			pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, attackPlayerPosition_, woodBoxRotate, XMFLOAT3(0.5f, 0.5f, 0.5f));
 			woodBoxCount_ += 1;
 		}
 	}

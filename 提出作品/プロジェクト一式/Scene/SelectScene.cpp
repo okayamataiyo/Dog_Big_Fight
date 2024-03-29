@@ -41,17 +41,14 @@ void SelectScene::Update()
 
 	if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padIDMap_[PADIDSTATE::FIRST]))
 	{
-		pSceneManager_->ChangeScene(SCENE_ID_PLAY);
 	}
 
-	if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padIDMap_[PADIDSTATE::FIRST]))
+	if (!Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padIDMap_[PADIDSTATE::FIRST]))
 	{
-		pSceneManager_->ChangeScene(SCENE_ID_PLAY);
 	}
 
 	if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padIDMap_[PADIDSTATE::SECONDS]))
 	{
-
 	}
 
 	if (!Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padIDMap_[PADIDSTATE::SECONDS]))
@@ -64,7 +61,7 @@ void SelectScene::Update()
 	{
 
 	}
-	if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown(0) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A))
+	if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown(0) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A,0)|| Input::IsPadButtonDown(XINPUT_GAMEPAD_A,1))
 	{
 		Direct3D::SetIsChangeView(2);
 		pSceneManager_->ChangeScene(SCENE_ID_PLAY);

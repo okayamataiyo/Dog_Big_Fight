@@ -13,17 +13,13 @@
 #include "../StageObject/Stage.h"
 
 AttackPlayer::AttackPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1 }, stageHModel_(0),floorHModel_(0), number_(0), scoreTimeCounter_(0), playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
+    :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1 }, stageHModel_(0), floorHModel_(0), number_(0), isDive_{ false }, isDived_{ false }, diveTime_{ 0 }, diveTimeWait_{ 30 },scoreTimeCounter_(0), vecKnockbackDirection_{}, playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
     , pParent_(nullptr), pPlayScene_(nullptr), pCollectPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr),pStage_(nullptr),pFloor_(nullptr),pSceneManager_(nullptr)
 {
     pParent_ = _pParent;
     timeCounter_ = 0;
     score_ = 0;
     padID_ = 0;
-    isDive_ = false;
-    isDived_ = false;
-    diveTime_ = 0;
-    diveTimeWait_ = 30;
     CamPositionVec_ = {};
     positionPrev_ = { 0.0f,0.0f,0.0f };
     controllerMoveSpeed_ = 0.3f;
@@ -75,7 +71,7 @@ void AttackPlayer::Initialize()
     assert(hSound_[2] >= 0);
     hSound_[3] = Audio::Load("Sound/Run.wav");
     assert(hSound_[3] >= 0);
-
+    pSceneManager_ = (SceneManager*)FindObject("SceneManager");
     //モデルデータのロード
     std::string ModelName = (std::string)"Model&Picture/" + attackPlayerName + (std::string)".fbx";
     hModel_ = Model::Load(ModelName);
@@ -319,6 +315,8 @@ void AttackPlayer::OnCollision(GameObject* _pTarget)
     {
         Stun(10);
         isKnockBack_ = true;
+        vecKnockbackDirection_ = (XMLoadFloat3(&transform_.position_) - pCollectPlayer_->GetVecPos());
+        vecKnockbackDirection_ = XMVector3Normalize(vecKnockbackDirection_);
     }
 }
 
@@ -438,10 +436,8 @@ void AttackPlayer::PlayerKnockback()
 {
     if (isKnockBack_ == true)
     {
-        XMVECTOR vecKnockbackDirection = (XMLoadFloat3(&transform_.position_) - pCollectPlayer_->GetVecPos());
-        vecKnockbackDirection = XMVector3Normalize(vecKnockbackDirection);
         float knockbackSpeed = 0.3f;
-        SetKnockback(vecKnockbackDirection, knockbackSpeed);
+        SetKnockback(vecKnockbackDirection_, knockbackSpeed);
         Stun(30);
     }
 }

@@ -23,11 +23,12 @@ namespace
 class CollectPlayer : public PlayerBase
 {
 private:
+	//▼ハンドルモデル番号
 	int hModel_;					//モデル番号
 	int hSound_[5];					//サウンド番号
-	int stageBlockHModel_;
-	int stageHModel_;
-	int floorHModel_;
+	int stageBlockHModel_;			//ステージブロックモデル番号
+	int stageHModel_;				//ステージモデル番号
+	int floorHModel_;				//すり抜け床
 	bool isBoneTatch_;
 	int number_;
 	int time_;
@@ -36,6 +37,7 @@ private:
 	bool isDived_;
 	int diveTime_;
 	int diveTimeWait_;
+	XMVECTOR vecKnockbackDirection_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
 	GAMESTATE gameState_;

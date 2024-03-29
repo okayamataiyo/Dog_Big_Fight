@@ -23,16 +23,18 @@ namespace
 class AttackPlayer : public PlayerBase
 {
 private:
+	//▼ハンドルモデル番号
 	int hModel_;					//モデル番号
 	int hSound_[4];					//サウンド番号
-	int stageHModel_;
-	int floorHModel_;
+	int stageHModel_;				//ステージモデル番号
+	int floorHModel_;				//すり抜け床モデル番号
 	int number_;
 	bool isDive_;
 	bool isDived_;
 	int diveTime_;
 	int diveTimeWait_;
 	int scoreTimeCounter_;
+	XMVECTOR vecKnockbackDirection_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
 	GAMESTATE gameState_;
@@ -121,6 +123,8 @@ public:
 	XMVECTOR GetVecPos() override { return XMLoadFloat3(&transform_.position_); }
 
 	PLAYERSTATE GetPlayerState() override { return playerState_; }
+
+	float GetAngle() { return angle_; }
 
 	int GetPadID()override { return padID_; }
 
