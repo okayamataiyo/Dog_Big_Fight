@@ -32,10 +32,10 @@ private:
 	int number_;
 	int time_;
 	int timeWait_;
-	bool isPush_;
-	bool isPushed_;
-	int pushTime_;
-	int pushTimeWait_;
+	bool isDive_;
+	bool isDived_;
+	int diveTime_;
+	int diveTimeWait_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
 	GAMESTATE gameState_;
@@ -106,7 +106,7 @@ public:
 	/// </summary>
 	void PlayerJump() override;
 
-	void PushJump();
+	void PlayerDive();
 
 	void PlayerKnockback() override;
 

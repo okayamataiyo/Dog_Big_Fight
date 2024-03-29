@@ -20,6 +20,10 @@ AttackPlayer::AttackPlayer(GameObject* _pParent)
     timeCounter_ = 0;
     score_ = 0;
     padID_ = 0;
+    isDive_ = false;
+    isDived_ = false;
+    diveTime_ = 0;
+    diveTimeWait_ = 30;
     CamPositionVec_ = {};
     positionPrev_ = { 0.0f,0.0f,0.0f };
     controllerMoveSpeed_ = 0.3f;
@@ -141,6 +145,34 @@ void AttackPlayer::UpdatePlay()
     if (transform_.position_.y <= -100)
     {
         transform_.position_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    }
+
+    if (Input::IsPadButtonDown(XINPUT_GAMEPAD_B, padID_))
+    {
+        isDive_ = true;
+    }
+
+    if (isDive_ && !isDived_)
+    {
+        ++diveTime_;
+        if (diveTime_ <= 1)
+        {
+            PlayerDive();
+        }
+
+        XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
+        vecDirection = XMVectorSetY(vecDirection, 1);
+        vecDirection = XMVector3Normalize(vecDirection);
+        float PushSpeed = 0.6f;
+        transform_.position_.x = transform_.position_.x + PushSpeed * XMVectorGetX(vecDirection);
+        //transform_.position_.y = transform_.position_.y + PushSpeed * XMVectorGetY(vecDirection);
+        transform_.position_.z = transform_.position_.z + PushSpeed * XMVectorGetZ(vecDirection);
+        if (diveTime_ >= diveTimeWait_)
+        {
+            isDive_ = false;
+            isDived_ = true;
+            diveTime_ = 0;
+        }
     }
     if (playerStatePrev_ != playerState_)
     {
@@ -394,6 +426,14 @@ void AttackPlayer::PlayerJump()
     positionY_ = positionY_ + 0.3;
 }
 
+void AttackPlayer::PlayerDive()
+{
+    //Ç∆Ç—Ç¬Ç´ÇÃèàóù
+    isJump_ = true;
+    positionPrevY_ = positionY_;
+    positionY_ = positionY_ + 0.1;
+}
+
 void AttackPlayer::PlayerKnockback()
 {
     if (isKnockBack_ == true)
@@ -450,8 +490,9 @@ void AttackPlayer::PlayerRayCast()
         {
             if (isJump_ == false)
             {
-                positionY_ = -floorDataDown.dist + 0.6f;
                 isOnFloor_ = 1;
+                isDived_ = false;
+                positionY_ = -floorDataDown.dist + 0.6f;
                 positionTempY_ = positionY_;
                 positionPrevY_ = positionTempY_;
             }
@@ -476,6 +517,7 @@ void AttackPlayer::PlayerRayCast()
         if (isJump_ == false && isOnFloor_ == 0)
         {
             //ínñ Ç…í£ÇËïtÇ´
+            isDived_ = false;
             positionY_ = -stageDataDown.dist + 0.6;
             positionTempY_ = positionY_;
             positionPrevY_ = positionTempY_;

@@ -28,6 +28,10 @@ private:
 	int stageHModel_;
 	int floorHModel_;
 	int number_;
+	bool isDive_;
+	bool isDived_;
+	int diveTime_;
+	int diveTimeWait_;
 	int scoreTimeCounter_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
@@ -98,6 +102,8 @@ public:
 	/// プレイヤーのジャンプ関数
 	/// </summary>
 	void PlayerJump() override;
+
+	void PlayerDive();
 
 	void PlayerKnockback() override;
 

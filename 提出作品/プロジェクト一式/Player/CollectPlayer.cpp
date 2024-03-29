@@ -24,10 +24,10 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     padID_ = 1;
     time_ = 0;
     timeWait_ = 30;
-    isPush_ = false;
-    isPushed_ = false;
-    pushTime_ = 0;
-    pushTimeWait_ = 30;
+    isDive_ = false;
+    isDived_ = false;
+    diveTime_ = 0;
+    diveTimeWait_ = 30;
     positionPrev_ = { 0.0f,0.0f,0.0f };
     controllerMoveSpeed_ = 0.3f;
     mouseMoveSpeed_ = 0.3f;
@@ -154,14 +154,14 @@ void CollectPlayer::UpdatePlay()
 
     if (Input::IsPadButtonDown(XINPUT_GAMEPAD_B,padID_))
     {
-        isPush_ = true;
+        isDive_ = true;
     }
-    if (isPush_ && !isPushed_)
+    if (isDive_ && !isDived_)
     {
-        ++pushTime_;
-        if (pushTime_ <= 1)
+        ++diveTime_;
+        if (diveTime_ <= 1)
         {
-            PushJump();
+            PlayerDive();
         }
 
         XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
@@ -171,11 +171,11 @@ void CollectPlayer::UpdatePlay()
         transform_.position_.x = transform_.position_.x + PushSpeed * XMVectorGetX(vecDirection);
         //transform_.position_.y = transform_.position_.y + PushSpeed * XMVectorGetY(vecDirection);
         transform_.position_.z = transform_.position_.z + PushSpeed * XMVectorGetZ(vecDirection);
-        if (pushTime_ >= pushTimeWait_)
+        if (diveTime_ >= diveTimeWait_)
         {
-            isPush_ = false;
-            isPushed_ = true;
-            pushTime_ = 0;
+            isDive_ = false;
+            isDived_ = true;
+            diveTime_ = 0;
         }
     }
 
@@ -447,9 +447,9 @@ void CollectPlayer::PlayerJump()
     positionY_ = positionY_ + 0.3;
 }
 
-void CollectPlayer::PushJump()
+void CollectPlayer::PlayerDive()
 {
-    //ジャンプの処理
+    //とびつきの処理
     isJump_ = true;
     positionPrevY_ = positionY_;
     positionY_ = positionY_ + 0.1;
@@ -513,7 +513,7 @@ void CollectPlayer::PlayerRayCast()
             if (isJump_ == false)
             {
                 isOnFloor_ = 1;
-                isPushed_ = false;
+                isDived_ = false;
                 positionY_ = -floorDataDown.dist + 0.6f;
                 positionTempY_ = positionY_;
                 positionPrevY_ = positionTempY_;
@@ -562,7 +562,7 @@ void CollectPlayer::PlayerRayCast()
         if (isJump_ == false && isOnFloor_ == 0)
         {
             //地面に張り付き
-            isPushed_ = false;
+            isDived_ = false;
             positionY_ = -stageDataDown.dist + 0.6;
             positionTempY_ = positionY_;
             positionPrevY_ = positionTempY_;
