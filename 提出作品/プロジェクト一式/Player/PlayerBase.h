@@ -5,6 +5,7 @@
 class  PlayerBase : public GameObject
 {
 public:
+
 	enum class PLAYERSTATE
 	{
 		WAIT = 0,

@@ -14,6 +14,14 @@ class SceneManager;
 
 namespace
 {
+	std::string attackPlayerSoundNames[] =
+	{
+		"Stun",
+		"Walk",
+		"Jump",
+		"Run",
+	};
+
 	std::string attackPlayerName = "AttackPlayer";
 }
 
@@ -23,6 +31,14 @@ namespace
 class AttackPlayer : public PlayerBase
 {
 private:
+	enum class SOUNDSTATE
+	{
+		STUN = 0,
+		WALK,
+		JUMP,
+		RUN,
+	};
+
 	//▼ハンドルモデル番号
 	int hModel_;					//モデル番号
 	int hSound_[4];					//サウンド番号
