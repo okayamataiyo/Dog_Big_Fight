@@ -14,6 +14,15 @@ class Floor;
 
 namespace
 {
+	std::string collectPlayerSoundNames[] =
+	{
+		"Stun",
+		"Walk",
+		"Jump",
+		"Run",
+		"CollectBone",
+	};
+
 	std::string collectPlayerName = "CollectPlayer";
 }
 
@@ -23,6 +32,15 @@ namespace
 class CollectPlayer : public PlayerBase
 {
 private:
+	enum class SOUNDSTATE
+	{
+		STUN = 0,
+		WALK,
+		JUMP,
+		RUN,
+		CollectBone,
+	};
+
 	//▼ハンドルモデル番号
 	int hModel_;					//モデル番号
 	int hSound_[5];					//サウンド番号

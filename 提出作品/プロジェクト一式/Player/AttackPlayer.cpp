@@ -62,20 +62,24 @@ AttackPlayer::~AttackPlayer()
 
 void AttackPlayer::Initialize()
 {
-    //サウンドデータのロード
-    hSound_[0] = Audio::Load("Sound/Stun.wav");
-    assert(hSound_[0] >= 0);
-    hSound_[1] = Audio::Load("Sound/Walk.wav");
-    assert(hSound_[1] >= 0);
-    hSound_[2] = Audio::Load("Sound/Jump.wav");
-    assert(hSound_[2] >= 0);
-    hSound_[3] = Audio::Load("Sound/Run.wav");
-    assert(hSound_[3] >= 0);
+    std::string soundFolderName = "Sound/";
+    std::string soundModiferName = ".wav";
+    std::string soundName;
+    int init = 0;
+    for (int i = init; i < sizeof(attackPlayerSoundNames) / sizeof(attackPlayerSoundNames[init]); i++)
+    {
+        //▼サウンドデータのロード
+        soundName = soundFolderName + attackPlayerSoundNames[i] + soundModiferName;
+        hSound_[i] = Audio::Load(soundName);
+        assert(hSound_[i] >= init);
+    }
     pSceneManager_ = (SceneManager*)FindObject("SceneManager");
     //モデルデータのロード
-    std::string ModelName = (std::string)"Model&Picture/" + attackPlayerName + (std::string)".fbx";
-    hModel_ = Model::Load(ModelName);
-    assert(hModel_ >= 0);
+    std::string modelFolderName = "Model&Picture/";
+    std::string modelModiferName = ".fbx";
+    std::string modelName = modelFolderName + attackPlayerName + modelModiferName;
+    hModel_ = Model::Load(modelName);
+    assert(hModel_ >= init);
     transform_.scale_ = { 0.4,0.4,0.4 };
     positionY_ = transform_.position_.y;
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 2.0f);
@@ -143,7 +147,7 @@ void AttackPlayer::UpdatePlay()
         transform_.position_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
     }
 
-    if (Input::IsPadButtonDown(XINPUT_GAMEPAD_B, padID_))
+    if(Input::GetPadTrrigerR(padID_))
     {
         isDive_ = true;
     }
@@ -221,19 +225,19 @@ void AttackPlayer::UpdatePlay()
     if (IsMoving() && !isJump_ && !isDash_)
     {
         playerState_ = PLAYERSTATE::WALK;
-        Audio::Play(hSound_[1],0.5f);
+        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::WALK)], 0.5f);
     }
     if (!IsMoving() && !isJump_)
     {
         playerState_ = PLAYERSTATE::WAIT;
-        Audio::Stop(hSound_[1]);
-        Audio::Stop(hSound_[3]);
+        Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::WALK)]);
+        Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::RUN)]);
     }
     if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER,padID_) && !isJump_ && IsMoving())
     {
         playerState_ = PLAYERSTATE::RUN;
-        Audio::Stop(hSound_[1]);
-        Audio::Play(hSound_[3], 0.2f);
+        Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::WALK)]);
+        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::RUN)], 0.2f);
         isDash_ = true;
     }
     else
@@ -402,9 +406,9 @@ void AttackPlayer::PlayerMove()
     if (Input::IsPadButton(XINPUT_GAMEPAD_A, padID_) && isJump_ == false)
     {
         PlayerJump();
-        Audio::Stop(hSound_[1]);
-        Audio::Stop(hSound_[3]);
-        Audio::Play(hSound_[2],0.3f);
+        Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::WALK)]);
+        Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::RUN)]);
+        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::JUMP)],0.3f);
     }
     if (transform_.position_.z <= -99.0f || transform_.position_.z >= 99.0f)
     {
