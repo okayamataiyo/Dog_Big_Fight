@@ -1,20 +1,22 @@
-#include "SolidText.h"
 #include "../Engine/Direct3D.h"
+#include "../Engine/Global.h"
+#include "SolidText.h"
 
 SolidText::SolidText(GameObject* _pParent)
-	:GameObject(_pParent, solidTextName), hModel_{ -1,-1, -1 },textState_(Select)
+	:GameObject(_pParent, solidTextName), hModel_{ -1,-1, -1 },textState_(TEXTSTATE::SELECT),SetRotateInitialize_{180}
 {
 }
 
 void SolidText::Initialize()
 {
-	hModel_[0] = Model::Load("Model&Picture/GameOverText.fbx");
-	assert(hModel_[0] >= 0);
-	hModel_[1] = Model::Load("Model&Picture/SelectText.fbx");
-	assert(hModel_[1] >= 0);
-	hModel_[2] = Model::Load("Model&Picture/GameTitleText.fbx");
-	assert(hModel_[2] >= 0);
-	transform_.rotate_.y = 180;
+	//▼モデルデータのロード
+	std::string modelName;
+	for (int i = initializeZero; i < sizeof(solidTextModelNames) / sizeof(solidTextModelNames[initializeZero]); i++)
+	{
+		modelName = modelFolderName + solidTextModelNames[i] + modelModifierName;
+		hModel_[i] = Model::Load(modelName);
+	}
+	transform_.rotate_.y = SetRotateInitialize_;
 }
 
 void SolidText::Update()
@@ -25,19 +27,19 @@ void SolidText::Draw()
 {
 	switch (textState_)
 	{
-	case TEXTSTATE::GameOver: 
-		Model::SetTransform(hModel_[0], transform_);
-		Model::Draw(hModel_[0]);
+	case TEXTSTATE::GAMEOVER: 
+		Model::SetTransform(hModel_[static_cast<int>(TEXTSTATE::GAMEOVER)], transform_);
+		Model::Draw(hModel_[static_cast<int>(TEXTSTATE::GAMEOVER)]);
 		break;
-	case TEXTSTATE::Select:
+	case TEXTSTATE::SELECT:
 		Direct3D::SetShader(Direct3D::SHADER_CULLNONEBOARD);
-		Model::SetTransform(hModel_[1], transform_);
-		Model::Draw(hModel_[1]);
+		Model::SetTransform(hModel_[static_cast<int>(TEXTSTATE::SELECT)], transform_);
+		Model::Draw(hModel_[static_cast<int>(TEXTSTATE::SELECT)]);
 		Direct3D::SetShader(Direct3D::SHADER_3D);
 		break;
-	case TEXTSTATE::GameTitle:
-		Model::SetTransform(hModel_[2], transform_);
-		Model::Draw(hModel_[2]);
+	case TEXTSTATE::GAMETITLE:
+		Model::SetTransform(hModel_[static_cast<int>(TEXTSTATE::GAMETITLE)], transform_);
+		Model::Draw(hModel_[static_cast<int>(TEXTSTATE::GAMETITLE)]);
 	}
 }
 

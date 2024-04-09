@@ -24,7 +24,7 @@ void SelectScene::Initialize()
 	//buttonStart_ = Instantiate<Button>(this);
 	pSceneManager_ = (SceneManager*)FindObject("SceneManager");
 	pStageObjectManager_ = new StageObjectManager(this);
-	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::Sky);
+	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::SKY);
 }
 
 void SelectScene::Update()

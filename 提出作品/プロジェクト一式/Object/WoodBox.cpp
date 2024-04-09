@@ -1,17 +1,19 @@
+//インクルード
 #include "../Engine/Model.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
 #include "../Engine/Fbx.h"
 #include "../Engine/ImGui/imgui.h"
 #include "../Engine/Audio.h"
-#include "WoodBox.h"
-#include "ObjectManager.h"
+#include "../Engine/Global.h"
 #include "../StageObject/Stage.h"
 #include "../Player/AttackPlayer.h"
+#include "ObjectManager.h"
+#include "WoodBox.h"
 
 WoodBox::WoodBox(GameObject* _pParent)
-    :ObjectBase(_pParent, woodBoxName), hModel_(-1), hSound_{ -1 },isOnWoodBox_(0)
-    ,pAttackPlayer_(nullptr)
+    :ObjectBase(_pParent, woodBoxName), hModel_{-1}, hSound_{-1}, isOnWoodBox_{0}
+    ,pParent_{nullptr},pPlayScene_{nullptr}, pAttackPlayer_{ nullptr },pCollision_{nullptr}
 {
     pParent_ = _pParent;
 }
@@ -24,15 +26,15 @@ WoodBox::~WoodBox()
 void WoodBox::Initialize()
 {
     //サウンドデータのロード
-    hSound_ = Audio::Load("Sound/WoodBoxBreak.wav");
-    assert(hSound_ >= 0);
+    std::string soundName = soundFolderName + soundWoodBoxName + soundModifierName;
+    hSound_ = Audio::Load(soundName);
+    assert(hSound_ >= initializeZero);
     //モデルデータのロード
-    std::string ModelName = (std::string)"Model&Picture/" + woodBoxName + (std::string)".fbx";
-    hModel_ = Model::Load(ModelName);
-    assert(hModel_ >= 0);
-    BoxCollider* pCollision = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f));
-    //SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.5);
-    AddCollider(pCollision);
+    std::string modelName = modelFolderName + woodBoxName + modelModifierName;
+    hModel_ = Model::Load(modelName);
+    assert(hModel_ >= initializeZero);
+    pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 3.0f);
+    AddCollider(pCollision_);
     pPlayScene_ = (PlayScene*)FindObject(playSceneName);
     pAttackPlayer_ = (AttackPlayer*)FindObject(attackPlayerName);
 }

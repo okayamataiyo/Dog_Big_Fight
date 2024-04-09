@@ -1,3 +1,4 @@
+//インクルード
 #include "../Engine/SceneManager.h"
 #include "../Engine/Input.h"
 #include "../Engine/Model.h"
@@ -6,6 +7,7 @@
 #include "../Engine/Text.h"
 #include "../Engine/Audio.h"
 #include "../Engine/SceneManager.h"
+#include "../Engine/Global.h"
 #include "AttackPlayer.h"
 #include "CollectPlayer.h"
 #include "../Object/Floor.h"
@@ -13,13 +15,23 @@
 #include "../StageObject/Stage.h"
 
 AttackPlayer::AttackPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1 }, stageHModel_(0), floorHModel_(0), number_(0), isDive_{ false }, isDived_{ false }, diveTime_{ 0 }, diveTimeWait_{ 30 },scoreTimeCounter_(0), vecKnockbackDirection_{}, playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
-    , pParent_(nullptr), pPlayScene_(nullptr), pCollectPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr),pStage_(nullptr),pFloor_(nullptr),pSceneManager_(nullptr)
+    :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1 }, stageHModel_{0}, floorHModel_{0}
+    , number_{0}, isDive_{false}, isDived_{false}, diveTime_{0}, diveTimeWait_{30}, scoreTimeCounter_{0}, vecKnockbackDirection_{}, playerState_{PLAYERSTATE::WAIT}, playerStatePrev_{PLAYERSTATE::WAIT}, gameState_{GAMESTATE::READY}
+    , pParent_{ nullptr }, pPlayScene_{ nullptr }, pCollectPlayer_{ nullptr }, pCollision_{ nullptr }
+    , pWoodBox_{ nullptr }, pText_{ nullptr }, pStage_{ nullptr }, pFloor_{ nullptr }, pSceneManager_{ nullptr }
 {
     pParent_ = _pParent;
+    //▼UIに関する基底クラスメンバ変数
+    drawScoreTextX_ = 30;
+    drawScoreTextY_ = 30;
+    drawScoreNumberX_ = 360;
+    drawScoreNumberY_ = 30;
+    //▼ゲーム演出に関する基底クラスメンバ変数
     timeCounter_ = 0;
     score_ = 0;
     padID_ = 0;
+    playerInitPosY_ = 0.6f;
+    //▼邪魔側プレイヤー移動に関する基底クラスメンバ変数
     CamPositionVec_ = {};
     positionPrev_ = { 0.0f,0.0f,0.0f };
     controllerMoveSpeed_ = 0.3f;
@@ -27,6 +39,7 @@ AttackPlayer::AttackPlayer(GameObject* _pParent)
     positionY_ = 0.0f;
     isDash_ = false;
     isFling_ = 1.0f;
+    //▼向き変えに関する基底クラスメンバ変数
     vecMove_ = { 0.0f,0.0f,0.0f,0.0f };
     vecLength_ = { 0.0f,0.0f,0.0f,0.0f };
     vecFront_ = { 0.0f,0.0f,0.0f,0.0f };
@@ -35,11 +48,13 @@ AttackPlayer::AttackPlayer(GameObject* _pParent)
     length_ = 0.0f;
     dot_ = 0.0f;
     angle_ = 0.0f;
+    //▼邪魔側プレイヤージャンプに関する基底クラスメンバ変数
     positionTempY_ = 0.0f;
     positionPrevY_ = 0.0f;
     isJump_ = false;
+    //▼すり抜け床に関する基底クラスメンバ変数
     isOnFloor_ = false;
-    woodBoxName_ = "WoodBox";
+    //▼木箱に関する基底クラスメンバ変数
     woodBoxNumber_ = "WoodBox0";
     dotProduct_ = 0.0f;
     angleDegrees_ = 0.0f;
@@ -47,6 +62,7 @@ AttackPlayer::AttackPlayer(GameObject* _pParent)
     stunLimit_ = 0;
     isStun_ = false;
     isKnockBack_ = false;
+    //▼壁判定に関する基底クラスメンバ変数
     rayStageDistDown_ = 0.0f;
     rayFloorDistDown_ = 0.0f;
     rayFloorDistUp_ = 0.0f;
@@ -62,29 +78,24 @@ AttackPlayer::~AttackPlayer()
 
 void AttackPlayer::Initialize()
 {
-    std::string soundFolderName = "Sound/";
-    std::string soundModiferName = ".wav";
+    //▼サウンドデータのロード
     std::string soundName;
-    int init = 0;
-    for (int i = init; i < sizeof(attackPlayerSoundNames) / sizeof(attackPlayerSoundNames[init]); i++)
+    for (int i = initializeZero; i < sizeof(soundAttackPlayerNames) / sizeof(soundAttackPlayerNames[initializeZero]); i++)
     {
-        //▼サウンドデータのロード
-        soundName = soundFolderName + attackPlayerSoundNames[i] + soundModiferName;
+        soundName = soundFolderName + soundAttackPlayerNames[i] + soundModifierName;
         hSound_[i] = Audio::Load(soundName);
-        assert(hSound_[i] >= init);
+        assert(hSound_[i] >= initializeZero);
     }
-    pSceneManager_ = (SceneManager*)FindObject("SceneManager");
-    //モデルデータのロード
-    std::string modelFolderName = "Model&Picture/";
-    std::string modelModiferName = ".fbx";
-    std::string modelName = modelFolderName + attackPlayerName + modelModiferName;
+    //▼モデルデータのロード
+    std::string modelName = modelFolderName + attackPlayerName + modelModifierName;
     hModel_ = Model::Load(modelName);
-    assert(hModel_ >= init);
+    assert(hModel_ >= initializeZero);
     transform_.scale_ = { 0.4,0.4,0.4 };
     positionY_ = transform_.position_.y;
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 2.0f);
     AddCollider(pCollision_);
-    pPlayScene_ = (PlayScene*)FindObject("PlayScene");
+    pSceneManager_ = (SceneManager*)FindObject(sceneManagerName);
+    pPlayScene_ = (PlayScene*)FindObject(playSceneName);
     pStage_ = (Stage*)FindObject(stageName);
     pFloor_ = (Floor*)FindObject(floorName);
     pText_ = new Text;
@@ -103,10 +114,9 @@ void AttackPlayer::Update()
 
 void AttackPlayer::Draw()
 {
-    pText_->Draw(30, 30, "AttackPlayer:Score=");
-    pText_->Draw(360, 30, score_);
+    pText_->Draw(drawScoreTextX_, drawScoreTextY_, "AttackPlayer:Score=");
+    pText_->Draw(drawScoreNumberX_, drawScoreNumberY_, score_);
 
-    //pText_->Draw(30, 120, "Attack!!!");
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);
 }
@@ -123,13 +133,13 @@ void AttackPlayer::UpdateReady()
     floorHModel_ = pFloor_->GetModelHandle();
     //▼下の法線(地面に張り付き)
     stageDataDown.start = transform_.position_;  //レイの発射位置
-    stageDataDown.start.y = 0;
-    stageDataDown.dir = XMFLOAT3(0, -1, 0);       //レイの方向
+    stageDataDown.start.y = initializeZero;
+    stageDataDown.dir = vecDown;       //レイの方向
     Model::RayCast(stageHModel_, &stageDataDown); //レイを発射
     rayStageDistDown_ = stageDataDown.dist;
     if (stageDataDown.hit)
     {
-        transform_.position_.y = -stageDataDown.dist + 0.6;
+        transform_.position_.y = -stageDataDown.dist + playerInitPosY_;
     }
     ++timeCounter_;
     if (timeCounter_ >= 60)
@@ -272,7 +282,7 @@ void AttackPlayer::Stun(int _timeLimit)
 void AttackPlayer::OnCollision(GameObject* _pTarget)
 {
     std::vector<int> woodBoxs = pPlayScene_->GetWoodBoxs();
-    woodBoxNumber_ = woodBoxName_ + std::to_string(number_);
+    woodBoxNumber_ = woodBoxName + std::to_string(number_);
     if (_pTarget->GetObjectName() == woodBoxNumber_)
     {
         pWoodBox_ = (WoodBox*)FindObject(woodBoxNumber_);

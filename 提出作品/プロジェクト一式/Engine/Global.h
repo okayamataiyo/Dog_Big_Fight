@@ -1,4 +1,6 @@
 #pragma once
+//インクルード
+#include <string>
 #include "Direct3D.h"
 
 //安全にメモリを開放するためのマクロ
@@ -16,6 +18,17 @@
 
 //引数で初期化
 #define ARGUMENT_INITIALIZE(p,t){ p = t;}
+static XMFLOAT3 vecUp = { 0.0f,1.0f,0.0f };
+static XMFLOAT3 vecDown = { 0.0f,-1.0f,0.0f };
+static XMFLOAT3 vecFront = { 0.0f,0.0f,1.0f };
+static XMFLOAT3 vecBack = { 0.0f,0.0f,-1.0f };
+static XMFLOAT3 vecRight = { 1.0f,0.0f,0.0f };
+static XMFLOAT3 vecLeft = { -1.0f,0.0f,0.0f };
+static int initializeZero = 0;
+static std::string soundFolderName = "Sound/";
+static std::string soundModifierName = ".wav";
+static std::string modelFolderName = "Model&Picture/";
+static std::string modelModifierName = ".fbx";
 
 // INIファイルからfloatを取得する関数
 static float GetPrivateProfileFloat(LPCTSTR lpAppName, LPCTSTR lpKeyName, LPCTSTR lpDefault, LPCTSTR lpFileName)

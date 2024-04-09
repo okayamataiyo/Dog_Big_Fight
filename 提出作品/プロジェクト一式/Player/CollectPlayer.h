@@ -11,10 +11,11 @@ class Text;
 class Stage;
 class StageBlock;
 class Floor;
+class SceneManager;
 
 namespace
 {
-	std::string collectPlayerSoundNames[] =
+	std::string soundCollectPlayerNames[] =
 	{
 		"Stun",
 		"Walk",
@@ -24,6 +25,7 @@ namespace
 	};
 
 	std::string collectPlayerName = "CollectPlayer";
+	int collectPlayerNumber = 1;
 }
 
 /// <summary>
@@ -68,6 +70,7 @@ private:
 	Stage* pStage_;
 	StageBlock* pStageBlock_;
 	Floor* pFloor_;
+	SceneManager* pSceneManager_;
 public:
 
 	/// <summary>

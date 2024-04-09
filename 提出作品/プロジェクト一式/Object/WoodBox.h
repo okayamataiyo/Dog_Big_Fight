@@ -2,15 +2,20 @@
 //インクルード
 #include <string>
 #include "../Engine/Direct3D.h"
-#include "ObjectBase.h"
 #include "../Scene/PlayScene.h"
+#include "ObjectBase.h"
 
 namespace
 {
+    std::string soundWoodBoxName = "WoodBoxBreak";
     std::string woodBoxName = "WoodBox";
 }
 
+class GameObject;
+class PlayScene;
 class AttackPlayer;
+class SphereCollider;
+
 
 //WoodBoxを管理するクラス
 class WoodBox : public ObjectBase
@@ -19,9 +24,6 @@ private:
     int hModel_;            //モデル
     int hSound_;            //サウンドデータ
     bool isBreak_;            //木箱が壊されたか
-    GameObject* pParent_;
-    PlayScene* pPlayScene_;
-    AttackPlayer* pAttackPlayer_;
     std::vector<int> woodBoxs_;
 
     //▼レイキャストで使うメンバ変数
@@ -32,6 +34,12 @@ private:
     int  isOnWoodBox_;      //木箱の上にいるか
     float rayWoodBoxDist_;  //木箱のディスト
     float rayStageDistDown_;    //ステージのディスト
+
+    GameObject* pParent_;
+    PlayScene* pPlayScene_;
+    AttackPlayer* pAttackPlayer_;
+    SphereCollider* pCollision_;
+
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)

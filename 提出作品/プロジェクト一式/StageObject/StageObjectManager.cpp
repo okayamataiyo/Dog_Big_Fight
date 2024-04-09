@@ -9,13 +9,13 @@ void StageObjectManager::CreateStageObjectOrigin(STAGEOBJECTSTATE _stageObjectSt
 {
 	switch (_stageObjectState)
 	{
-	case STAGEOBJECTSTATE::Sky:
+	case STAGEOBJECTSTATE::SKY:
 		pStageObjectBase_ = Instantiate<Sky>(pParent_);
 		break;
-	case STAGEOBJECTSTATE::Stage:
+	case STAGEOBJECTSTATE::STAGE:
 		pStageObjectBase_ = Instantiate<Stage>(pParent_);
 		break;
-	case STAGEOBJECTSTATE::StageBlock:
+	case STAGEOBJECTSTATE::STAGEBLOCK:
 		pStageObjectBase_ = Instantiate<StageBlock>(pParent_);
 		break;
 	}
@@ -25,13 +25,13 @@ void StageObjectManager::CreateStageObject(STAGEOBJECTSTATE _stageObjectState, X
 {
 	switch (_stageObjectState)
 	{
-	case STAGEOBJECTSTATE::Sky:
+	case STAGEOBJECTSTATE::SKY:
 		pStageObjectBase_ = Instantiate<Sky>(pParent_);
 		break;
-	case STAGEOBJECTSTATE::Stage:
+	case STAGEOBJECTSTATE::STAGE:
 		pStageObjectBase_ = Instantiate<Stage>(pParent_);
 		break;
-	case STAGEOBJECTSTATE::StageBlock:
+	case STAGEOBJECTSTATE::STAGEBLOCK:
 		pStageObjectBase_ = Instantiate<StageBlock>(pParent_);
 		break;
 	}
@@ -44,7 +44,7 @@ void StageObjectManager::CreateStageObject(STAGEOBJECTSTATE _stageObjectState, f
 {
 	switch (_stageObjectState)
 	{
-	case STAGEOBJECTSTATE::StageBlock:
+	case STAGEOBJECTSTATE::STAGEBLOCK:
 		float minX = _minX;
 		float maxX = _maxX;
 		float minY = 0;
@@ -74,7 +74,7 @@ void StageObjectManager::SetPosition(XMFLOAT3 _position)
 }
 
 StageObjectManager::StageObjectManager(GameObject* _parent)
-	:pParent_(_parent), pStageObjectBase_(nullptr), stageObjectState_(STAGEOBJECTSTATE::Sky)
+	:pParent_(_parent), pStageObjectBase_(nullptr), stageObjectState_(STAGEOBJECTSTATE::SKY)
 {
 }
 

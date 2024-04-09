@@ -6,6 +6,7 @@
 #include "../Engine/Text.h"
 #include "../Engine/Audio.h"
 #include "../Engine/VFX.h"
+#include "../Engine/Global.h"
 #include "CollectPlayer.h"
 #include "AttackPlayer.h"
 #include "../Object/Floor.h"
@@ -15,19 +16,31 @@
 #include "../StageObject/StageBlock.h"
 
 CollectPlayer::CollectPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, collectPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1,-1 }, stageBlockHModel_(-1), stageHModel_(-1), floorHModel_(-1), number_(0), time_{ 0 }, timeWait_{ 30 }, isDive_{ false }, isDived_{ false }, diveTime_{ 0 }, diveTimeWait_{ 30 }, vecKnockbackDirection_{},playerState_(PLAYERSTATE::WAIT), playerStatePrev_(PLAYERSTATE::WAIT), gameState_(GAMESTATE::READY)
-    , pParent_(nullptr), pPlayScene_(nullptr), pAttackPlayer_(nullptr), pCollision_(nullptr), pWoodBox_(nullptr), pText_(nullptr),pStage_(nullptr),pStageBlock_(nullptr),pFloor_(nullptr)
+    :PlayerBase(_pParent, collectPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1,-1 }, stageBlockHModel_{ -1 }, stageHModel_{ -1 }, floorHModel_{ -1 }
+    , number_{ 0 }, time_{ 0 }, timeWait_{ 30 }, isDive_{ false }, isDived_{ false }, diveTime_{ 0 }, diveTimeWait_{ 30 }, vecKnockbackDirection_{}, playerState_{PLAYERSTATE::WAIT}, playerStatePrev_{PLAYERSTATE::WAIT}, gameState_{GAMESTATE::READY}
+    , pParent_{ nullptr }, pPlayScene_{ nullptr }, pAttackPlayer_{ nullptr }, pCollision_{ nullptr }
+    , pWoodBox_{ nullptr }, pText_{ nullptr }, pStage_{ nullptr }, pStageBlock_{ nullptr }, pFloor_{ nullptr }, pSceneManager_{ nullptr }
 {
     pParent_ = _pParent;
+    //▼UIに関する基底クラスメンバ変数
+    drawScoreTextX_ = 30;
+    drawScoreTextY_ = 60;
+    drawScoreNumberX_ = 360;
+    drawScoreNumberY_ = 60;
+    //▼ゲーム演出に関する基底クラスメンバ変数
     timeCounter_ = 0;
     score_ = 0;
     padID_ = 1;
+    playerInitPosY_ = 0.6f;
+    //▼収集側プレイヤー移動に関する基底クラスメンバ変数
+    CamPositionVec_ = {};
     positionPrev_ = { 0.0f,0.0f,0.0f };
     controllerMoveSpeed_ = 0.3f;
     mouseMoveSpeed_ = 0.3f;
     positionY_ = 0.0f;
     isDash_ = false;
     isFling_ = 1.0f;
+    //▼向き変えに関する基底クラスメンバ変数
     vecMove_ = { 0.0f,0.0f,0.0f,0.0f };
     vecLength_ = { 0.0f,0.0f,0.0f,0.0f };
     vecFront_ = { 0.0f,0.0f,0.0f,0.0f };
@@ -36,11 +49,13 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     length_ = 0.0f;
     dot_ = 0.0f;
     angle_ = 0.0f;
+    //▼収集側プレイヤージャンプに関する基底クラスメンバ変数
     positionTempY_ = 0.0f;
     positionPrevY_ = 0.0f;
     isJump_ = false;
+    //▼すり抜け床に関する基底クラスメンバ変数
     isOnFloor_ = false;
-    woodBoxName_ = "WoodBox";
+    //▼木箱に関する基底クラスメンバ変数
     woodBoxNumber_ = "WoodBox0";
     dotProduct_ = 0.0f;
     angleDegrees_ = 0.0f;
@@ -48,6 +63,7 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     stunLimit_ = 0;
     isStun_ = false;
     isKnockBack_ = false;
+    //▼壁判定に関する基底クラスメンバ変数
     rayFloorDistUp_ = 0.0f;
     rayFloorDistDown_ = 0.0f;
     rayStageBlockDistDown_ = 0.0f;
@@ -64,32 +80,27 @@ CollectPlayer::~CollectPlayer()
 
 void CollectPlayer::Initialize()
 {
-    std::string soundFolderName = "Sound/";
-    std::string soundModiferName = ".wav";
+    //▼サウンドデータのロード
     std::string soundName;
-    int init = 0;
-    for (int i = init; i < sizeof(collectPlayerSoundNames) / sizeof(collectPlayerSoundNames[init]); i++)
+    for (int i = initializeZero; i < sizeof(soundCollectPlayerNames) / sizeof(soundCollectPlayerNames[initializeZero]); i++)
     {
-        //▼サウンドデータのロード
-        soundName = soundFolderName + collectPlayerSoundNames[i] + soundModiferName;
+        soundName = soundFolderName + soundCollectPlayerNames[i] + soundModifierName;
         hSound_[i] = Audio::Load(soundName);
-        assert(hSound_[i] >= init);
+        assert(hSound_[i] >= initializeZero);
     }
-    
-    //モデルデータのロード
-    std::string modelFolderName = "Model&Picture/";
-    std::string modelModiferName = ".fbx";
-    std::string modelName = modelFolderName + collectPlayerName + modelModiferName;
+    //▼モデルデータのロード
+    std::string modelName = modelFolderName + collectPlayerName + modelModifierName;
     hModel_ = Model::Load(modelName);
-    assert(hModel_ >= init);
+    assert(hModel_ >= initializeZero);
     transform_.scale_ = { 0.4,0.4,0.4 };
     positionY_ = transform_.position_.y;
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 2.0f);
     AddCollider(pCollision_);
-    pPlayScene_ = (PlayScene*)FindObject("PlayScene");
-    pStage_ = (Stage*)FindObject("Stage");      //ステージオブジェクト
-    pStageBlock_ = (StageBlock*)FindObject("StageBlock");
-    pFloor_ = (Floor*)FindObject("Floor");
+    pSceneManager_ = (SceneManager*)FindObject(sceneManagerName);
+    pPlayScene_ = (PlayScene*)FindObject(playSceneName);
+    pStage_ = (Stage*)FindObject(stageName);      //ステージオブジェクト
+    pStageBlock_ = (StageBlock*)FindObject(stageBlockName);
+    pFloor_ = (Floor*)FindObject(floorName);
     pText_ = new Text;
     pText_->Initialize();
 }
@@ -106,8 +117,8 @@ void CollectPlayer::Update()
 
 void CollectPlayer::Draw()
 {
-    pText_->Draw(30, 60, "CollectPlayer:Score=");
-    pText_->Draw(360, 60, score_);
+    pText_->Draw(drawScoreTextX_, drawScoreTextY_, "CollectPlayer:Score=");
+    pText_->Draw(drawScoreNumberX_, drawScoreNumberY_, score_);
 
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);
@@ -124,13 +135,13 @@ void CollectPlayer::UpdateReady()
     floorHModel_ = pFloor_->GetModelHandle();
     //▼下の法線(地面に張り付き)
     stageDataDown.start = transform_.position_;  //レイの発射位置
-    stageDataDown.start.y = 0;
-    stageDataDown.dir = XMFLOAT3(0, -1, 0);       //レイの方向
+    stageDataDown.start.y = initializeZero;
+    stageDataDown.dir = vecDown;       //レイの方向
     Model::RayCast(stageHModel_, &stageDataDown); //レイを発射
     rayStageDistDown_ = stageDataDown.dist;
     if (stageDataDown.hit)
     {
-        transform_.position_.y = -stageDataDown.dist + 0.6;
+        transform_.position_.y = -stageDataDown.dist + playerInitPosY_;
     }
     ++timeCounter_;
     if (timeCounter_ >= 60)
@@ -208,8 +219,7 @@ void CollectPlayer::UpdatePlay()
     }
     if (score_ >= 150)
     {
-        SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-        pSceneManager->ChangeScene(SCENE_ID_GAMEOVER);
+        pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
         Direct3D::SetIsChangeView(1);
     }
     /*ImGui::Text("playerState_=%i", playerState_);
@@ -284,7 +294,7 @@ void CollectPlayer::Stun(int _timeLimit)
 void CollectPlayer::OnCollision(GameObject* _pTarget)
 {
     std::vector<int> woodBoxs = pPlayScene_->GetWoodBoxs();
-    woodBoxNumber_ = woodBoxName_ + std::to_string(number_);
+    woodBoxNumber_ = woodBoxName + std::to_string(number_);
     if (_pTarget->GetObjectName() == woodBoxNumber_)
     {
         pWoodBox_ = (WoodBox*)FindObject(woodBoxNumber_);

@@ -5,19 +5,29 @@
 
 namespace
 {
+	std::string solidTextModelNames[] =
+	{
+		"GameOverText",
+		"SelectText",
+		"GameTitleText",
+	};
+
 	std::string solidTextName = "SolidText";
 }
+
+enum class TEXTSTATE
+{
+	GAMEOVER = 0,
+	SELECT,
+	GAMETITLE,
+};
 
 class SolidText : public GameObject
 {
 private:
 
-	enum TEXTSTATE
-	{
-		GameOver = 0,
-		Select,
-		GameTitle,
-	}textState_;
+	TEXTSTATE textState_;
+	int SetRotateInitialize_;
 	int hModel_[3];
 public:
 	SolidText(GameObject* _pParent);

@@ -14,7 +14,7 @@ class SceneManager;
 
 namespace
 {
-	std::string attackPlayerSoundNames[] =
+	std::string soundAttackPlayerNames[] =
 	{
 		"Stun",
 		"Walk",
@@ -23,6 +23,7 @@ namespace
 	};
 
 	std::string attackPlayerName = "AttackPlayer";
+	int attackPlayerNumber = 0;
 }
 
 /// <summary>

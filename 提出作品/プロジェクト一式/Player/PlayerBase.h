@@ -4,7 +4,7 @@
 
 class  PlayerBase : public GameObject
 {
-public:
+protected:
 
 	enum class PLAYERSTATE
 	{
@@ -21,12 +21,18 @@ public:
 		PLAY,
 		GAMEOVER,
 	};
+	//▼UIに関するメンバ変数
+	int drawScoreTextX_;
+	int drawScoreTextY_;
+	int drawScoreNumberX_;
+	int drawScoreNumberY_;
 
-	//▼ゲームの演出で使うメンバ変数
+	//▼ゲーム演出に関するメンバ変数
 	int timeCounter_;
 	int score_;			//得点
 	int padID_;
-	//▼移動で使うメンバ変数
+	float playerInitPosY_;
+	//▼プレイヤー移動に関するメンバ変数
 	XMVECTOR CamPositionVec_;
 	XMFLOAT3 positionPrev_;		//1フレーム前の位置座標
 	float controllerMoveSpeed_;
@@ -34,7 +40,7 @@ public:
 	float positionY_;			//プレイヤーのY座標に代入する値
 	bool isDash_;				//ダッシュしているかどうか
 	float isFling_;				//地面から離れているか
-	//▼向き変えで使うメンバ変数
+	//▼向き変えに関するメンバ変数
 	XMVECTOR vecMove_;
 	XMVECTOR vecLength_;
 	XMVECTOR vecFront_;
@@ -43,25 +49,24 @@ public:
 	float length_;
 	float dot_;
 	float angle_;
-	//▼ジャンプで使うメンバ変数
+	//▼ジャンプに関するメンバ変数
 	float positionTempY_;		//y座標をPrevに保存する
 	float positionPrevY_;		//1時的にy座標を保存しておく
 	bool  isJump_;				//ジャンプしてるかしていないか
-	//▼すり抜け床で使うメンバ変数
+	//▼すり抜け床に関するメンバ変数
 	int isOnFloor_;		//すり抜け床にレイを飛ばしているかどうか
-	//▼木箱で使うメンバ変数
-	std::string woodBoxName_;
+	//▼木箱に関するメンバ変数
 	std::string woodBoxNumber_;
 	float dotProduct_;
 	float angleDegrees_;
-	//▼ノックバックで使うメンバ変数
+	//▼ノックバックに関するメンバ変数
 	int stunTimeCounter_;	//スタンしてからどのくらい経ったか
 	int stunLimit_;		//スタンしている時間
 	bool isStun_;		//スタンしているかどうか
 	bool isKnockBack_;	//ノックバックしているかどうか
-	//▼慣性で使うメンバ変数
+	//▼慣性に関するメンバ変数
 
-	//▼壁判定で使うメンバ変数
+	//▼壁判定に関するメンバ変数
 	float rayFloorDistUp_;			//上のすり抜け床とプレイヤーの差距離
 	float rayFloorDistDown_;		//下のすり抜け床とプレイヤーの差距離
 	float rayStageBlockDistDown_;

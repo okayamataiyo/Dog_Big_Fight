@@ -68,6 +68,13 @@ namespace Direct3D
 		BLEND_MAX
 	};
 
+	enum class VIEWSTATE
+	{
+		LEFTVIEW = 1,
+		LEFT_BOTHVIEW,
+		RIGHTVIEW,
+		RIGHT_BOTHVIEW,
+	};
 
 
 	//‚»‚Ì‘¼
