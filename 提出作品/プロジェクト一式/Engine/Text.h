@@ -3,6 +3,9 @@
 
 class Text
 {
+private:
+	bool isLeftView_;
+	bool isRightView_;
 	int hPict_;
 
 	unsigned int width_, height_;	//1•¶š•ª‚Ì•‚Æ‚‚³
@@ -36,7 +39,13 @@ public:
 	//ˆø”Fvalue	•\¦‚µ‚½‚¢’l
 	void Draw(int x, int y, int value);
 
+	void DrawTextFor(float px, float py,const char* str);
+
 	//‰ğ•ú
 	void Release();
+
+	void SetIsLeftView(bool _isLeftView) { isLeftView_ = _isLeftView; }
+
+	void SetIsRightView(bool _isRightView) { isRightView_ = _isRightView; }
 };
 

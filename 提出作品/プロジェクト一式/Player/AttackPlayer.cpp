@@ -10,13 +10,13 @@
 #include "../Engine/Global.h"
 #include "AttackPlayer.h"
 #include "CollectPlayer.h"
-#include "../Object/Floor.h"
-#include "../Object/WoodBox.h"
+#include "../ItemObject/Floor.h"
+#include "../ItemObject/WoodBox.h"
 #include "../StageObject/Stage.h"
 
 AttackPlayer::AttackPlayer(GameObject* _pParent)
     :PlayerBase(_pParent, attackPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1 }, stageHModel_{0}, floorHModel_{0}
-    , number_{0}, isDive_{false}, isDived_{false}, diveTime_{0}, diveTimeWait_{30}, scoreTimeCounter_{0}, vecKnockbackDirection_{}, playerState_{PLAYERSTATE::WAIT}, playerStatePrev_{PLAYERSTATE::WAIT}, gameState_{GAMESTATE::READY}
+    , number_{ 0 },  scoreTimeCounter_{ 0 }, scoreTimeCounterWait_{ 1 }, vecKnockbackDirection_ {}, playerState_{ PLAYERSTATE::WAIT }, playerStatePrev_{ PLAYERSTATE::WAIT }, gameState_{ GAMESTATE::READY }
     , pParent_{ nullptr }, pPlayScene_{ nullptr }, pCollectPlayer_{ nullptr }, pCollision_{ nullptr }
     , pWoodBox_{ nullptr }, pText_{ nullptr }, pStage_{ nullptr }, pFloor_{ nullptr }, pSceneManager_{ nullptr }
 {
@@ -27,10 +27,16 @@ AttackPlayer::AttackPlayer(GameObject* _pParent)
     drawScoreNumberX_ = 360;
     drawScoreNumberY_ = 30;
     //▼ゲーム演出に関する基底クラスメンバ変数
+    FPS_ = 600;
     timeCounter_ = 0;
+    timeLimit_ = 60;
+    fallLimit_ = 100.0f;
     score_ = 0;
+    scoreAmount_ = 10;
     padID_ = 0;
     playerInitPosY_ = 0.6f;
+    //▼サウンドに関する基底クラスメンバ変数
+    soundVolume_ = 0.5f;
     //▼邪魔側プレイヤー移動に関する基底クラスメンバ変数
     CamPositionVec_ = {};
     positionPrev_ = { 0.0f,0.0f,0.0f };
@@ -52,10 +58,17 @@ AttackPlayer::AttackPlayer(GameObject* _pParent)
     positionTempY_ = 0.0f;
     positionPrevY_ = 0.0f;
     isJump_ = false;
+    //▼飛びつきに関する基底クラスメンバ変数
+    diveSpeed_ = 0.6f;
+    isDive_ = false;
+    isDived_ = false;
+    diveTime_ = 0;
+    diveDuration_ = 1;
+    diveTimeWait_ = 30;
     //▼すり抜け床に関する基底クラスメンバ変数
     isOnFloor_ = false;
     //▼木箱に関する基底クラスメンバ変数
-    woodBoxNumber_ = "WoodBox0";
+    woodBoxNumber_ = "";
     dotProduct_ = 0.0f;
     angleDegrees_ = 0.0f;
     stunTimeCounter_ = 0;
@@ -80,16 +93,16 @@ void AttackPlayer::Initialize()
 {
     //▼サウンドデータのロード
     std::string soundName;
-    for (int i = initializeZero; i < sizeof(soundAttackPlayerNames) / sizeof(soundAttackPlayerNames[initializeZero]); i++)
+    for (int i = initZeroInt; i < sizeof(soundAttackPlayerNames) / sizeof(soundAttackPlayerNames[initZeroInt]); i++)
     {
         soundName = soundFolderName + soundAttackPlayerNames[i] + soundModifierName;
         hSound_[i] = Audio::Load(soundName);
-        assert(hSound_[i] >= initializeZero);
+        assert(hSound_[i] >= initZeroInt);
     }
     //▼モデルデータのロード
     std::string modelName = modelFolderName + attackPlayerName + modelModifierName;
     hModel_ = Model::Load(modelName);
-    assert(hModel_ >= initializeZero);
+    assert(hModel_ >= initZeroInt);
     transform_.scale_ = { 0.4,0.4,0.4 };
     positionY_ = transform_.position_.y;
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 2.0f);
@@ -133,7 +146,7 @@ void AttackPlayer::UpdateReady()
     floorHModel_ = pFloor_->GetModelHandle();
     //▼下の法線(地面に張り付き)
     stageDataDown.start = transform_.position_;  //レイの発射位置
-    stageDataDown.start.y = initializeZero;
+    stageDataDown.start.y = initZeroInt;
     stageDataDown.dir = vecDown;       //レイの方向
     Model::RayCast(stageHModel_, &stageDataDown); //レイを発射
     rayStageDistDown_ = stageDataDown.dist;
@@ -142,19 +155,20 @@ void AttackPlayer::UpdateReady()
         transform_.position_.y = -stageDataDown.dist + playerInitPosY_;
     }
     ++timeCounter_;
-    if (timeCounter_ >= 60)
+    if (timeCounter_ >= timeLimit_)
     {
         gameState_ = GAMESTATE::PLAY;
-        timeCounter_ = 0;
+        timeCounter_ = initZeroInt;
     }
     positionY_ = transform_.position_.y;
 }
 
 void AttackPlayer::UpdatePlay()
 {
-    if (transform_.position_.y <= -100)
+    //落ちた時の処理
+    if (transform_.position_.y <= -fallLimit_)
     {
-        transform_.position_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
+        transform_.position_ = initZeroXMFLOAT3;
     }
 
     if(Input::GetPadTrrigerR(padID_))
@@ -165,24 +179,11 @@ void AttackPlayer::UpdatePlay()
     if (isDive_ && !isDived_)
     {
         ++diveTime_;
-        if (diveTime_ <= 1)
+        if (diveTime_ <= diveDuration_)
         {
-            PlayerDive();
+            PlayerDivePower();
         }
-
-        XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
-        vecDirection = XMVectorSetY(vecDirection, 1);
-        vecDirection = XMVector3Normalize(vecDirection);
-        float PushSpeed = 0.6f;
-        transform_.position_.x = transform_.position_.x + PushSpeed * XMVectorGetX(vecDirection);
-        //transform_.position_.y = transform_.position_.y + PushSpeed * XMVectorGetY(vecDirection);
-        transform_.position_.z = transform_.position_.z + PushSpeed * XMVectorGetZ(vecDirection);
-        if (diveTime_ >= diveTimeWait_)
-        {
-            isDive_ = false;
-            isDived_ = true;
-            diveTime_ = 0;
-        }
+        PlayerDive();
     }
     if (playerStatePrev_ != playerState_)
     {
@@ -196,9 +197,9 @@ void AttackPlayer::UpdatePlay()
         }
     }
     scoreTimeCounter_++;
-    if (scoreTimeCounter_ % 600 == 0)
+    if (scoreTimeCounter_ % FPS_ == scoreTimeCounterWait_)
     {
-        score_ += 10;
+        score_ += scoreAmount_;
     }
     playerStatePrev_ = playerState_;
     PlayerRayCast();
@@ -235,7 +236,7 @@ void AttackPlayer::UpdatePlay()
     if (IsMoving() && !isJump_ && !isDash_)
     {
         playerState_ = PLAYERSTATE::WALK;
-        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::WALK)], 0.5f);
+        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::WALK)], soundVolume_);
     }
     if (!IsMoving() && !isJump_)
     {
@@ -247,7 +248,7 @@ void AttackPlayer::UpdatePlay()
     {
         playerState_ = PLAYERSTATE::RUN;
         Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::WALK)]);
-        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::RUN)], 0.2f);
+        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::RUN)], soundVolume_);
         isDash_ = true;
     }
     else
@@ -274,7 +275,6 @@ void AttackPlayer::UpdateGameOver()
 
 void AttackPlayer::Stun(int _timeLimit)
 {
-    //transform_.position_.y = positionY_;
     isStun_ = true;
     stunLimit_ = _timeLimit;
 }
@@ -300,7 +300,7 @@ void AttackPlayer::OnCollision(GameObject* _pTarget)
         }
     }
     //WoodBoxという名前を持つ全てのオブジェクトを参照
-    if (_pTarget->GetObjectName().find("WoodBox") != std::string::npos)
+    if (_pTarget->GetObjectName().find(woodBoxName) != std::string::npos)
     {
         if (angleDegrees_ > 80)
         {
@@ -418,7 +418,7 @@ void AttackPlayer::PlayerMove()
         PlayerJump();
         Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::WALK)]);
         Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::RUN)]);
-        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::JUMP)],0.3f);
+        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::JUMP)],soundVolume_);
     }
     if (transform_.position_.z <= -99.0f || transform_.position_.z >= 99.0f)
     {
@@ -439,6 +439,21 @@ void AttackPlayer::PlayerJump()
 }
 
 void AttackPlayer::PlayerDive()
+{
+    XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
+    vecDirection = XMVectorSetY(vecDirection, 1);
+    vecDirection = XMVector3Normalize(vecDirection);
+    transform_.position_.x = transform_.position_.x + diveSpeed_ * XMVectorGetX(vecDirection);
+    transform_.position_.z = transform_.position_.z + diveSpeed_ * XMVectorGetZ(vecDirection);
+    if (diveTime_ >= diveTimeWait_)
+    {
+        isDive_ = false;
+        isDived_ = true;
+        diveTime_ = 0;
+    }
+}
+
+void AttackPlayer::PlayerDivePower()
 {
     //とびつきの処理
     isJump_ = true;

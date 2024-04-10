@@ -26,12 +26,17 @@ protected:
 	int drawScoreTextY_;
 	int drawScoreNumberX_;
 	int drawScoreNumberY_;
-
 	//▼ゲーム演出に関するメンバ変数
+	int FPS_;
 	int timeCounter_;
+	int timeLimit_;
+	float fallLimit_;
 	int score_;			//得点
+	int scoreAmount_;	//得点の量
 	int padID_;
 	float playerInitPosY_;
+	//▼サウンドに関するメンバ変数
+	float soundVolume_;
 	//▼プレイヤー移動に関するメンバ変数
 	XMVECTOR CamPositionVec_;
 	XMFLOAT3 positionPrev_;		//1フレーム前の位置座標
@@ -53,6 +58,13 @@ protected:
 	float positionTempY_;		//y座標をPrevに保存する
 	float positionPrevY_;		//1時的にy座標を保存しておく
 	bool  isJump_;				//ジャンプしてるかしていないか
+	//▼飛びつきに関するメンバ変数
+	float diveSpeed_;
+	bool isDive_;
+	bool isDived_;
+	int diveTime_;
+	int diveDuration_;	//飛びつきが継続する時間
+	int diveTimeWait_;	//飛びつきが終わるまでの時間
 	//▼すり抜け床に関するメンバ変数
 	int isOnFloor_;		//すり抜け床にレイを飛ばしているかどうか
 	//▼木箱に関するメンバ変数
@@ -99,6 +111,10 @@ protected:
 	virtual void PlayerMove() = 0;
 
 	virtual void PlayerJump() = 0;
+
+	virtual void PlayerDive() = 0;
+
+	virtual void PlayerDivePower() = 0;
 
 	virtual void PlayerKnockback() = 0;
 

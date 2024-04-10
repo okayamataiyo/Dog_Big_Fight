@@ -53,10 +53,6 @@ private:
 	int number_;
 	int time_;
 	int timeWait_;
-	bool isDive_;
-	bool isDived_;
-	int diveTime_;
-	int diveTimeWait_;
 	XMVECTOR vecKnockbackDirection_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
@@ -129,7 +125,9 @@ public:
 	/// </summary>
 	void PlayerJump() override;
 
-	void PlayerDive();
+	void PlayerDive() override;
+
+	void PlayerDivePower() override;
 
 	void PlayerKnockback() override;
 

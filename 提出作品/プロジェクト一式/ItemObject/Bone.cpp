@@ -1,14 +1,15 @@
 //インクルード
 #include "../Engine/Model.h"
 #include "../Engine/Audio.h"
-#include "Bone.h"
+#include "../Engine/Global.h"
 #include "../Player/PlayerBase.h"
 #include "../Player/CollectPlayer.h"
 #include "../Scene/PlayScene.h"
 #include "../StageObject/Stage.h"
+#include "Bone.h"
 
 Bone::Bone(GameObject* _parent)
-	:ObjectBase(_parent, boneName), hModel_(-1),pPlayScene_{nullptr}
+	:ItemObjectBase(_parent, boneName), hModel_(-1),pPlayScene_{nullptr}
 {
 }
 
@@ -19,13 +20,13 @@ Bone::~Bone()
 void Bone::Initialize()
 {
 	//モデルのロード
-	std::string ModelName = (std::string)"Model&Picture/" + boneName + (std::string)".fbx";
+	std::string ModelName = modelFolderName + boneName + modelModifierName;
 	hModel_ = Model::Load(ModelName);
-	assert(hModel_ >= 0);
+	assert(hModel_ >= initZeroInt);
 
-	SphereCollider* pCollision = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
+	SphereCollider* pCollision = new SphereCollider(initZeroXMFLOAT3, 1.0f);
 	AddCollider(pCollision);
-	pPlayScene_ = (PlayScene*)FindObject("PlayScene");
+	pPlayScene_ = (PlayScene*)FindObject(playSceneName);
 	transform_.scale_ = { 0.5,0.5,0.5 };
 	transform_.position_ = { 10,0,0 };
 }
@@ -34,7 +35,7 @@ void Bone::Update()
 {
 	transform_.rotate_.y += 1.0f;
 	RayCastData data;
-	Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクト
+	Stage* pStage = (Stage*)FindObject(stageName);    //ステージオブジェクト
 	int stageHModel;
 	stageHModel = pStage->GetModelHandle();   //モデル番号を取得
 	data.start = transform_.position_;  //レイの発射位置
@@ -61,7 +62,6 @@ void Bone::Release()
 
 void Bone::OnCollision(GameObject* _pTarget)
 {
-	//if (_pTarget->GetObjectName().find("CollectPlayer") != std::string::npos)
 	if(_pTarget->GetObjectName() == collectPlayerName)
 	{
 		this->KillMe();

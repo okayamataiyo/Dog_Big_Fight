@@ -1,10 +1,10 @@
 #pragma once
 //インクルード
 #include "../Engine/GameObject.h"
-class ObjectBase : public GameObject
+class ItemObjectBase : public GameObject
 {
 public:
-    ObjectBase(GameObject* _parent,std::string _name)
+    ItemObjectBase(GameObject* _parent,std::string _name)
         :GameObject(_parent,_name){}
     //初期化
     void Initialize()   override {};

@@ -1,6 +1,6 @@
 #pragma once
 //インクルード
-#include "ObjectBase.h"
+#include "ItemObjectBase.h"
 
 class PlayScene;
 
@@ -12,7 +12,7 @@ namespace
 /// <summary>
 /// アイテムを管理するクラス
 /// </summary>
-class Bone : public ObjectBase
+class Bone : public ItemObjectBase
 {
 protected:
 	int hModel_;

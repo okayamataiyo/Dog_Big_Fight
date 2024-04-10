@@ -3,10 +3,10 @@
 #include "../Engine/Input.h"
 #include "../Engine/Fbx.h"
 #include "Floor.h"
-#include "ObjectBase.h"
+#include "ItemObjectBase.h"
 
 Floor::Floor(GameObject* _parent)
-    :ObjectBase(_parent, floorName), hModel_(-1),upOrDown_(0)
+    :ItemObjectBase(_parent, floorName), hModel_(-1),upOrDown_(0)
 {
 
 }

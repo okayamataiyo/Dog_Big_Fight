@@ -8,11 +8,11 @@
 #include "../Engine/Global.h"
 #include "../StageObject/Stage.h"
 #include "../Player/AttackPlayer.h"
-#include "ObjectManager.h"
+#include "ItemObjectManager.h"
 #include "WoodBox.h"
 
 WoodBox::WoodBox(GameObject* _pParent)
-    :ObjectBase(_pParent, woodBoxName), hModel_{-1}, hSound_{-1}, isOnWoodBox_{0}
+    :ItemObjectBase(_pParent, woodBoxName), hModel_{-1}, hSound_{-1}, isOnWoodBox_{0}
     ,pParent_{nullptr},pPlayScene_{nullptr}, pAttackPlayer_{ nullptr },pCollision_{nullptr}
 {
     pParent_ = _pParent;
@@ -28,12 +28,12 @@ void WoodBox::Initialize()
     //サウンドデータのロード
     std::string soundName = soundFolderName + soundWoodBoxName + soundModifierName;
     hSound_ = Audio::Load(soundName);
-    assert(hSound_ >= initializeZero);
+    assert(hSound_ >= initZeroInt);
     //モデルデータのロード
     std::string modelName = modelFolderName + woodBoxName + modelModifierName;
     hModel_ = Model::Load(modelName);
-    assert(hModel_ >= initializeZero);
-    pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 3.0f);
+    assert(hModel_ >= initZeroInt);
+    pCollision_ = new SphereCollider(initZeroXMFLOAT3, 3.0f);
     AddCollider(pCollision_);
     pPlayScene_ = (PlayScene*)FindObject(playSceneName);
     pAttackPlayer_ = (AttackPlayer*)FindObject(attackPlayerName);
@@ -47,19 +47,8 @@ void WoodBox::Update()
 
 void WoodBox::Draw()
 {
-    //for (int i = 0u; i <= 1; i++)
-    {
-        //Direct3D::SetShader(Direct3D::SHADER_NORMALMAP);
-        Model::SetTransform(hModel_, transform_);
-        //最初に3Dで描画後、枠づけも描画
-        /*for (int j = 0; j <= 4; j += 4)
-        {
-            Direct3D::SetShader(static_cast<Direct3D::SHADER_TYPE>(j));
-            Model::Draw(hModel_[i]);
-    }   */
-        Model::Draw(hModel_);
-        //Direct3D::SetShader(Direct3D::SHADER_3D);
-    }
+    Model::SetTransform(hModel_, transform_);
+    Model::Draw(hModel_);
 }
 
 void WoodBox::Release()
@@ -79,7 +68,7 @@ void WoodBox::RayCast()
     int woodBoxHModelStart     = woodBoxs_.front();
     int woodBoxHModelEnd       = woodBoxs_.back();
     int woodBoxHModelNow     = GetModelHandle();
-    Stage* pStage           = (Stage*)FindObject("Stage");      //ステージオブジェクト
+    Stage* pStage           = (Stage*)FindObject(stageName);      //ステージオブジェクト
     int stageHModel         = pStage->GetModelHandle();         //モデル番号を取得
     if (isJump_)
     {
@@ -87,15 +76,7 @@ void WoodBox::RayCast()
         positionTempY_ = positionY_;
         positionY_ += (positionY_ - positionPrevY_) - 0.007;
         positionPrevY_ = positionTempY_;
-        //if (positionY_ <= -rayWoodBoxDist_ + 0.6)
-        //{
-        //    isJump_ = false;
-        //}
-        //if (positionY_ <= -rayStageDistDown_ + 0.6)
-        if(rayStageDistDown_ <= woodBoxFling)
-        {
-            isJump_ = false;
-        }
+        isJump_ = !(rayStageDistDown_ <= woodBoxFling);
     }
 
     if (isBreak_)

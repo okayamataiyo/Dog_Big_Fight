@@ -46,11 +46,8 @@ private:
 	int stageHModel_;				//ステージモデル番号
 	int floorHModel_;				//すり抜け床モデル番号
 	int number_;
-	bool isDive_;
-	bool isDived_;
-	int diveTime_;
-	int diveTimeWait_;
 	int scoreTimeCounter_;
+	int scoreTimeCounterWait_;
 	XMVECTOR vecKnockbackDirection_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
@@ -122,7 +119,9 @@ public:
 	/// </summary>
 	void PlayerJump() override;
 
-	void PlayerDive();
+	void PlayerDive() override;
+
+	void PlayerDivePower() override;
 
 	void PlayerKnockback() override;
 

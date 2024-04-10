@@ -1,20 +1,21 @@
+//インクルード
 #include <random>
 #include "../Engine/Input.h"
 #include "../Engine/SceneManager.h"
 #include "../Engine/ImGui/imgui.h"
 #include "../Engine/Audio.h"
-#include "PlayScene.h"
 #include "../Player/AttackPlayer.h"
 #include "../Player/CollectPlayer.h"
-#include "../Object/WoodBox.h"
-#include "../Object/FrameBox.h"
-#include "../Object/Bone.h"
+#include "../ItemObject/WoodBox.h"
+#include "../ItemObject/FrameBox.h"
+#include "../ItemObject/Bone.h"
 #include "../StageObject/StageObjectManager.h"
+#include "PlayScene.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
-	:GameObject(_pParent, "PlayScene"), hSound_{-1,-1,-1}, length_(30),boneCount_(0), isCreateBone_(false), woodBoxCount_(0)
+	:GameObject(_pParent, playSceneName), hSound_{-1,-1,-1}, length_(30),boneCount_(0), isCreateBone_(false), woodBoxCount_(0)
 	, attackPlayerPosition_{}, attackPlayerDirection_{},frontPosition_(10.0f), blockOrCollect_(0)
-	,pSceneManager_(nullptr),pAttackPlayer_(nullptr),pCollectPlayer_(nullptr), pObjectManager_(nullptr), pStageObjectManager_(nullptr)
+	,pSceneManager_(nullptr),pAttackPlayer_(nullptr),pCollectPlayer_(nullptr), pItemObjectManager_(nullptr), pStageObjectManager_(nullptr)
 {
 
 }
@@ -29,7 +30,7 @@ void PlayScene::Initialize()
 	hSound_[2] = Audio::Load("Sound/LastBGM2.wav");
 	assert(hSound_[2] >= 0);
 	pSceneManager_ = (SceneManager*)FindObject(sceneManagerName);
-	pObjectManager_ = new ObjectManager(this);
+	pItemObjectManager_ = new ItemObjectManager(this);
 	pStageObjectManager_ = new StageObjectManager(this);
 	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::SKY);
 	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::STAGE);
@@ -51,8 +52,8 @@ void PlayScene::Initialize()
 	//{
 	//	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPosition_[i].position_, XMFLOAT3(0.0f,90.0f,0.0f), XMFLOAT3(4.0f,1.0f,4.0f));
 	//}
-	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPosition_[2].position_, XMFLOAT3(0.0f, 90.0f, 0.0f), XMFLOAT3(10.0f, 1.0f, 10.0f));
-	pObjectManager_->CreateObject(OBJECTSTATE::FLOOR, floorPosition_[1].position_, XMFLOAT3(0.0f, 90.0f, 0.0f), XMFLOAT3(10.0f, 1.0f, 10.0f));
+	pItemObjectManager_->CreateObject(ITEMOBJECTSTATE::FLOOR, floorPosition_[2].position_, XMFLOAT3(0.0f, 90.0f, 0.0f), XMFLOAT3(10.0f, 1.0f, 10.0f));
+	pItemObjectManager_->CreateObject(ITEMOBJECTSTATE::FLOOR, floorPosition_[1].position_, XMFLOAT3(0.0f, 90.0f, 0.0f), XMFLOAT3(10.0f, 1.0f, 10.0f));
 
 	//for (int i = 0u; i <= 2; i++)
 	//{
@@ -66,7 +67,7 @@ void PlayScene::Initialize()
 	camVec_[1].x = 0;
 	camVec_[1].y = 5;
 	camVec_[1].z = -10;
-	pObjectManager_->CreateObject(OBJECTSTATE::FRAMEBOX,DefaultData[0], DefaultData[1], FrameBox);
+	pItemObjectManager_->CreateObject(ITEMOBJECTSTATE::FRAMEBOX,DefaultData[0], DefaultData[1], FrameBox);
 	pAttackPlayer_->SetCollectPlayer(pCollectPlayer_);
 	pCollectPlayer_->SetAttackPlayer(pAttackPlayer_);
 	XMFLOAT3 firstPPos = { -3,0,0 };
@@ -88,7 +89,6 @@ void PlayScene::Update()
 	Audio::Play(hSound_[0], 0.02f);
 	if (pAttackPlayer_->GetScore() >= 100 || pCollectPlayer_->GetScore() >= 100)
 	{
-
 		Audio::Stop(hSound_[0]);
 		Audio::Play(hSound_[random_value_],0.05f);
 	}
@@ -107,7 +107,7 @@ void PlayScene::Update()
 	{
 		for (int i = 0u; i <= 2u; i++)
 		{
-			pObjectManager_->CreateObject(OBJECTSTATE::BONE, -100, 100, -100, 100);
+			pItemObjectManager_->CreateObject(ITEMOBJECTSTATE::BONE, -100, 100, -100, 100);
 			boneCount_ += 1;
 		}
 	}
@@ -117,7 +117,7 @@ void PlayScene::Update()
 		{
 			XMFLOAT3 woodBoxRotate = {};
 			woodBoxRotate.y = XMConvertToDegrees(pAttackPlayer_->GetAngle());
-			pObjectManager_->CreateObject(OBJECTSTATE::WOODBOX, attackPlayerPosition_, woodBoxRotate, XMFLOAT3(0.5f, 0.5f, 0.5f));
+			pItemObjectManager_->CreateObject(ITEMOBJECTSTATE::WOODBOX, attackPlayerPosition_, woodBoxRotate, XMFLOAT3(0.5f, 0.5f, 0.5f));
 			woodBoxCount_ += 1;
 		}
 	}
@@ -229,5 +229,5 @@ void PlayScene::Draw()
 
 void PlayScene::Release()
 {
-	SAFE_DELETE(pObjectManager_);
+	SAFE_DELETE(pItemObjectManager_);
 }

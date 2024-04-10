@@ -2,7 +2,7 @@
 //インクルード
 #include "../Engine/GameObject.h"
 #include "../Engine/Camera.h"
-#include "../Object/ObjectManager.h"
+#include "../ItemObject/ItemObjectManager.h"
 #include <vector>
 
 namespace
@@ -13,6 +13,7 @@ namespace
 class SceneManager;
 class AttackPlayer;
 class CollectPlayer;
+class ItemObjectManager;
 class StageObjectManager;
 
 /// <summary>
@@ -34,12 +35,6 @@ private:
     int hSound_[3];
     float length_;
     int random_value_;
-    //メンバ変数
-    SceneManager* pSceneManager_;
-    AttackPlayer* pAttackPlayer_;
-    CollectPlayer* pCollectPlayer_;
-    ObjectManager* pObjectManager_;
-    StageObjectManager* pStageObjectManager_;
     XMFLOAT3 camVec_[2];
     Transform floorPosition_[3];
     //▼骨の処理で使うメンバ変数
@@ -70,6 +65,12 @@ private:
 
     const float mouseSens = 400;
     const float controllerSens = 50;
+
+    SceneManager* pSceneManager_;
+    AttackPlayer* pAttackPlayer_;
+    CollectPlayer* pCollectPlayer_;
+    ItemObjectManager* pItemObjectManager_;
+    StageObjectManager* pStageObjectManager_;
 public:
     /// <summary>
     /// コンストラクタ
@@ -80,7 +81,7 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-    std::vector<int> GetWoodBoxs() { return pObjectManager_->GetWoodBoxs(); }
+    std::vector<int> GetWoodBoxs() { return pItemObjectManager_->GetWoodBoxs(); }
     int GetBlockOrCollect() { return blockOrCollect_; }
     XMFLOAT3 GetAttackPlayerPosition() { return attackPlayerPosition_; }
     void AddBoneCount(int _boneCount) { boneCount_ += _boneCount; }

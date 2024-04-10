@@ -2,7 +2,7 @@
 //インクルード
 #include <string>
 #include "../Engine/Direct3D.h"
-#include "ObjectBase.h"
+#include "ItemObjectBase.h"
 
 namespace
 {
@@ -10,7 +10,7 @@ namespace
 }
 
 //Floorを管理するクラス
-class Floor : public ObjectBase
+class Floor : public ItemObjectBase
 {
     int hModel_;    //モデル番号
     int upOrDown_;  //上がってるか下がってるか

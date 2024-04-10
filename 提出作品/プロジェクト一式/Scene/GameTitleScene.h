@@ -17,8 +17,9 @@ class GameTitleScene : public GameObject
 {
 private:
 	int hSound_;
+	float soundVolume_;
 	XMFLOAT3 camPos_;
-	SolidText* pText_;
+	SolidText* pSolidText_;
 	StageObjectManager* pStageObjectManager_;
 	SceneManager* pSceneManager_;
 public:
@@ -27,5 +28,6 @@ public:
 	void Update() override;
 	void Draw() override;
 	void Release() override;
+	void ShowCursor() { while (::ShowCursor(true) < 0); }
 };
 

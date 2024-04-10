@@ -12,8 +12,8 @@
 #include "GameOverScene.h"
 
 GameOverScene::GameOverScene(GameObject* _pParent)
-	:GameObject(_pParent, gameOverSceneName), hSound_{ -1 }, inputWait_{ 0 }, inputWaitTime_{ 60 }
-	, pStageObjectManager_{nullptr}, pSceneManager_{nullptr}
+	:GameObject(_pParent, gameOverSceneName), hSound_{ -1 }, soundVolume_{0.1f},inputWait_{ 0 }, inputWaitTime_{ 60 },camPos_{0.0f,0.0f,0.0f}
+	,pSolidText_{nullptr}, pStageObjectManager_{nullptr}, pSceneManager_{nullptr}
 {
 
 }
@@ -24,31 +24,33 @@ void GameOverScene::Initialize()
 	//サウンドデータのロード
 	std::string soundName = soundFolderName + soundGameOverSceneNmae + soundModifierName;
 	hSound_ = Audio::Load(soundName);
-	assert(hSound_ >= initializeZero);
+	assert(hSound_ >= initZeroInt);
 	//画像データのロード
-	pText_ = Instantiate<SolidText>(this);
-	pText_->SetMode(0);
+	pSolidText_ = Instantiate<SolidText>(this);
+	pSolidText_->SetMode(static_cast<int>(TEXTSTATE::GAMEOVER));
 	pStageObjectManager_ = new StageObjectManager(this);
 	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::SKY);
 	pSceneManager_ = (SceneManager*)FindObject(sceneManagerName);
+	camPos_ = pSolidText_->GetPosition();
+	camPos_.y += 2;
+	camPos_.z -= 15;
 }
 
 void GameOverScene::Update()
 {
-	Audio::Play(hSound_, 0.1f);
-	camPos_ = pText_->GetPosition();
-	camPos_.y += 2;
-	camPos_.z -= 15;
+	Audio::Play(hSound_, soundVolume_);
 	Camera::SetPosition(camPos_, attackPlayerNumber);
-	Camera::SetTarget(pText_->GetPosition(), attackPlayerNumber);
+	Camera::SetTarget(pSolidText_->GetPosition(), attackPlayerNumber);
+	Camera::SetPosition(camPos_, collectPlayerNumber);
+	Camera::SetTarget(pSolidText_->GetPosition(), collectPlayerNumber);
 	++inputWait_;
-	if (inputWait_ >= 60)
+	if (inputWait_ >= inputWaitTime_)
 	{
-		if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown(0) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, 0), Input::IsPadButtonDown(XINPUT_GAMEPAD_A, 1))
+		if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown(0) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, attackPlayerNumber), Input::IsPadButtonDown(XINPUT_GAMEPAD_A, collectPlayerNumber))
 		{
-			Direct3D::SetIsChangeView(2);
+			Direct3D::SetIsChangeView(static_cast<int>(Direct3D::VIEWSTATE::LEFT_BOTHVIEW));
 			pSceneManager_->ChangeScene(SCENE_ID_GAMETITLE);
-			inputWait_ = 0;
+			inputWait_ = initZeroInt;
 		}
 	}
 }

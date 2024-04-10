@@ -7,6 +7,7 @@ XMMATRIX view_;
 XMMATRIX proj_;
 XMMATRIX billBoard_;
 
+
 //初期化（プロジェクション行列作成）
 void Camera::Initialize()
 {
@@ -25,7 +26,6 @@ void Camera::Update(int _type)
 	//ビュー行列
 	view_ = XMMatrixLookAtLH(XMVectorSet(position_[_type].x, position_[_type].y, position_[_type].z, 0),
 		XMVectorSet(target_[_type].x, target_[_type].y, target_[_type].z, 0), XMVectorSet(0, 1, 0, 0));
-
 
 	//ビルボード行列
 	//（常にカメラの方を向くように回転させる行列。パーティクルでしか使わない）

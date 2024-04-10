@@ -2,43 +2,51 @@
 //インクルード
 #include <string>
 #include "../Engine/Direct3D.h"
-#include "ObjectBase.h"
 #include "../Scene/PlayScene.h"
+#include "ItemObjectBase.h"
 
 namespace
 {
-    std::string frameBoxName = "FrameBox";
+    std::string soundWoodBoxName = "WoodBoxBreak";
+    std::string woodBoxName = "WoodBox";
 }
 
+class GameObject;
+class PlayScene;
 class AttackPlayer;
+class SphereCollider;
 
-//FrameBoxを管理するクラス
-class FrameBox : public ObjectBase
+
+//WoodBoxを管理するクラス
+class WoodBox : public ItemObjectBase
 {
 private:
     int hModel_;            //モデル
     int hSound_;            //サウンドデータ
     bool isBreak_;            //木箱が壊されたか
-    GameObject* pParent_;
-    PlayScene* pPlayScene_;
-    AttackPlayer* pAttackPlayer_;
-    std::vector<int> FrameBoxs_;
+    std::vector<int> woodBoxs_;
 
     //▼レイキャストで使うメンバ変数
     float positionY_;            //木箱のY座標に代入する値
     float positionPrevY_;        //1フレーム前のY座標
     float positionTempY_;        //1時的に座標を保存
     bool isJump_;           //飛んでいるか
-    int  isOnFrameBox_;      //木箱の上にいるか
-    float rayFrameBoxDist_;  //木箱のディスト
+    int  isOnWoodBox_;      //木箱の上にいるか
+    float rayWoodBoxDist_;  //木箱のディスト
     float rayStageDistDown_;    //ステージのディスト
+
+    GameObject* pParent_;
+    PlayScene* pPlayScene_;
+    AttackPlayer* pAttackPlayer_;
+    SphereCollider* pCollision_;
+
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)
-    FrameBox(GameObject* _pParent);
+    WoodBox(GameObject* _pParent);
 
     //デストラクタ
-    ~FrameBox();
+    ~WoodBox();
 
     //初期化
     void Initialize() override;
@@ -62,5 +70,5 @@ public:
 
     XMVECTOR GetVecPos() { return XMLoadFloat3(&transform_.position_); }
 
-    void SetFrameBoxBreak() { isBreak_ = true; }
+    void SetWoodBoxBreak() { isBreak_ = true; }
 };

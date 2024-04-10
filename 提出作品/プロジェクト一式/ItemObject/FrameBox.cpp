@@ -5,12 +5,12 @@
 #include "../Engine/ImGui/imgui.h"
 #include "../Engine/Audio.h"
 #include "FrameBox.h"
-#include "ObjectManager.h"
+#include "ItemObjectManager.h"
 #include "../Player/AttackPlayer.h"
 #include "../StageObject/Stage.h"
 
 FrameBox::FrameBox(GameObject* _pParent)
-    :ObjectBase(_pParent, frameBoxName), hModel_(-1), hSound_{ -1 }, isOnFrameBox_(0),pAttackPlayer_(nullptr)
+    :ItemObjectBase(_pParent, frameBoxName), hModel_(-1), hSound_{ -1 }, isOnFrameBox_(0),pAttackPlayer_(nullptr)
 {
     pParent_ = _pParent;
 }

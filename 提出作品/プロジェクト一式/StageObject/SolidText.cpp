@@ -3,7 +3,7 @@
 #include "SolidText.h"
 
 SolidText::SolidText(GameObject* _pParent)
-	:GameObject(_pParent, solidTextName), hModel_{ -1,-1, -1 },textState_(TEXTSTATE::SELECT),SetRotateInitialize_{180}
+	:GameObject(_pParent, solidTextName), hModel_{ -1,-1, -1 },textState_{TEXTSTATE::SELECT}, SetRotateInitialize_{180}
 {
 }
 
@@ -11,7 +11,7 @@ void SolidText::Initialize()
 {
 	//▼モデルデータのロード
 	std::string modelName;
-	for (int i = initializeZero; i < sizeof(solidTextModelNames) / sizeof(solidTextModelNames[initializeZero]); i++)
+	for (int i = initZeroInt; i < sizeof(solidTextModelNames) / sizeof(solidTextModelNames[initZeroInt]); i++)
 	{
 		modelName = modelFolderName + solidTextModelNames[i] + modelModifierName;
 		hModel_[i] = Model::Load(modelName);

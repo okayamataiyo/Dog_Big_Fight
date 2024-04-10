@@ -16,10 +16,11 @@ namespace
 class GameOverScene : public GameObject
 {
 	int hSound_;
+	float soundVolume_;
 	int inputWait_;
 	int inputWaitTime_;
 	XMFLOAT3 camPos_;
-	SolidText* pText_;
+	SolidText* pSolidText_;
 	StageObjectManager* pStageObjectManager_;
 	SceneManager* pSceneManager_;
 public:
