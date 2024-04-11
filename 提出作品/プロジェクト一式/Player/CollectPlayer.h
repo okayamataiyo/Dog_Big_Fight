@@ -25,7 +25,7 @@ namespace
 	};
 
 	std::string collectPlayerName = "CollectPlayer";
-	int collectPlayerNumber = 1;
+	int collectPlayerNumber = 0;
 }
 
 /// <summary>
@@ -120,10 +120,12 @@ public:
 	/// </summary>
 	void PlayerMove() override;
 
+	void PlayerJump() override;
+
 	/// <summary>
 	/// プレイヤーのジャンプ関数
 	/// </summary>
-	void PlayerJump() override;
+	void PlayerJumpPower() override;
 
 	void PlayerDive() override;
 

@@ -23,7 +23,7 @@ namespace
 	};
 
 	std::string attackPlayerName = "AttackPlayer";
-	int attackPlayerNumber = 0;
+	int attackPlayerNumber = 1;
 }
 
 /// <summary>
@@ -32,6 +32,7 @@ namespace
 class AttackPlayer : public PlayerBase
 {
 private:
+
 	enum class SOUNDSTATE
 	{
 		STUN = 0,
@@ -114,10 +115,12 @@ public:
 	/// </summary>
 	void PlayerMove() override;
 
+	void PlayerJump() override;
+
 	/// <summary>
 	/// プレイヤーのジャンプ関数
 	/// </summary>
-	void PlayerJump() override;
+	void PlayerJumpPower() override;
 
 	void PlayerDive() override;
 

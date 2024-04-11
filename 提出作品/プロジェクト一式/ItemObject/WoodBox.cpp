@@ -12,7 +12,9 @@
 #include "WoodBox.h"
 
 WoodBox::WoodBox(GameObject* _pParent)
-    :ItemObjectBase(_pParent, woodBoxName), hModel_{-1}, hSound_{-1}, isOnWoodBox_{0}
+    :ItemObjectBase(_pParent, woodBoxName), hModel_{ -1 }, hSound_{ -1 }
+    , isBreak_{ false }, woodBoxs_{}, gravity_{ 0.007 },woodBoxInitposY_{0.6}, positionY_{0.0f}, positionPrevY_{0.0f}, positionTempY_{0.0f}
+    , isJump_{ false },isOnWoodBox_ {false}, rayWoodBoxDist_{ 0.0f }, rayStageDistDown_{ 0.0f }, isFling_{ 2.0f }
     ,pParent_{nullptr},pPlayScene_{nullptr}, pAttackPlayer_{ nullptr },pCollision_{nullptr}
 {
     pParent_ = _pParent;
@@ -41,8 +43,11 @@ void WoodBox::Initialize()
 
 void WoodBox::Update()
 {
+    transform_.position_.y = positionY_;
     woodBoxs_ = pPlayScene_->GetWoodBoxs();
-    RayCast();
+    WoodBoxJump();
+    WoodBoxMove();
+    WoodBoxRayCast();
 }
 
 void WoodBox::Draw()
@@ -55,29 +60,31 @@ void WoodBox::Release()
 {
 }
 
-void WoodBox::Move()
+void WoodBox::WoodBoxJump()
+{
+    if (isJump_)
+    {
+        //放物線に下がる処理
+        positionTempY_ = positionY_;
+        positionY_ += (positionY_ - positionPrevY_) - gravity_;
+        positionPrevY_ = positionTempY_;
+        isJump_ = (positionY_ <= -rayStageDistDown_ + woodBoxInitposY_) ? false : isJump_;
+    }
+}
+
+void WoodBox::WoodBoxMove()
 {
 }
 
-void WoodBox::RayCast()
+void WoodBox::WoodBoxRayCast()
 {
-    positionY_ = transform_.position_.y;
     RayCastData woodBoxDataDown;
     RayCastData stageDataDown;
-    float woodBoxFling      = 2.0f;
     int woodBoxHModelStart     = woodBoxs_.front();
     int woodBoxHModelEnd       = woodBoxs_.back();
     int woodBoxHModelNow     = GetModelHandle();
     Stage* pStage           = (Stage*)FindObject(stageName);      //ステージオブジェクト
     int stageHModel         = pStage->GetModelHandle();         //モデル番号を取得
-    if (isJump_)
-    {
-        //放物線に下がる処理
-        positionTempY_ = positionY_;
-        positionY_ += (positionY_ - positionPrevY_) - 0.007;
-        positionPrevY_ = positionTempY_;
-        isJump_ = !(rayStageDistDown_ <= woodBoxFling);
-    }
 
     if (isBreak_)
     {
@@ -85,10 +92,7 @@ void WoodBox::RayCast()
         this->KillMe();
     }
 
-    //for (int i : vector) {}
-    //std::vector<int> woodBoxSize = ;
-
-    for (int i = 0; i < woodBoxs_.size();i++)
+    for (int i = 0; i < woodBoxs_.size(); i++)
     {
         ////▼木箱の法線(木箱の上に木箱が乗るため)
         //woodBoxDataDown.start       = transform_.position_;
@@ -115,32 +119,25 @@ void WoodBox::RayCast()
         //{
         //    isOnWoodBox_ = 0;
         //}
-        //▼ステージの法線(地面に張り付き)
-        stageDataDown.start = transform_.position_;             //レイの発射位置
-        //stageDataDown.start.y = 0;
-        stageDataDown.dir = XMFLOAT3(0, -1, 0);               //レイの方向
-        Model::RayCast(stageHModel, &stageDataDown);                //レイを発射
-        rayStageDistDown_ = stageDataDown.dist;
-        if (rayStageDistDown_ <= woodBoxFling)
+    }
+    //▼ステージの法線(地面に張り付き)
+    stageDataDown.start = transform_.position_;         //レイの発射位置
+    XMStoreFloat3(&stageDataDown.dir, vecDown);         //レイの方向
+    Model::RayCast(stageHModel, &stageDataDown);        //レイを発射
+    rayStageDistDown_ = stageDataDown.dist;
+    if (rayStageDistDown_ <= isFling_)
+    {
+        if (!isJump_ && !isOnWoodBox_)
         {
-            if (!isJump_ && isOnWoodBox_ == 0)
-            {
-                //positionY_ += stageDataDown.dist + 0.6;  //地面の張り付き
-                positionTempY_ = positionY_;
-                positionPrevY_ = positionTempY_;
-                positionY_ = positionPrevY_;
-            }
-        }
-        if(isOnWoodBox_ == 0 && rayStageDistDown_ >= woodBoxFling)
-        {
-            isJump_ = true;
+            positionY_ = -stageDataDown.dist + woodBoxInitposY_;  //地面の張り付き
+            positionTempY_ = positionY_;
+            positionPrevY_ = positionTempY_;
         }
     }
-    transform_.position_.y = positionY_;
-    //ImGui::Text("rayWoodBoxDist_=%f", rayWoodBoxDist_);
-    //ImGui::Text("rayStageDistDown_=%f", rayStageDistDown_);
-    //ImGui::Text("isJump_=%s", isJump_ ? "true" : "false");
-    //ImGui::Text("positionY_=%f", positionY_);
+    else if(!isOnWoodBox_)
+    {
+        isJump_ = true;
+    }
 }
 
 void WoodBox::OnCollision(GameObject* _pTarget)

@@ -18,16 +18,22 @@
 
 //à¯êîÇ≈èâä˙âª
 #define ARGUMENT_INITIALIZE(p,t){ p = t;}
-static XMFLOAT3 vecUp = { 0.0f,1.0f,0.0f };
-static XMFLOAT3 vecDown = { 0.0f,-1.0f,0.0f };
-static XMFLOAT3 vecFront = { 0.0f,0.0f,1.0f };
-static XMFLOAT3 vecBack = { 0.0f,0.0f,-1.0f };
-static XMFLOAT3 vecRight = { 1.0f,0.0f,0.0f };
-static XMFLOAT3 vecLeft = { -1.0f,0.0f,0.0f };
+static XMVECTOR vecUp = { 0.0f,1.0f,0.0f };
+static XMVECTOR vecDown = { 0.0f,-1.0f,0.0f };
+static XMVECTOR vecFront = { 0.0f,0.0f,1.0f };
+static XMVECTOR vecBack = { 0.0f,0.0f,-1.0f };
+static XMVECTOR vecRight = { 1.0f,0.0f,0.0f };
+static XMVECTOR vecLeft = { -1.0f,0.0f,0.0f };
+static XMVECTOR vecFrontUp = { 0.0f,1.0f,1.0f };
+static XMVECTOR vecBackUp = { 0.0f,1.0f,-1.0f };
+static XMVECTOR vecRightUp = { 1.0f,1.0f,0.0f };
+static XMVECTOR vecLeftUp = { -1.0f,1.0f,0.0f };
 static XMFLOAT3 initZeroXMFLOAT3 = {0.0f,0.0f,0.0f};
 static XMVECTOR initZeroXMVECTOR = { 0.0f,0.0f,0.0f,0.0f };
 static float initZeroFloat = { 0.0f };
 static int initZeroInt = { 0 };
+static int initOneInt = { 1 };
+static int normalizationInt = { 1 };
 static std::string soundFolderName = "Sound/";
 static std::string soundModifierName = ".wav";
 static std::string modelFolderName = "Model&Picture/";

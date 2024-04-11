@@ -1,5 +1,6 @@
 //インクルード
 #include <random>
+#include "../Engine/Global.h"
 #include "ItemObjectManager.h"
 #include "Floor.h"
 #include "WoodBox.h"
@@ -41,8 +42,8 @@ void ItemObjectManager::CreateObject(ITEMOBJECTSTATE _objectState, float _minX, 
 	case ITEMOBJECTSTATE::BONE:
 		float minX = _minX;
 		float maxX = _maxX;
-		float minY = 0;
-		float maxY = 0;
+		float minY = initZeroFloat;
+		float maxY = initZeroFloat;
 		float minZ = _minZ;
 		float maxZ = _maxZ;
 		std::random_device rd;
@@ -68,7 +69,7 @@ void ItemObjectManager::SetPosition(XMFLOAT3 _position)
 }
 
 ItemObjectManager::ItemObjectManager(GameObject* _pParent)
-	:pParent_{_pParent}, pObjectBase_{nullptr}, objectState_(ITEMOBJECTSTATE::FLOOR), number_{0}
+	:pParent_{_pParent}, pObjectBase_{nullptr}, objectState_{ITEMOBJECTSTATE::FLOOR}, number_{0}
 {
 }
 

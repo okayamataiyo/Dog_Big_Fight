@@ -1,12 +1,19 @@
 #pragma once
 //インクルード
+#include <vector>
 #include "../Engine/GameObject.h"
 #include "../Engine/Camera.h"
 #include "../ItemObject/ItemObjectManager.h"
-#include <vector>
 
 namespace
 {
+    std::string soundPlaySceneNames[] =
+    {
+        "BGM",
+        "LastBGM",
+        "LastBGM2",
+    };
+
     std::string playSceneName = "PlayScene";
 }
 
@@ -22,6 +29,13 @@ class StageObjectManager;
 class PlayScene : public GameObject
 {
 private:
+
+    enum class SOUNDSTATE
+    {
+        BGM = 0,
+        LASTBGM,
+        LASTBGM2,
+    };
 
     enum class PADIDSTATE
     {

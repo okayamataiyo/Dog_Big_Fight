@@ -18,7 +18,7 @@
 
 CollectPlayer::CollectPlayer(GameObject* _pParent)
     :PlayerBase(_pParent, collectPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1,-1 }, stageBlockHModel_{ -1 }, stageHModel_{ -1 }, floorHModel_{ -1 }
-    ,isBoneTatch_{false}, number_{0}, time_{0}, timeWait_{30}, isDive_{false}, isDived_{false}, diveTime_{0}, diveTimeWait_{30}, vecKnockbackDirection_{}, playerState_{PLAYERSTATE::WAIT}, playerStatePrev_{PLAYERSTATE::WAIT}, gameState_{GAMESTATE::READY}
+    ,isBoneTatch_{false}, number_{0}, time_{0}, timeWait_{30}, vecKnockbackDirection_{}, playerState_{PLAYERSTATE::WAIT}, playerStatePrev_{PLAYERSTATE::WAIT}, gameState_{GAMESTATE::READY}
     , pParent_{ nullptr }, pPlayScene_{ nullptr }, pAttackPlayer_{ nullptr }, pCollision_{ nullptr }
     , pWoodBox_{ nullptr }, pText_{ nullptr }, pStage_{ nullptr }, pStageBlock_{ nullptr }, pFloor_{ nullptr }, pSceneManager_{ nullptr }
 {
@@ -35,6 +35,7 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     fallLimit_ = 100.0f;
     score_ = 0;
     scoreAmount_ = 10;
+    scoreMax_ = 150;
     padID_ = 1;
     playerInitPosY_ = 0.6f;
     //▼サウンドに関する基底クラスメンバ変数
@@ -47,20 +48,27 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     positionY_ = 0.0f;
     isDash_ = false;
     isFling_ = 1.0f;
+    deadZone_ = 0.3f;
+    pi_ = 3.14;
+    halfPi_ = pi_ / 2.0f;
+    dashSpeed_ = 0.5f;
+    walkSpeed_ = 0.4f;
     //▼向き変えに関する基底クラスメンバ変数
     vecMove_ = { 0.0f,0.0f,0.0f,0.0f };
     vecLength_ = { 0.0f,0.0f,0.0f,0.0f };
-    vecFront_ = { 0.0f,0.0f,0.0f,0.0f };
     vecDot_ = { 0.0f,0.0f,0.0f,0.0f };
     vecCross_ = { 0.0f,0.0f,0.0f,0.0f };
     length_ = 0.0f;
     dot_ = 0.0f;
     angle_ = 0.0f;
     //▼収集側プレイヤージャンプに関する基底クラスメンバ変数
+    gravity_ = 0.007f;
     positionTempY_ = 0.0f;
     positionPrevY_ = 0.0f;
+    jumpPower_ = 0.3f;
     isJump_ = false;
     //▼飛びつきに関するメンバ変数
+    divePower_ = 0.1f;
     diveSpeed_ = 0.6f;
     isDive_ = false;
     isDived_ = false;
@@ -73,11 +81,22 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     woodBoxNumber_ = "";
     dotProduct_ = 0.0f;
     angleDegrees_ = 0.0f;
+    angleDegreesMax_ = 80.0f;
+    //▼スタンに関する基底クラスメンバ変数
     stunTimeCounter_ = 0;
     stunLimit_ = 0;
+    hitStopTime_ = 10;
+    getUpTime_ = 30;
+    knockbackSpeed_ = 0.3f;
     isStun_ = false;
     isKnockBack_ = false;
     //▼壁判定に関する基底クラスメンバ変数
+    distMax_ = 99999.0f;
+    inTheWall_ = 1.5f;
+    outerWallPosFront_ = 99.0f;
+    outerWallPosBack_ = -99.0f;
+    outerWallPosLeft_ = 99.0f;
+    outerWallPosRight_ = -99.0f;
     rayFloorDistUp_ = 0.0f;
     rayFloorDistDown_ = 0.0f;
     rayStageBlockDistDown_ = 0.0f;
@@ -150,7 +169,7 @@ void CollectPlayer::UpdateReady()
     //▼下の法線(地面に張り付き)
     stageDataDown.start = transform_.position_;  //レイの発射位置
     stageDataDown.start.y = initZeroInt;
-    stageDataDown.dir = vecDown;       //レイの方向
+    XMStoreFloat3(&stageDataDown.dir, vecDown);     //レイの方向
     Model::RayCast(stageHModel_, &stageDataDown); //レイを発射
     rayStageDistDown_ = stageDataDown.dist;
     if (stageDataDown.hit)
@@ -182,7 +201,7 @@ void CollectPlayer::UpdatePlay()
     if (isDive_ && !isDived_)
     {
         ++diveTime_;
-        if (diveTime_ <= 1)
+        if (diveTime_ <= diveDuration_)
         {
             PlayerDivePower();
         }
@@ -201,6 +220,7 @@ void CollectPlayer::UpdatePlay()
         }
     }
     playerStatePrev_ = playerState_;
+    PlayerJump();
     PlayerRayCast();
     PlayerKnockback();
     transform_.position_.y = positionY_;
@@ -212,42 +232,34 @@ void CollectPlayer::UpdatePlay()
             gameState_ = GAMESTATE::PLAY;
             isStun_ = false;
             isKnockBack_ = false;
-            stunTimeCounter_ = 0;
+            stunTimeCounter_ = initZeroInt;
         }
     }
     if (!isStun_)
     {
         PlayerMove();
     }
-    if (score_ >= 150)
+    if (score_ >= scoreMax_)
     {
         pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
-        Direct3D::SetIsChangeView(1);
+        Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFTVIEW);
     }
-    /*ImGui::Text("playerState_=%i", playerState_);
-    ImGui::Text("positionPrevY_=%f", positionPrevY_);
-    ImGui::Text("positionTempY_=%f", positionTempY_);
-    ImGui::Text("Transform_.position_.x=%f", transform_.position_.x);
-    ImGui::Text("Transform_.position_.y=%f", transform_.position_.y);
-    ImGui::Text("Transform_.position_.z=%f", transform_.position_.z);
-    ImGui::Text("angleDegrees_=%f", angleDegrees_);
-    ImGui::Text("timeCounter_=%i", timeCounter_);*/
     if (IsMoving() && !isJump_ && !isDash_)
     {
         playerState_ = PLAYERSTATE::WALK;
-        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::WALK)], soundVolume_);
+        Audio::Play(hSound_[((int)SOUNDSTATE::WALK)], soundVolume_);
     }
     if (!IsMoving() && !isJump_)
     {
         playerState_ = PLAYERSTATE::WAIT;
-        Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::WALK)]);
-        Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::RUN)]);
+        Audio::Stop(hSound_[((int)SOUNDSTATE::WALK)]);
+        Audio::Stop(hSound_[((int)SOUNDSTATE::RUN)]);
     }
     if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER, padID_) && !isJump_ && IsMoving())
     {
         playerState_ = PLAYERSTATE::RUN;
-        Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::WALK)]);
-        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::RUN)], soundVolume_);
+        Audio::Stop(hSound_[((int)SOUNDSTATE::WALK)]);
+        Audio::Play(hSound_[((int)SOUNDSTATE::RUN)], soundVolume_);
         isDash_ = true;
     }
     else
@@ -270,8 +282,8 @@ void CollectPlayer::UpdatePlay()
         {
             score_ += scoreAmount_;
             isBoneTatch_ = false;
-            Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::CollectBone)]);
-            time_ = 0;
+            Audio::Stop(hSound_[((int)SOUNDSTATE::CollectBone)]);
+            time_ = initZeroInt;
         }
     }
 }
@@ -286,10 +298,9 @@ void CollectPlayer::UpdateGameOver()
 
 void CollectPlayer::Stun(int _timeLimit)
 {
-    //transform_.position_.y = positionY_;
     isStun_ = true;
     stunLimit_ = _timeLimit;
-    Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::STUN)], soundVolume_);
+    Audio::Play(hSound_[((int)SOUNDSTATE::STUN)], soundVolume_);
 }
 
 void CollectPlayer::OnCollision(GameObject* _pTarget)
@@ -301,22 +312,21 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
         pWoodBox_ = (WoodBox*)FindObject(woodBoxNumber_);
         XMVECTOR vecPos = XMLoadFloat3(&transform_.position_) - pWoodBox_->GetVecPos();
         vecPos = XMVector3Normalize(vecPos);
-        XMVECTOR vecUp = { 0,1,0,0 };
         dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos, vecUp));
         float angleRadians = acosf(dotProduct_);
         angleDegrees_ = XMConvertToDegrees(angleRadians);
-        if (angleDegrees_ <= 80)
+        if (angleDegrees_ <= angleDegreesMax_)
         {
-            PlayerJump();
+            PlayerJumpPower();
             pWoodBox_->SetWoodBoxBreak();
-            pPlayScene_->AddWoodBoxCount(-1);
+            pPlayScene_->AddWoodBoxCount(-woodBoxDeath_);
 
         }
     }
     //WoodBoxという名前を持つ全てのオブジェクトを参照
     if (_pTarget->GetObjectName().find(woodBoxName) != std::string::npos)
     {
-        if (angleDegrees_ > 80)
+        if (angleDegrees_ > angleDegreesMax_)
         {
             transform_.position_ = positionPrev_;
         }
@@ -324,29 +334,17 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
     if (_pTarget->GetObjectName() == boneName)
     {
         isBoneTatch_ = true;
-        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::CollectBone)]);
+        Audio::Play(hSound_[((int)SOUNDSTATE::CollectBone)]);
     }
     ++number_;
     if (number_ >= woodBoxs.size())
     {
-        number_ = 0;
+        number_ = initZeroInt;
     }
-    //if (_pTarget->GetObjectName() == "PlayerFirst")
-    //{
-    //    SetGameState(GAMESTATE::FIRSTSTUN);
-    //    XMVECTOR vecKnockbackDirection = -(XMLoadFloat3(&transform_.position_) - pPlayer_->GetVecPos());
-    //    XMFLOAT3 moveRot = {};
-    //    XMStoreFloat3(&moveRot, vecKnockbackDirection);
-    //    moveRot.y = 0;
-    //    vecKnockbackDirection = XMLoadFloat3(&moveRot);
-    //    XMVECTOR vectorMove = XMLoadFloat3(&transform_.position_) + (vecKnockbackDirection / 4);
-    //    XMStoreFloat3(&transform_.position_, vectorMove);
-    //    pPlayer_->SetVecPos(-vectorMove);
-    //    SetGameState(GAMESTATE::SECONDSSTUN);
-    //}
+
     if (_pTarget->GetObjectName() == attackPlayerName)
     {
-        Stun(10);
+        Stun(hitStopTime_);
         isKnockBack_ = true;
         vecKnockbackDirection_ = (XMLoadFloat3(&transform_.position_) - pAttackPlayer_->GetVecPos());
         vecKnockbackDirection_ = XMVector3Normalize(vecKnockbackDirection_);
@@ -357,19 +355,19 @@ void CollectPlayer::PlayerMove()
 {
     if (!isDash_)
     {
-        controllerMoveSpeed_ = 0.4f;
+        controllerMoveSpeed_ = walkSpeed_;
     }
     else
     {
-        controllerMoveSpeed_ = 0.5f;
+        controllerMoveSpeed_ = dashSpeed_;
     }
     if (!(Input::IsPadButton(XINPUT_GAMEPAD_LEFT_SHOULDER, padID_)))
     {
         XMVECTOR vecCam = {};
-        vecCam = -(Camera::VecGetPosition(0) - Camera::VecGetTarget(0));
+        vecCam = -(Camera::VecGetPosition(collectPlayerNumber) - Camera::VecGetTarget(collectPlayerNumber));
         XMFLOAT3 camRot = {};
         XMStoreFloat3(&camRot, vecCam);
-        camRot.y = 0;
+        camRot.y = initZeroFloat;
         vecCam = XMLoadFloat3(&camRot);
         vecCam = XMVector3Normalize(vecCam);
         vecMove_ = vecCam;
@@ -377,73 +375,72 @@ void CollectPlayer::PlayerMove()
     //向き変更
     vecLength_ = XMVector3Length(vecMove_);
     length_ = XMVectorGetX(vecLength_);
-    if (length_ != 0)
+    if (length_ != initZeroInt)
     {
         //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
-        vecFront_ = { 0,0,1,0 };
         vecMove_ = XMVector3Normalize(vecMove_);
 
-        vecDot_ = XMVector3Dot(vecFront_, vecMove_);
+        vecDot_ = XMVector3Dot(vecFront, vecMove_);
         dot_ = XMVectorGetX(vecDot_);
         angle_ = acos(dot_);
 
         //右向きにしか向けなかったものを左向きにする事ができる
-        vecCross_ = XMVector3Cross(vecFront_, vecMove_);
-        if (XMVectorGetY(vecCross_) < 0)
+        vecCross_ = XMVector3Cross(vecFront, vecMove_);
+        if (XMVectorGetY(vecCross_) < initZeroInt)
         {
-            angle_ *= -1;
+            angle_ *= -initOneInt;
         }
     }
 
     transform_.rotate_.y = XMConvertToDegrees(angle_);
-    if (Input::GetPadStickL(padID_).y > 0.3)
+    if (Input::GetPadStickL(padID_).y > deadZone_)
     {
-        XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
-        vecDirection = XMVectorSetY(vecDirection, 0);
+        XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(collectPlayerNumber);
+        vecDirection = XMVectorSetY(vecDirection, initZeroFloat);
         vecDirection = XMVector3Normalize(vecDirection);
         transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(vecDirection);
         transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(vecDirection);
     }
-    if (Input::GetPadStickL(padID_).y < -0.3)
+    if (Input::GetPadStickL(padID_).y < -deadZone_)
     {
-        XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
-        vecDirection = XMVectorSetY(vecDirection, 0);
+        XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(collectPlayerNumber);
+        vecDirection = XMVectorSetY(vecDirection, initZeroFloat);
         vecDirection = XMVector3Normalize(vecDirection);
         transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(-vecDirection);
         transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(-vecDirection);
     }
-    if (Input::GetPadStickL(padID_).x > 0.3)
+    if (Input::GetPadStickL(padID_).x > deadZone_)
     {
-        XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);                          //XMMatrixRotationY = Y座標を中心に回転させる行列を作る関数,//XMConvertToRadians = degree角をradian角に(ただ)変換する
-        XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
-        vecDirection = XMVectorSetY(vecDirection, 0);
+        XMMATRIX rotmat = XMMatrixRotationY(halfPi_);                          //XMMatrixRotationY = Y座標を中心に回転させる行列を作る関数,//XMConvertToRadians = degree角をradian角に(ただ)変換する
+        XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(collectPlayerNumber);
+        vecDirection = XMVectorSetY(vecDirection, initZeroFloat);
         vecDirection = XMVector3Normalize(vecDirection);
         XMVECTOR tempvec = XMVector3Transform(vecDirection, rotmat);
         transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(tempvec);
         transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(tempvec);
     }
-    if (Input::GetPadStickL(padID_).x < -0.3)
+    if (Input::GetPadStickL(padID_).x < -deadZone_)
     {
-        XMMATRIX rotmat = XMMatrixRotationY(3.14 / 2);
-        XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(0);
-        vecDirection = XMVectorSetY(vecDirection, 0);
+        XMMATRIX rotmat = XMMatrixRotationY(halfPi_);
+        XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(collectPlayerNumber);
+        vecDirection = XMVectorSetY(vecDirection, initZeroFloat);
         vecDirection = XMVector3Normalize(vecDirection);
         XMVECTOR tempvec = XMVector3Transform(vecDirection, -rotmat);
         transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(tempvec);
         transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(tempvec);
     }
-    if (Input::IsPadButton(XINPUT_GAMEPAD_A, padID_) && isJump_ == false)
+    if (Input::IsPadButton(XINPUT_GAMEPAD_A, padID_) && !isJump_)
     {
-        PlayerJump();
-        Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::WALK)]);
-        Audio::Stop(hSound_[static_cast<int>(SOUNDSTATE::RUN)]);
-        Audio::Play(hSound_[static_cast<int>(SOUNDSTATE::JUMP)], 0.3f);
+        PlayerJumpPower();
+        Audio::Stop(hSound_[((int)SOUNDSTATE::WALK)]);
+        Audio::Stop(hSound_[((int)SOUNDSTATE::RUN)]);
+        Audio::Play(hSound_[((int)SOUNDSTATE::JUMP)], soundVolume_);
     }
-    if (transform_.position_.z <= -99.0f || transform_.position_.z >= 99.0f)
+    if (transform_.position_.z <= outerWallPosBack_ || transform_.position_.z >= outerWallPosFront_)
     {
         transform_.position_.z = positionPrev_.z;
     }
-    if (transform_.position_.x <= -99.0f || transform_.position_.x >= 99.0f)
+    if (transform_.position_.x <= outerWallPosRight_ || transform_.position_.x >= outerWallPosLeft_)
     {
         transform_.position_.x = positionPrev_.x;
     }
@@ -451,16 +448,29 @@ void CollectPlayer::PlayerMove()
 
 void CollectPlayer::PlayerJump()
 {
+    if (isJump_)
+    {
+        //放物線に下がる処理
+        positionTempY_ = positionY_;
+        positionY_ += (positionY_ - positionPrevY_) - gravity_;
+        positionPrevY_ = positionTempY_;
+        isJump_ = (positionY_ <= -rayFloorDistDown_ + playerInitPosY_) ? false : isJump_;
+        isJump_ = (positionY_ <= -rayStageDistDown_ + playerInitPosY_) ? false : isJump_;
+    }
+}
+
+void CollectPlayer::PlayerJumpPower()
+{
     //ジャンプの処理
     isJump_ = true;
     positionPrevY_ = positionY_;
-    positionY_ = positionY_ + 0.3;
+    positionY_ = positionY_ + jumpPower_;
 }
 
 void CollectPlayer::PlayerDive()
 {
-    XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(1);
-    vecDirection = XMVectorSetY(vecDirection, 1);
+    XMVECTOR vecDirection = XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(collectPlayerNumber);
+    vecDirection = XMVectorSetY(vecDirection, normalizationInt);
     vecDirection = XMVector3Normalize(vecDirection);
     transform_.position_.x = transform_.position_.x + diveSpeed_ * XMVectorGetX(vecDirection);
     transform_.position_.z = transform_.position_.z + diveSpeed_ * XMVectorGetZ(vecDirection);
@@ -468,7 +478,7 @@ void CollectPlayer::PlayerDive()
     {
         isDive_ = false;
         isDived_ = true;
-        diveTime_ = 0;
+        diveTime_ = initZeroInt;
     }
 }
 
@@ -477,16 +487,15 @@ void CollectPlayer::PlayerDivePower()
     //とびつきの処理
     isJump_ = true;
     positionPrevY_ = positionY_;
-    positionY_ = positionY_ + 0.1;
+    positionY_ = positionY_ + divePower_;
 }
 
 void CollectPlayer::PlayerKnockback()
 {
-    if (isKnockBack_ == true)
+    if (isKnockBack_)
     {
-        float knockbackSpeed = 0.3f;
-        SetKnockback(vecKnockbackDirection_, knockbackSpeed);
-        Stun(30);
+        SetKnockback(vecKnockbackDirection_, knockbackSpeed_);
+        Stun(getUpTime_);
     }
 }
 
@@ -502,141 +511,100 @@ void CollectPlayer::PlayerRayCast()
     RayCastData stageDataRight;                 //プレイヤーが地面からどのくらい離れていたら浮いている判定にするか
     stageHModel_ = pStage_->GetModelHandle();         //モデル番号を取得
     floorHModel_ = pFloor_->GetModelHandle();
-    if (isJump_ == true)
-    {
-        //放物線に下がる処理
-        positionTempY_ = positionY_;
-        positionY_ += (positionY_ - positionPrevY_) - 0.007;
-        positionPrevY_ = positionTempY_;
-        isJump_ = (positionY_ <= -rayFloorDistDown_ + 0.6f) ? false : isJump_;
-        isJump_ = (positionY_ <= -rayStageDistDown_ + 0.6f) ? false : isJump_;
-    }
 
-    for (int i = 0; i <= 2; i++)
+    for (int i = initZeroInt; i <= 2; i++)
     {
         //▼上の法線(すり抜け床のため)
         floorDataUp.start = transform_.position_;           //レイの発射位置
-        floorDataUp.dir = XMFLOAT3(0, 1, 0);                //レイの方向
+        XMStoreFloat3(&floorDataUp.dir, vecUp);             //レイの方向
         Model::RayCast(floorHModel_ + i, &floorDataUp);         //レイを発射
         rayFloorDistUp_ = floorDataUp.dist;
         //ImGui::Text("rayUpDist_=%f", rayUpDist_);
 
         //▼下の法線(すり抜け床)
         floorDataDown.start = transform_.position_;    //レイの発射位置
-        floorDataDown.start.y = 0.0f;
-        floorDataDown.dir = XMFLOAT3(0, -1, 0);        //レイの方向
-        if (floorDataUp.dist == 99999)
+        floorDataDown.start.y = initZeroFloat;
+        XMStoreFloat3(&floorDataDown.dir, vecDown);     //レイの方向
+        if (floorDataUp.dist == distMax_)
         {
             Model::RayCast(floorHModel_ + i, &floorDataDown);  //レイを発射
         }
         rayFloorDistDown_ = floorDataDown.dist;
-        //ImGui::Text("rayFloorDist_=%f", rayFloorDist_);
         if (rayFloorDistDown_ + positionY_ <= isFling_)
         {
-            if (isJump_ == false)
+            if (!isJump_)
             {
-                isOnFloor_ = 1;
+                isOnFloor_ = true;
                 isDived_ = false;
-                positionY_ = -floorDataDown.dist + 0.6f;
+                positionY_ = -floorDataDown.dist + playerInitPosY_;
                 positionTempY_ = positionY_;
                 positionPrevY_ = positionTempY_;
             }
         }
         else
         {
-            isOnFloor_ = 0;
+            isOnFloor_ = false;
         }
 
     }
 
-    //▼下の法線(床ブロックに張り付き)
-    //stageBlockDataDown.start = transform_.position_;
-    //stageBlockDataDown.start.y = 0;
-    //stageBlockDataDown.dir = XMFLOAT3(0, -1, 0);
-    //Model::RayCast(pStageBlock_->GetModelHandle(), &stageBlockDataDown);
-    //rayStageBlockDistDown_ = stageBlockDataDown.dist;
-    //if (rayStageBlockDistDown_ + positionY_ <= isFling_)
-    //{
-    //    //ジャンプしてない＆すり抜け床の上にいない
-    //    if (isJump_ == false && isOnFloor_ == 0)
-    //    {
-    //        //地面に張り付き
-    //        positionY_ = -stageBlockDataDown.dist + 0.6;
-    //        positionTempY_ = positionY_;
-    //        positionPrevY_ = positionTempY_;
-    //    }
-    //}
-    //else if (isOnFloor_ == 0)
-    //{
-    //    isJump_ = true;
-    //}
-
     //▼下の法線(床に張り付き)
-    stageDataDown.start = transform_.position_;  //レイの発射位置
-    stageDataDown.start.y = 0;
-    stageDataDown.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-    Model::RayCast(stageHModel_, &stageDataDown); //レイを発射
+    stageDataDown.start = transform_.position_;     //レイの発射位置
+    stageDataDown.start.y = initZeroFloat;
+    XMStoreFloat3(&stageDataDown.dir, vecDown);     //レイの方向
+    Model::RayCast(stageHModel_, &stageDataDown);   //レイを発射
     rayStageDistDown_ = stageDataDown.dist;
     //プレイヤーが浮いていないとき
-    //ImGui::Text("rayGravityDist_=%f", rayGravityDist_);
     if (rayStageDistDown_ + positionY_ <= isFling_)
     {
         //ジャンプしてない＆すり抜け床の上にいない
-        if (isJump_ == false && isOnFloor_ == 0)
+        if (!isJump_ && !isOnFloor_)
         {
             //地面に張り付き
             isDived_ = false;
-            positionY_ = -stageDataDown.dist + 0.6;
+            positionY_ = -stageDataDown.dist + playerInitPosY_;
             positionTempY_ = positionY_;
             positionPrevY_ = positionTempY_;
         }
     }
-    else if (isOnFloor_ == 0)
+    else if (!isOnFloor_)
     {
         isJump_ = true;
     }
     //▼前の法線(壁の当たり判定)
-    stageDataFront.start = transform_.position_;       //レイの発射位置
-    stageDataFront.dir = XMFLOAT3(0, 1, 1);            //レイの方向
-    Model::RayCast(stageHModel_, &stageDataFront);  //レイを発射
+    stageDataFront.start = transform_.position_;      //レイの発射位置
+    XMStoreFloat3(&stageDataFront.dir, vecFrontUp);   //レイの方向
+    Model::RayCast(stageHModel_, &stageDataFront);    //レイを発射
     rayStageDistFront_ = stageDataFront.dist;
-    //ImGui::Text("rayStageDistFront_=%f", rayStageDistFront_);
-    if (rayStageDistFront_ <= 1.5f)
+    if (rayStageDistFront_ <= inTheWall_)
     {
-        //transform_.position_.z = (float)((int)prevPosition_.z) - 0.00001f;
         transform_.position_.z = positionPrev_.z;
     }
     //▼後ろの法線(壁の当たり判定)
     stageDataBack.start = transform_.position_;       //レイの発射位置
-    stageDataBack.dir = XMFLOAT3(0, 1, -1);           //レイの方向
-    Model::RayCast(stageHModel_, &stageDataBack);  //レイを発射
+    XMStoreFloat3(&stageDataBack.dir, vecBackUp);     //レイの方向
+    Model::RayCast(stageHModel_, &stageDataBack);     //レイを発射
     rayStageDistBack_ = stageDataBack.dist;
-    //ImGui::Text("rayStageDistBack_=%f", rayStageDistBack_);
-    if (rayStageDistBack_ <= 1.5f)
+    if (rayStageDistBack_ <= inTheWall_)
     {
-        //transform_.position_.z = (float)((int)prevPosition_.z) + 0.00001f;
         transform_.position_.z = positionPrev_.z;
     }
     //▼左の法線(壁の当たり判定)
     stageDataLeft.start = transform_.position_;       //レイの発射位置
-    stageDataLeft.dir = XMFLOAT3(-1, 1, 0);           //レイの方向
-    Model::RayCast(stageHModel_, &stageDataLeft);  //レイを発射
+    XMStoreFloat3(&stageDataLeft.dir, vecLeftUp);     //レイの方向
+    Model::RayCast(stageHModel_, &stageDataLeft);     //レイを発射
     rayStageDistLeft_ = stageDataLeft.dist;
-    //ImGui::Text("rayStageDistLeft_=%f", rayStageDistLeft_);
-    if (rayStageDistLeft_ <= 1.5f)
+    if (rayStageDistLeft_ <= inTheWall_)
     {
-        //transform_.position_.x = (float)((int)prevPosition_.x) + 0.00001f;
         transform_.position_.x = positionPrev_.x;
     }
     //▼右の法線(壁の当たり判定)
     stageDataRight.start = transform_.position_;       //レイの発射位置
-    stageDataRight.dir = XMFLOAT3(1, 1, 0);           //レイの方向
-    Model::RayCast(stageHModel_, &stageDataRight);  //レイを発射
+    XMStoreFloat3(&stageDataRight.dir, vecRightUp);    //レイの方向
+    Model::RayCast(stageHModel_, &stageDataRight);     //レイを発射
     rayStageDistRight_ = stageDataRight.dist;
-    //ImGui::Text("rayStageDistRight_=%f", rayStageDistRight_);
-    if (rayStageDistRight_ <= 1.5f)
+    if (rayStageDistRight_ <= inTheWall_)
     {
-        //transform_.position_.x = (float)((int)prevPosition_.x) - 0.00001f;
         transform_.position_.x = positionPrev_.x;
     }
     positionPrev_ = transform_.position_;

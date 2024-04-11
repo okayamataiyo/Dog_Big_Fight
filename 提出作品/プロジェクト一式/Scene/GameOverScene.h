@@ -15,6 +15,7 @@ namespace
 
 class GameOverScene : public GameObject
 {
+private:
 	int hSound_;
 	float soundVolume_;
 	int inputWait_;

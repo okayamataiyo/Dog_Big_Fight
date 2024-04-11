@@ -26,14 +26,19 @@ private:
     bool isBreak_;            //木箱が壊されたか
     std::vector<int> woodBoxs_;
 
-    //▼レイキャストで使うメンバ変数
+    //▼落下に関するメンバ変数
+    float gravity_;
+    float woodBoxInitposY_;
     float positionY_;            //木箱のY座標に代入する値
     float positionPrevY_;        //1フレーム前のY座標
     float positionTempY_;        //1時的に座標を保存
     bool isJump_;           //飛んでいるか
-    int  isOnWoodBox_;      //木箱の上にいるか
+    //▼レイキャストに関するメンバ変数
+    bool  isOnWoodBox_;      //木箱の上にいるか
     float rayWoodBoxDist_;  //木箱のディスト
     float rayStageDistDown_;    //ステージのディスト
+    float isFling_;
+
 
     GameObject* pParent_;
     PlayScene* pPlayScene_;
@@ -60,9 +65,11 @@ public:
     //開放
     void Release() override;
 
-    void Move();
+    void WoodBoxJump();
 
-    void RayCast();
+    void WoodBoxMove();
+
+    void WoodBoxRayCast();
 
     void OnCollision(GameObject* _pTarget);
 

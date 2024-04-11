@@ -44,26 +44,26 @@ void GameTitleScene::Update()
 	Camera::SetTarget(pSolidText_->GetPosition(), attackPlayerNumber);
 	Camera::SetPosition(camPos_, collectPlayerNumber);
 	Camera::SetTarget(pSolidText_->GetPosition(), collectPlayerNumber);
-	if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown(static_cast<int>(MOUSESTATE::LEFTCLICK)) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A,attackPlayerNumber) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A,collectPlayerNumber))
+	if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown((int)MOUSESTATE::LEFTCLICK) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A,attackPlayerNumber) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A,collectPlayerNumber))
 	{
-		Direct3D::SetIsChangeView(static_cast<int>(Direct3D::VIEWSTATE::LEFT_BOTHVIEW));
+		Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFT_BOTHVIEW);
 		pSceneManager_->ChangeScene(SCENE_ID_SELECT);
 	}
 	if (Input::IsKeyDown(DIK_R))
 	{
-		Direct3D::SetIsChangeView(static_cast<int>(Direct3D::VIEWSTATE::RIGHT_BOTHVIEW));
+		Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::RIGHT_BOTHVIEW);
 	}
 	if (Input::IsKeyDown(DIK_T))
 	{
-		Direct3D::SetIsChangeView(static_cast<int>(Direct3D::VIEWSTATE::RIGHTVIEW));
+		Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::RIGHTVIEW);
 	}
 	if (Input::IsKeyDown(DIK_Y))
 	{
-		Direct3D::SetIsChangeView(static_cast<int>(Direct3D::VIEWSTATE::LEFT_BOTHVIEW));
+		Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFT_BOTHVIEW);
 	}
 	if (Input::IsKeyDown(DIK_U))
 	{
-		Direct3D::SetIsChangeView(static_cast<int>(Direct3D::VIEWSTATE::LEFTVIEW));
+		Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFTVIEW);
 	}
 }
 
