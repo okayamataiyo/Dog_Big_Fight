@@ -2,12 +2,13 @@
 //インクルード
 #include <string>
 #include "../Engine/Direct3D.h"
-#include "ItemObjectBase.h"
 #include "../Scene/PlayScene.h"
+#include "ItemObjectBase.h"
 
 namespace
 {
     std::string frameBoxName = "FrameBox";
+    std::string boxColliderName = "BoxCollider";
 }
 
 class AttackPlayer;
@@ -17,21 +18,11 @@ class FrameBox : public ItemObjectBase
 {
 private:
     int hModel_;            //モデル
-    int hSound_;            //サウンドデータ
-    bool isBreak_;            //木箱が壊されたか
-    GameObject* pParent_;
+    bool isBreak_;          //木箱が壊されたか
+    float frameBoxInitPosY_;
+    std::vector<int> FrameBoxs_;
     PlayScene* pPlayScene_;
     AttackPlayer* pAttackPlayer_;
-    std::vector<int> FrameBoxs_;
-
-    //▼レイキャストで使うメンバ変数
-    float positionY_;            //木箱のY座標に代入する値
-    float positionPrevY_;        //1フレーム前のY座標
-    float positionTempY_;        //1時的に座標を保存
-    bool isJump_;           //飛んでいるか
-    int  isOnFrameBox_;      //木箱の上にいるか
-    float rayFrameBoxDist_;  //木箱のディスト
-    float rayStageDistDown_;    //ステージのディスト
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)
@@ -53,8 +44,6 @@ public:
     void Release() override;
 
     void Move();
-
-    void RayCast();
 
     void OnCollision(GameObject* _pTarget);
 

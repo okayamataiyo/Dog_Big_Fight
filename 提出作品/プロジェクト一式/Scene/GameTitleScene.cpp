@@ -11,7 +11,7 @@
 #include "GameTitleScene.h"
 
 GameTitleScene::GameTitleScene(GameObject* _pParent)
-	:GameObject(_pParent, gameTitleSceneName), hSound_{-1},soundVolume_{0.2f}
+	:GameObject(_pParent, gameTitleSceneName), hSound_{-1},soundVolume_{0.2f},camPos_{0.0f,0.0f,0.0f}
 	,pSolidText_{nullptr}, pStageObjectManager_{nullptr}, pSceneManager_{nullptr}
 {
 

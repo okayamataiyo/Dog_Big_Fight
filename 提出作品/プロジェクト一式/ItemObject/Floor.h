@@ -12,8 +12,18 @@ namespace
 //Floorを管理するクラス
 class Floor : public ItemObjectBase
 {
+    enum class FLOORSTATE
+    {
+        UP = 0,
+        DOWN,
+        WAIT,
+    };
     int hModel_;    //モデル番号
-    int upOrDown_;  //上がってるか下がってるか
+    int floorState_;  //上がってるか下がってるか
+    float upVelocity_;
+    float downVelocity_;
+    float positionUpMax_;
+    float positionDownMax_;
 public:
     //コンストラクタ
     //引数:parent 親オブジェクト(SceneManager)

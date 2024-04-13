@@ -37,6 +37,7 @@ protected:
 	int padID_;
 	//▼サウンドに関するメンバ変数
 	float soundVolume_;
+	float soundVolumeLow_;
 	//▼プレイヤー移動に関するメンバ変数
 	XMVECTOR CamPositionVec_;
 	XMFLOAT3 positionPrev_;		//1フレーム前の位置座標

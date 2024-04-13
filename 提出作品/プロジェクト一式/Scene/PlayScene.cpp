@@ -13,7 +13,7 @@
 #include "PlayScene.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
-	:GameObject(_pParent, playSceneName), hSound_{-1,-1,-1}, length_{30}, boneCount_{0}, isCreateBone_{false}, woodBoxCount_{0}
+	:GameObject(_pParent, playSceneName), hSound_{-1,-1,-1},random_value_{0}, soundVolume_{0.05f,},soundVolumeLow_{soundVolume_ / 2}, length_{30}, boneCount_{0}, isCreateBone_{false}, woodBoxCount_{0}
 	, attackPlayerPosition_{}, attackPlayerDirection_{},frontPosition_{10.0f}, blockOrCollect_{0}
 	,pSceneManager_{nullptr}, pAttackPlayer_{nullptr}, pCollectPlayer_{nullptr}, pItemObjectManager_{nullptr}, pStageObjectManager_{nullptr}
 {
@@ -87,11 +87,11 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
-	Audio::Play(hSound_[0], 0.02f);
+	Audio::Play(hSound_[(int)SOUNDSTATE::BGM], soundVolumeLow_);
 	if (pAttackPlayer_->GetScore() >= 100 || pCollectPlayer_->GetScore() >= 100)
 	{
-		Audio::Stop(hSound_[0]);
-		Audio::Play(hSound_[random_value_],0.05f);
+		Audio::Stop(hSound_[(int)SOUNDSTATE::BGM]);
+		Audio::Play(hSound_[random_value_],soundVolume_);
 	}
 	attackPlayerPosition_ = pAttackPlayer_->GetPosition();
 	attackPlayerDirection_ = XMLoadFloat3(&attackPlayerPosition_) - Camera::VecGetPosition(1);

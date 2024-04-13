@@ -45,16 +45,18 @@ private:
         FOUR,
     };
 
-    //サウンドデータ
-    int hSound_[3];
-    float length_;
-    int random_value_;
     XMFLOAT3 camVec_[2];
     Transform floorPosition_[3];
-    //▼骨の処理で使うメンバ変数
+    float length_;
+    //▼サウンドに関するメンバ変数
+    int hSound_[3];
+    int random_value_;
+    float soundVolume_;
+    float soundVolumeLow_;
+    //▼骨に関するメンバ変数
     int boneCount_;         //今ある骨の数
     bool isCreateBone_;     //骨を作ったかどうか
-    //▼木箱の処理で使うメンバ変数
+    //▼木箱に関するメンバ変数
     int woodBoxCount_;      //今ある木箱の数
     XMFLOAT3 attackPlayerPosition_;         //アタックプレイヤーの位置
     XMVECTOR attackPlayerDirection_;   //アタックプレイヤーの向いてる位置

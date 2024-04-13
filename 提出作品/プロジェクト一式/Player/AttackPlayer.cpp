@@ -38,6 +38,7 @@ AttackPlayer::AttackPlayer(GameObject* _pParent)
     playerInitPosY_ = 0.6f;
     //▼サウンドに関する基底クラスメンバ変数
     soundVolume_ = 0.5f;
+    soundVolumeLow_ = soundVolume_ / 2;
     //▼邪魔側プレイヤー移動に関する基底クラスメンバ変数
     CamPositionVec_ = {};
     positionPrev_ = { 0.0f,0.0f,0.0f };
@@ -260,7 +261,7 @@ void AttackPlayer::UpdatePlay()
     {
         playerState_ = PLAYERSTATE::RUN;
         Audio::Stop(hSound_[((int)SOUNDSTATE::WALK)]);
-        Audio::Play(hSound_[((int)SOUNDSTATE::RUN)], soundVolume_);
+        Audio::Play(hSound_[((int)SOUNDSTATE::RUN)], soundVolumeLow_);
         isDash_ = true;
     }
     else
@@ -416,7 +417,7 @@ void AttackPlayer::PlayerMove()
         PlayerJumpPower();
         Audio::Stop(hSound_[((int)SOUNDSTATE::WALK)]);
         Audio::Stop(hSound_[((int)SOUNDSTATE::RUN)]);
-        Audio::Play(hSound_[((int)SOUNDSTATE::JUMP)],soundVolume_);
+        Audio::Play(hSound_[((int)SOUNDSTATE::JUMP)],soundVolumeLow_);
     }
     if (transform_.position_.z <= outerWallPosBack_ || transform_.position_.z >= outerWallPosFront_)
     {

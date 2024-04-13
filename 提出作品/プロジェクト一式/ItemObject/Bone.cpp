@@ -9,7 +9,9 @@
 #include "Bone.h"
 
 Bone::Bone(GameObject* _parent)
-	:ItemObjectBase(_parent, boneName), hModel_(-1),pPlayScene_{nullptr}
+	:ItemObjectBase(_parent, boneName), hModel_{-1},rayDist_{0.0f},positionRotate_{1.0f}
+	, boneInitPosY_{ 0.6f },decBoneCount_{-1}
+	,pPlayScene_{nullptr},pCollision_{nullptr},pStage_{nullptr}
 {
 }
 
@@ -24,8 +26,8 @@ void Bone::Initialize()
 	hModel_ = Model::Load(ModelName);
 	assert(hModel_ >= initZeroInt);
 
-	SphereCollider* pCollision = new SphereCollider(initZeroXMFLOAT3, 1.0f);
-	AddCollider(pCollision);
+	pCollision_ = new SphereCollider(initZeroXMFLOAT3, 1.0f);
+	AddCollider(pCollision_);
 	pPlayScene_ = (PlayScene*)FindObject(playSceneName);
 	transform_.scale_ = { 0.5,0.5,0.5 };
 	transform_.position_ = { 10,0,0 };
@@ -33,20 +35,20 @@ void Bone::Initialize()
 
 void Bone::Update()
 {
-	transform_.rotate_.y += 1.0f;
+	transform_.rotate_.y += positionRotate_;
 	RayCastData data;
-	Stage* pStage = (Stage*)FindObject(stageName);    //ステージオブジェクト
+	pStage_ = (Stage*)FindObject(stageName);    //ステージオブジェクト
 	int stageHModel;
-	stageHModel = pStage->GetModelHandle();   //モデル番号を取得
+	stageHModel = pStage_->GetModelHandle();   //モデル番号を取得
 	data.start = transform_.position_;  //レイの発射位置
-	data.start.y = 0;
-	data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
+	data.start.y = initZeroFloat;
+	XMStoreFloat3(&data.dir, vecDown);	 //レイの方向
 	Model::RayCast(stageHModel, &data);  //レイを発射
 	rayDist_ = data.dist;
 
-	if (data.hit == true)
+	if (data.hit)
 	{
-		transform_.position_.y = -data.dist + 0.6;
+		transform_.position_.y = -data.dist + boneInitPosY_;
 	}
 }
 
@@ -65,6 +67,6 @@ void Bone::OnCollision(GameObject* _pTarget)
 	if(_pTarget->GetObjectName() == collectPlayerName)
 	{
 		this->KillMe();
-		pPlayScene_->AddBoneCount(-1);
+		pPlayScene_->AddBoneCount(decBoneCount_);
 	}
 }

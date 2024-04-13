@@ -2,11 +2,13 @@
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
 #include "../Engine/Fbx.h"
+#include "../Engine/Global.h"
 #include "Floor.h"
 #include "ItemObjectBase.h"
 
 Floor::Floor(GameObject* _parent)
-    :ItemObjectBase(_parent, floorName), hModel_(-1),upOrDown_(0)
+    :ItemObjectBase(_parent, floorName), hModel_{-1}, floorState_{(int)FLOORSTATE::DOWN}
+    ,upVelocity_{0.1f},downVelocity_{0.1f},positionUpMax_{10.0f},positionDownMax_{0.0f}
 {
 
 }
@@ -19,45 +21,39 @@ Floor::~Floor()
 void Floor::Initialize()
 {
     //モデルデータのロード
-    std::string ModelName = (std::string)"Model&Picture/" + floorName + (std::string)".fbx";
+    std::string ModelName;
+    ModelName = modelFolderName + floorName + modelModifierName;
     hModel_ = Model::Load(ModelName);
-    assert(hModel_ >= 0);
+    assert(hModel_ >= initZeroInt);
     transform_.scale_ = { 1,1,1 };
 }
 
 void Floor::Update()
 {
-    //transform_.position_.y += 0.01;
-    if (upOrDown_ == 0)
+    if (floorState_ == (int)FLOORSTATE::UP)
     {
-        transform_.position_.y += 0.1f;
+        transform_.position_.y += upVelocity_;
     }
-    if (upOrDown_ == 1)
+    if (floorState_ == (int)FLOORSTATE::DOWN)
     {
-        transform_.position_.y -= 0.1f;
+        transform_.position_.y -= downVelocity_;
     }
 
-    if (transform_.position_.y >= 10.0f)
+    if (transform_.position_.y >= positionUpMax_)
     {
-        upOrDown_ = 1;
+        floorState_ = (int)FLOORSTATE::DOWN;
     }
-    if (transform_.position_.y <= 0.0f)
+    if (transform_.position_.y <= positionDownMax_)
     {
-        upOrDown_ = 0;
+        floorState_ = (int)FLOORSTATE::UP;
     }
 }
 
 void Floor::Draw()
 {
-    for (int i = 0u; i <= 1; i++)
+    for (int i = initZeroInt; i <= 1; i++)
     {
         Model::SetTransform(hModel_, transform_);
-        //最初に3Dで描画後、枠づけも描画
-        /*for (int j = 0; j <= 4; j += 4)
-        {
-            Direct3D::SetShader(static_cast<Direct3D::SHADER_TYPE>(j));
-            Model::Draw(hModel_[i]);
-        }*/
         Model::Draw(hModel_);
     }
 }
