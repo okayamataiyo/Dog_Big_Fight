@@ -25,9 +25,6 @@ namespace Input
 	XINPUT_STATE controllerState_[MAX_PAD_NUM];
 	XINPUT_STATE prevControllerState_[MAX_PAD_NUM];
 
-
-
-
 	//èâä˙âª
 	void Initialize(HWND hWnd)
 	{

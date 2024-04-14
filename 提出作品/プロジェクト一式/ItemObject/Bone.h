@@ -1,8 +1,10 @@
 #pragma once
 //インクルード
-#include "ObjectBase.h"
+#include "ItemObjectBase.h"
 
 class PlayScene;
+class SphereCollider;
+class Stage;
 
 namespace
 {
@@ -12,12 +14,17 @@ namespace
 /// <summary>
 /// アイテムを管理するクラス
 /// </summary>
-class Bone : public ObjectBase
+class Bone : public ItemObjectBase
 {
 protected:
 	int hModel_;
-	PlayScene* pPlayScene_;
 	float rayDist_;
+	float positionRotate_;
+	float boneInitPosY_;
+	int decBoneCount_;
+	PlayScene* pPlayScene_;
+	SphereCollider* pCollision_;
+	Stage* pStage_;
 public:
 	/// <summary>
 	/// コンストラクタ関数

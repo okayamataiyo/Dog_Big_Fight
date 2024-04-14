@@ -11,10 +11,12 @@ class Text;
 class Stage;
 class StageBlock;
 class Floor;
+class SceneManager;
+class ItemObjectManager;
 
 namespace
 {
-	std::string collectPlayerSoundNames[] =
+	std::string soundCollectPlayerNames[] =
 	{
 		"Stun",
 		"Walk",
@@ -24,6 +26,7 @@ namespace
 	};
 
 	std::string collectPlayerName = "CollectPlayer";
+	int collectPlayerNumber = 0;
 }
 
 /// <summary>
@@ -51,10 +54,6 @@ private:
 	int number_;
 	int time_;
 	int timeWait_;
-	bool isDive_;
-	bool isDived_;
-	int diveTime_;
-	int diveTimeWait_;
 	XMVECTOR vecKnockbackDirection_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
@@ -68,6 +67,8 @@ private:
 	Stage* pStage_;
 	StageBlock* pStageBlock_;
 	Floor* pFloor_;
+	SceneManager* pSceneManager_;
+	ItemObjectManager* pItemObjectManager_;
 public:
 
 	/// <summary>
@@ -121,12 +122,16 @@ public:
 	/// </summary>
 	void PlayerMove() override;
 
+	void PlayerJump() override;
+
 	/// <summary>
 	/// プレイヤーのジャンプ関数
 	/// </summary>
-	void PlayerJump() override;
+	void PlayerJumpPower() override;
 
-	void PlayerDive();
+	void PlayerDive() override;
+
+	void PlayerDivePower() override;
 
 	void PlayerKnockback() override;
 

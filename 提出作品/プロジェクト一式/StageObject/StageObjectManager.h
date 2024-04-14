@@ -5,9 +5,9 @@
 
 enum class STAGEOBJECTSTATE
 {
-    Sky = 0,
-    Stage,
-    StageBlock,
+    SKY = 0,
+    STAGE,
+    STAGEBLOCK,
 };
 
 class StageObjectManager

@@ -27,9 +27,6 @@
       <UniqueIdentifier>{47a6a3f5-8cfd-436b-8d58-beccd108f3f3}</UniqueIdentifier>
       <Extensions>hlsl</Extensions>
     </Filter>
-    <Filter Include="Object">
-      <UniqueIdentifier>{3a361a01-e460-4f71-8a7a-d1886fbd2748}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Player">
       <UniqueIdentifier>{ffd4a030-6260-40c2-ae0b-22cdf5a0cb84}</UniqueIdentifier>
     </Filter>
@@ -38,6 +35,15 @@
     </Filter>
     <Filter Include="StageObject">
       <UniqueIdentifier>{6578c92d-fd63-4d1c-b692-c75d954a1052}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ItemObject">
+      <UniqueIdentifier>{3a361a01-e460-4f71-8a7a-d1886fbd2748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ResourceManager\Csv">
+      <UniqueIdentifier>{4d4d97db-0bc7-4491-83c1-c39bd4b58bb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ResourceManager\Json">
+      <UniqueIdentifier>{15f1cc6c-94c4-4ffc-9ee4-38cef84b852b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -73,9 +79,6 @@
     </ClCompile>
     <ClCompile Include="Engine\RootObject.cpp">
       <Filter>Engine\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\CsvReader.cpp">
-      <Filter>Engine\ResourceManager</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Image.cpp">
       <Filter>Engine\ResourceManager</Filter>
@@ -129,18 +132,6 @@
       <Filter>Engine\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp" />
-    <ClCompile Include="Object\Bone.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Floor.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\ObjectManager.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\WoodBox.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="Player\AttackPlayer.cpp">
       <Filter>Player</Filter>
     </ClCompile>
@@ -168,14 +159,32 @@
     <ClCompile Include="StageObject\Stage.cpp">
       <Filter>StageObject</Filter>
     </ClCompile>
-    <ClCompile Include="Object\FrameBox.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="StageObject\StageBlock.cpp">
       <Filter>StageObject</Filter>
     </ClCompile>
     <ClCompile Include="StageObject\StageObjectManager.cpp">
       <Filter>StageObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemObject\Bone.cpp">
+      <Filter>ItemObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemObject\Floor.cpp">
+      <Filter>ItemObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemObject\FrameBox.cpp">
+      <Filter>ItemObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemObject\ItemObjectManager.cpp">
+      <Filter>ItemObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemObject\WoodBox.cpp">
+      <Filter>ItemObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Csv\CsvReader.cpp">
+      <Filter>Engine\ResourceManager\Csv</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Json\JsonReader.cpp">
+      <Filter>Engine\ResourceManager\Json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -211,9 +220,6 @@
     </ClInclude>
     <ClInclude Include="Engine\RootObject.h">
       <Filter>Engine\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\CsvReader.h">
-      <Filter>Engine\ResourceManager</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Image.h">
       <Filter>Engine\ResourceManager</Filter>
@@ -273,21 +279,6 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Button.h" />
-    <ClInclude Include="Object\Bone.h">
-      <Filter>Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Floor.h">
-      <Filter>Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\ObjectBase.h">
-      <Filter>Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\ObjectManager.h">
-      <Filter>Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\WoodBox.h">
-      <Filter>Object</Filter>
-    </ClInclude>
     <ClInclude Include="Player\PlayerBase.h">
       <Filter>Player</Filter>
     </ClInclude>
@@ -318,9 +309,6 @@
     <ClInclude Include="StageObject\Stage.h">
       <Filter>StageObject</Filter>
     </ClInclude>
-    <ClInclude Include="Object\FrameBox.h">
-      <Filter>Object</Filter>
-    </ClInclude>
     <ClInclude Include="StageObject\StageBlock.h">
       <Filter>StageObject</Filter>
     </ClInclude>
@@ -329,6 +317,33 @@
     </ClInclude>
     <ClInclude Include="StageObject\StageObjectManager.h">
       <Filter>StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemObject\Bone.h">
+      <Filter>ItemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemObject\Floor.h">
+      <Filter>ItemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemObject\FrameBox.h">
+      <Filter>ItemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemObject\ItemObjectBase.h">
+      <Filter>ItemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemObject\ItemObjectManager.h">
+      <Filter>ItemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemObject\WoodBox.h">
+      <Filter>ItemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Json\json.hpp">
+      <Filter>Engine\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Csv\CsvReader.h">
+      <Filter>Engine\ResourceManager\Csv</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Json\JsonReader.h">
+      <Filter>Engine\ResourceManager\Json</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

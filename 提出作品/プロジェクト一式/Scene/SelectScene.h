@@ -1,11 +1,13 @@
 #pragma once
 //インクルード
-#include <map>
 #include "../Engine/GameObject.h"
 #include "../Engine/Camera.h"
 #include "../Button.h"
 
-using std::map;
+namespace
+{
+	std::string selectSceneName = "SelectScene";
+}
 
 class SceneManager;
 class StageObjectManager;
@@ -24,10 +26,10 @@ private:
 		FOUR,
 	};
 
-	map<PADIDSTATE, int>padIDMap_;
+	float solidTextRotate_;
 	SceneManager* pSceneManager_;
 	StageObjectManager* pStageObjectManager_;
-	SolidText* pText_;
+	SolidText* pSolidText_;
 	Button* buttonStart_;
 	Button* buttonBack_;
 	XMFLOAT3 camPos_;

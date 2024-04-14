@@ -2,7 +2,7 @@
 #include "Direct3D.h"
 #include "Text.h"
 
-Text::Text() : hPict_(-1), width_(16), height_(32), fileName_("Model&picture/char.png"), rowLength_(16)
+Text::Text() : isLeftView_{ false }, isRightView_{ false },hPict_(-1), width_(16), height_(32), fileName_("Model&picture/char.png"), rowLength_(16)
 {
 }
 
@@ -48,7 +48,31 @@ void Text::Draw(int x, int y, const char* str)
 	px /= (float)(Direct3D::screenWidth_ / 2.0f);
 	py /= (float)(Direct3D::screenHeight_ / 2.0f);
 
+	//if (isRightView_)
+	{
+		DrawTextFor(px,py,str);
+		//isRightView_ = !isRightView_;
+	}
+	//if (isLeftView_)
+	//if(!isRightView_)
+	//{
+	//	DrawTextFor(px, py, str);
+	//	isLeftView_ = !isLeftView_;
+	//}
+}
 
+//描画（整数値）
+void Text::Draw(int x, int y, int value)
+{
+	//文字列に変換
+	char str[256];
+	sprintf_s(str, "%d", value);
+
+	Draw(x, y, str);
+}
+
+void Text::DrawTextFor(float px,float py, const char* str)
+{
 	//１文字ずつ表示する
 	for (int i = 0; str[i] != '\0'; i++)	//文字列の末尾まで来たら終わり
 	{
@@ -67,23 +91,12 @@ void Text::Draw(int x, int y, const char* str)
 
 		//表示する範囲
 		Image::SetRect(hPict_, width_ * x, height_ * y, width_, height_);
-		
+
 		//表示
 		Image::Draw(hPict_);
-
 		//次の位置にずらす
 		px += width_ / (float)(Direct3D::screenWidth_ / 2.0f);
 	}
-}
-
-//描画（整数値）
-void Text::Draw(int x, int y, int value)
-{
-	//文字列に変換
-	char str[256];
-	sprintf_s(str, "%d", value);
-
-	Draw(x, y, str);
 }
 
 //解放

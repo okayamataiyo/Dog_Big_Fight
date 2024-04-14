@@ -1,18 +1,26 @@
 #pragma once
 //インクルード
+#include <vector>
 #include "../Engine/GameObject.h"
 #include "../Engine/Camera.h"
-#include "../Object/ObjectManager.h"
-#include <vector>
+#include "../ItemObject/ItemObjectManager.h"
 
 namespace
 {
+    std::string soundPlaySceneNames[] =
+    {
+        "BGM",
+        "LastBGM",
+        "LastBGM2",
+    };
+
     std::string playSceneName = "PlayScene";
 }
 
 class SceneManager;
 class AttackPlayer;
 class CollectPlayer;
+class ItemObjectManager;
 class StageObjectManager;
 
 /// <summary>
@@ -22,6 +30,13 @@ class PlayScene : public GameObject
 {
 private:
 
+    enum class SOUNDSTATE
+    {
+        BGM = 0,
+        LASTBGM,
+        LASTBGM2,
+    };
+
     enum class PADIDSTATE
     {
         FIRST = 0,
@@ -30,22 +45,18 @@ private:
         FOUR,
     };
 
-    //サウンドデータ
-    int hSound_[3];
-    float length_;
-    int random_value_;
-    //メンバ変数
-    SceneManager* pSceneManager_;
-    AttackPlayer* pAttackPlayer_;
-    CollectPlayer* pCollectPlayer_;
-    ObjectManager* pObjectManager_;
-    StageObjectManager* pStageObjectManager_;
     XMFLOAT3 camVec_[2];
     Transform floorPosition_[3];
-    //▼骨の処理で使うメンバ変数
+    float length_;
+    //▼サウンドに関するメンバ変数
+    int hSound_[3];
+    int random_value_;
+    float soundVolume_;
+    float soundVolumeLow_;
+    //▼骨に関するメンバ変数
     int boneCount_;         //今ある骨の数
     bool isCreateBone_;     //骨を作ったかどうか
-    //▼木箱の処理で使うメンバ変数
+    //▼木箱に関するメンバ変数
     int woodBoxCount_;      //今ある木箱の数
     XMFLOAT3 attackPlayerPosition_;         //アタックプレイヤーの位置
     XMVECTOR attackPlayerDirection_;   //アタックプレイヤーの向いてる位置
@@ -70,6 +81,12 @@ private:
 
     const float mouseSens = 400;
     const float controllerSens = 50;
+
+    SceneManager* pSceneManager_;
+    AttackPlayer* pAttackPlayer_;
+    CollectPlayer* pCollectPlayer_;
+    ItemObjectManager* pItemObjectManager_;
+    StageObjectManager* pStageObjectManager_;
 public:
     /// <summary>
     /// コンストラクタ
@@ -80,12 +97,12 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-    std::vector<int> GetWoodBoxs() { return pObjectManager_->GetWoodBoxs(); }
+    std::vector<int> GetWoodBoxs() { return pItemObjectManager_->GetWoodBoxs(); }
     int GetBlockOrCollect() { return blockOrCollect_; }
     XMFLOAT3 GetAttackPlayerPosition() { return attackPlayerPosition_; }
     void AddBoneCount(int _boneCount) { boneCount_ += _boneCount; }
     void AddWoodBoxCount(int _woodBoxCount) { woodBoxCount_ += _woodBoxCount; }
-
+    ItemObjectManager* GetItemObjectManager() { return pItemObjectManager_; }
     void HideCursor() { while (::ShowCursor(false) >= 0); }
 };
 

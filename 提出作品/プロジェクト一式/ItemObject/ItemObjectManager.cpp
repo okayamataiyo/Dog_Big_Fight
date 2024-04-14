@@ -1,32 +1,41 @@
 //インクルード
 #include <random>
-#include "ObjectManager.h"
+#include "../Engine/Global.h"
+#include "ItemObjectManager.h"
 #include "Floor.h"
 #include "WoodBox.h"
 #include "FrameBox.h"
 #include "Bone.h"
 
-
-void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT3 _rotate, XMFLOAT3 _scale)
+ItemObjectManager::ItemObjectManager(GameObject* _pParent) :woodBoxs_{}, floors_{}, number_{ 0 }, objectState_{ ITEMOBJECTSTATE::FLOOR }
+, pParent_{ _pParent }, pObjectBase_{ nullptr }
 {
-	std::string woodBoxName = "WoodBox";
+}
+
+ItemObjectManager::~ItemObjectManager()
+{
+}
+
+
+void ItemObjectManager::CreateObject(ITEMOBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT3 _rotate, XMFLOAT3 _scale)
+{
 	std::string woodBoxNumber = woodBoxName + std::to_string(number_);
 	switch (_objectState)
 	{
-	case OBJECTSTATE::FLOOR:
+	case ITEMOBJECTSTATE::FLOOR:
 		pObjectBase_ = Instantiate<Floor>(pParent_);
 		floors_.push_back(pObjectBase_->GetModelHandle());
 		break;
-	case OBJECTSTATE::WOODBOX:
+	case ITEMOBJECTSTATE::WOODBOX:
 		pObjectBase_ = Instantiate<WoodBox>(pParent_);
 		woodBoxs_.push_back(pObjectBase_->GetModelHandle());
 		pObjectBase_->SetObjectName(woodBoxNumber);
 		number_++;
 		break;
-	case OBJECTSTATE::FRAMEBOX:
+	case ITEMOBJECTSTATE::FRAMEBOX:
 		pObjectBase_ = Instantiate<FrameBox>(pParent_);
 		break;
-	case OBJECTSTATE::BONE:
+	case ITEMOBJECTSTATE::BONE:
 		pObjectBase_ = Instantiate<Bone>(pParent_);
 		break;
 	}
@@ -35,15 +44,15 @@ void ObjectManager::CreateObject(OBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT
 	pObjectBase_->SetScale(_scale);
 }
 
-void ObjectManager::CreateObject(OBJECTSTATE _objectState, float _minX, float _maxX, float _minZ, float _maxZ)
+void ItemObjectManager::CreateObject(ITEMOBJECTSTATE _objectState, float _minX, float _maxX, float _minZ, float _maxZ)
 {
 	switch (_objectState)
 	{
-	case OBJECTSTATE::BONE:
+	case ITEMOBJECTSTATE::BONE:
 		float minX = _minX;
 		float maxX = _maxX;
-		float minY = 0;
-		float maxY = 0;
+		float minY = initZeroFloat;
+		float maxY = initZeroFloat;
 		float minZ = _minZ;
 		float maxZ = _maxZ;
 		std::random_device rd;
@@ -58,21 +67,12 @@ void ObjectManager::CreateObject(OBJECTSTATE _objectState, float _minX, float _m
 	}
 }
 
-void ObjectManager::SetRotate(XMFLOAT3 _rotate)
+void ItemObjectManager::SetRotate(XMFLOAT3 _rotate)
 {
 	pObjectBase_->SetRotate(_rotate);
 }
 
-void ObjectManager::SetPosition(XMFLOAT3 _position)
+void ItemObjectManager::SetPosition(XMFLOAT3 _position)
 {
 	pObjectBase_->SetPosition(_position);
-}
-
-ObjectManager::ObjectManager(GameObject* _parent)
-	:pParent_(_parent), pObjectBase_(nullptr),objectState_(OBJECTSTATE::FLOOR),number_(0)
-{
-}
-
-ObjectManager::~ObjectManager()
-{
 }

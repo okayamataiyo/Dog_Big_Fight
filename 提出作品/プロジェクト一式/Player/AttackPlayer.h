@@ -11,10 +11,11 @@ class Text;
 class Stage;
 class Floor;
 class SceneManager;
+class ItemObjectManager;
 
 namespace
 {
-	std::string attackPlayerSoundNames[] =
+	std::string soundAttackPlayerNames[] =
 	{
 		"Stun",
 		"Walk",
@@ -23,6 +24,7 @@ namespace
 	};
 
 	std::string attackPlayerName = "AttackPlayer";
+	int attackPlayerNumber = 1;
 }
 
 /// <summary>
@@ -31,6 +33,7 @@ namespace
 class AttackPlayer : public PlayerBase
 {
 private:
+
 	enum class SOUNDSTATE
 	{
 		STUN = 0,
@@ -45,11 +48,8 @@ private:
 	int stageHModel_;				//ステージモデル番号
 	int floorHModel_;				//すり抜け床モデル番号
 	int number_;
-	bool isDive_;
-	bool isDived_;
-	int diveTime_;
-	int diveTimeWait_;
 	int scoreTimeCounter_;
+	int scoreTimeCounterWait_;
 	XMVECTOR vecKnockbackDirection_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
@@ -63,6 +63,7 @@ private:
 	Stage* pStage_;
 	Floor* pFloor_;
 	SceneManager* pSceneManager_;
+	ItemObjectManager* pItemObjectManager_;
 public:
 
 	/// <summary>
@@ -116,12 +117,16 @@ public:
 	/// </summary>
 	void PlayerMove() override;
 
+	void PlayerJump() override;
+
 	/// <summary>
 	/// プレイヤーのジャンプ関数
 	/// </summary>
-	void PlayerJump() override;
+	void PlayerJumpPower() override;
 
-	void PlayerDive();
+	void PlayerDive() override;
+
+	void PlayerDivePower() override;
 
 	void PlayerKnockback() override;
 
