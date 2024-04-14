@@ -39,6 +39,12 @@
     <Filter Include="ItemObject">
       <UniqueIdentifier>{3a361a01-e460-4f71-8a7a-d1886fbd2748}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\ResourceManager\Csv">
+      <UniqueIdentifier>{4d4d97db-0bc7-4491-83c1-c39bd4b58bb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ResourceManager\Json">
+      <UniqueIdentifier>{15f1cc6c-94c4-4ffc-9ee4-38cef84b852b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -73,9 +79,6 @@
     </ClCompile>
     <ClCompile Include="Engine\RootObject.cpp">
       <Filter>Engine\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\CsvReader.cpp">
-      <Filter>Engine\ResourceManager</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Image.cpp">
       <Filter>Engine\ResourceManager</Filter>
@@ -177,6 +180,12 @@
     <ClCompile Include="ItemObject\WoodBox.cpp">
       <Filter>ItemObject</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Csv\CsvReader.cpp">
+      <Filter>Engine\ResourceManager\Csv</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Json\JsonReader.cpp">
+      <Filter>Engine\ResourceManager\Json</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -211,9 +220,6 @@
     </ClInclude>
     <ClInclude Include="Engine\RootObject.h">
       <Filter>Engine\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\CsvReader.h">
-      <Filter>Engine\ResourceManager</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Image.h">
       <Filter>Engine\ResourceManager</Filter>
@@ -329,6 +335,15 @@
     </ClInclude>
     <ClInclude Include="ItemObject\WoodBox.h">
       <Filter>ItemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Json\json.hpp">
+      <Filter>Engine\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Csv\CsvReader.h">
+      <Filter>Engine\ResourceManager\Csv</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Json\JsonReader.h">
+      <Filter>Engine\ResourceManager\Json</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

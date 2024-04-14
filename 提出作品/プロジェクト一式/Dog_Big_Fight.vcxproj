@@ -138,7 +138,7 @@
     <ClCompile Include="Engine\BoxCollider.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Collider.cpp" />
-    <ClCompile Include="Engine\CsvReader.cpp" />
+    <ClCompile Include="Engine\Csv\CsvReader.cpp" />
     <ClCompile Include="Engine\Debug.cpp" />
     <ClCompile Include="Engine\Direct3D.cpp" />
     <ClCompile Include="Engine\Fbx.cpp" />
@@ -152,6 +152,7 @@
     <ClCompile Include="Engine\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Engine\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
+    <ClCompile Include="Engine\Json\JsonReader.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Model.cpp" />
     <ClCompile Include="Engine\VFX.cpp" />
@@ -186,7 +187,7 @@
     <ClInclude Include="Engine\BoxCollider.h" />
     <ClInclude Include="Engine\Camera.h" />
     <ClInclude Include="Engine\Collider.h" />
-    <ClInclude Include="Engine\CsvReader.h" />
+    <ClInclude Include="Engine\Csv\CsvReader.h" />
     <ClInclude Include="Engine\Debug.h" />
     <ClInclude Include="Engine\Direct3D.h" />
     <ClInclude Include="Engine\Fbx.h" />
@@ -203,6 +204,8 @@
     <ClInclude Include="Engine\ImGui\imstb_textedit.h" />
     <ClInclude Include="Engine\ImGui\imstb_truetype.h" />
     <ClInclude Include="Engine\Input.h" />
+    <ClInclude Include="Engine\Json\json.hpp" />
+    <ClInclude Include="Engine\Json\JsonReader.h" />
     <ClInclude Include="Engine\Model.h" />
     <ClInclude Include="Engine\VFX.h" />
     <ClInclude Include="Engine\RootObject.h" />

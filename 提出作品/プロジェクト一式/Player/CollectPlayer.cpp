@@ -11,6 +11,7 @@
 #include "../ItemObject/Floor.h"
 #include "../ItemObject/WoodBox.h"
 #include "../ItemObject/Bone.h"
+#include "../ItemObject/ItemObjectManager.h"
 #include "../StageObject/Stage.h"
 #include "../StageObject/StageBlock.h"
 #include "CollectPlayer.h"
@@ -20,7 +21,7 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     :PlayerBase(_pParent, collectPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1,-1 }, stageBlockHModel_{ -1 }, stageHModel_{ -1 }, floorHModel_{ -1 }
     ,isBoneTatch_{false}, number_{0}, time_{0}, timeWait_{30}, vecKnockbackDirection_{}, playerState_{PLAYERSTATE::WAIT}, playerStatePrev_{PLAYERSTATE::WAIT}, gameState_{GAMESTATE::READY}
     , pParent_{ nullptr }, pPlayScene_{ nullptr }, pAttackPlayer_{ nullptr }, pCollision_{ nullptr }
-    , pWoodBox_{ nullptr }, pText_{ nullptr }, pStage_{ nullptr }, pStageBlock_{ nullptr }, pFloor_{ nullptr }, pSceneManager_{ nullptr }
+    , pWoodBox_{ nullptr }, pText_{ nullptr }, pStage_{ nullptr }, pStageBlock_{ nullptr }, pFloor_{ nullptr }, pSceneManager_{ nullptr },pItemObjectManager_{nullptr}
 {
     pParent_ = _pParent;
     //▼UIに関する基底クラスメンバ変数
@@ -135,6 +136,7 @@ void CollectPlayer::Initialize()
     pStage_ = (Stage*)FindObject(stageName);      //ステージオブジェクト
     pStageBlock_ = (StageBlock*)FindObject(stageBlockName);
     pFloor_ = (Floor*)FindObject(floorName);
+    pItemObjectManager_ = pPlayScene_->GetItemObjectManager();
     pText_ = new Text;
     pText_->Initialize();
 }
@@ -513,14 +515,13 @@ void CollectPlayer::PlayerRayCast()
     stageHModel_ = pStage_->GetModelHandle();         //モデル番号を取得
     floorHModel_ = pFloor_->GetModelHandle();
 
-    for (int i = initZeroInt; i <= 2; i++)
+    for (int i = initZeroInt; i < pItemObjectManager_->GetFloors().size(); i++)
     {
         //▼上の法線(すり抜け床のため)
         floorDataUp.start = transform_.position_;           //レイの発射位置
         XMStoreFloat3(&floorDataUp.dir, vecUp);             //レイの方向
         Model::RayCast(floorHModel_ + i, &floorDataUp);         //レイを発射
         rayFloorDistUp_ = floorDataUp.dist;
-        //ImGui::Text("rayUpDist_=%f", rayUpDist_);
 
         //▼下の法線(すり抜け床)
         floorDataDown.start = transform_.position_;    //レイの発射位置

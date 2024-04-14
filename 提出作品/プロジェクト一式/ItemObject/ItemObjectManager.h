@@ -1,7 +1,12 @@
 #pragma once
 //インクルード
-#include "ItemObjectBase.h"
 #include <vector>
+#include "ItemObjectBase.h"
+
+namespace
+{
+    std::string itemObjectManagerName = "ItemObjectManager";
+}
 
 enum class ITEMOBJECTSTATE
 {
@@ -14,12 +19,12 @@ enum class ITEMOBJECTSTATE
 class ItemObjectManager
 {
 private:
-    GameObject* pParent_;
-    ITEMOBJECTSTATE objectState_;
-    ItemObjectBase* pObjectBase_;
     std::vector<int> woodBoxs_;
     std::vector<int> floors_;
     int number_;
+    ITEMOBJECTSTATE objectState_;
+    GameObject* pParent_;
+    ItemObjectBase* pObjectBase_;
 public:
     ItemObjectManager(GameObject* _pParent);
     ~ItemObjectManager();

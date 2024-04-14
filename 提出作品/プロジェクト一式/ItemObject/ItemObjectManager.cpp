@@ -7,6 +7,15 @@
 #include "FrameBox.h"
 #include "Bone.h"
 
+ItemObjectManager::ItemObjectManager(GameObject* _pParent) :woodBoxs_{}, floors_{}, number_{ 0 }, objectState_{ ITEMOBJECTSTATE::FLOOR }
+, pParent_{ _pParent }, pObjectBase_{ nullptr }
+{
+}
+
+ItemObjectManager::~ItemObjectManager()
+{
+}
+
 
 void ItemObjectManager::CreateObject(ITEMOBJECTSTATE _objectState,XMFLOAT3 _pos, XMFLOAT3 _rotate, XMFLOAT3 _scale)
 {
@@ -66,13 +75,4 @@ void ItemObjectManager::SetRotate(XMFLOAT3 _rotate)
 void ItemObjectManager::SetPosition(XMFLOAT3 _position)
 {
 	pObjectBase_->SetPosition(_position);
-}
-
-ItemObjectManager::ItemObjectManager(GameObject* _pParent)
-	:pParent_{_pParent}, pObjectBase_{nullptr}, objectState_{ITEMOBJECTSTATE::FLOOR}, number_{0}
-{
-}
-
-ItemObjectManager::~ItemObjectManager()
-{
 }

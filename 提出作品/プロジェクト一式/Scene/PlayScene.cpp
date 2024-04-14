@@ -230,5 +230,4 @@ void PlayScene::Draw()
 
 void PlayScene::Release()
 {
-	SAFE_DELETE(pItemObjectManager_);
 }
