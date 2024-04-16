@@ -164,6 +164,7 @@
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="ItemObject\Bone.cpp" />
+    <ClCompile Include="ItemObject\BoneSuck.cpp" />
     <ClCompile Include="ItemObject\Floor.cpp" />
     <ClCompile Include="ItemObject\FrameBox.cpp" />
     <ClCompile Include="ItemObject\ItemObjectManager.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="ItemObject\Bone.h" />
+    <ClInclude Include="ItemObject\BoneSuck.h" />
     <ClInclude Include="ItemObject\Floor.h" />
     <ClInclude Include="ItemObject\FrameBox.h" />
     <ClInclude Include="ItemObject\ItemObjectBase.h" />

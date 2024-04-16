@@ -6,17 +6,19 @@
 #include "../Player/CollectPlayer.h"
 #include "../Scene/PlayScene.h"
 #include "../StageObject/Stage.h"
+#include "BoneSuck.h"
 #include "Bone.h"
 
 Bone::Bone(GameObject* _parent)
 	:ItemObjectBase(_parent, boneName), hModel_{-1},rayDist_{0.0f},positionRotate_{1.0f}
-	, boneInitPosY_{ 0.6f },decBoneCount_{-1}
-	,pPlayScene_{nullptr},pCollision_{nullptr},pStage_{nullptr}
+	, boneInitPosY_{ 0.6f },isBoneDeath_{false}, pickUpBoneScale_{0.2f,0.2f,0.2f}
+	,pPlayScene_{nullptr},pCollision_{nullptr},pStage_{nullptr},pCollectPlayer_{nullptr}
 {
 }
 
 Bone::~Bone()
 {
+	pCollectPlayer_->SetIsBoneDeath(false);
 }
 
 void Bone::Initialize()
@@ -29,6 +31,7 @@ void Bone::Initialize()
 	pCollision_ = new SphereCollider(initZeroXMFLOAT3, 1.0f);
 	AddCollider(pCollision_);
 	pPlayScene_ = (PlayScene*)FindObject(playSceneName);
+	pCollectPlayer_ = (CollectPlayer*)FindObject(collectPlayerName);
 	transform_.scale_ = { 0.5,0.5,0.5 };
 	transform_.position_ = { 10,0,0 };
 }
@@ -61,12 +64,17 @@ void Bone::Draw()
 void Bone::Release()
 {
 }
+void Bone::BoneDeath()
+{
+	isBoneDeath_ = true;
+	this->KillMe();
+}
 
 void Bone::OnCollision(GameObject* _pTarget)
 {
 	if(_pTarget->GetObjectName() == collectPlayerName)
 	{
-		this->KillMe();
-		pPlayScene_->AddBoneCount(decBoneCount_);
+		Instantiate<Bone>(pPlayScene_);
+		BoneDeath();
 	}
 }

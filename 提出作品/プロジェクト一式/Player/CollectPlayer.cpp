@@ -19,7 +19,8 @@
 
 CollectPlayer::CollectPlayer(GameObject* _pParent)
     :PlayerBase(_pParent, collectPlayerName), hModel_{ -1 }, hSound_{ -1,-1,-1,-1,-1 }, stageBlockHModel_{ -1 }, stageHModel_{ -1 }, floorHModel_{ -1 }
-    ,isBoneTatch_{false}, number_{0}, time_{0}, timeWait_{30}, vecKnockbackDirection_{}, playerState_{PLAYERSTATE::WAIT}, playerStatePrev_{PLAYERSTATE::WAIT}, gameState_{GAMESTATE::READY}
+    , decBoneCount_{ -1 }, isBoneDeath_{ false }, isBoneTatch_{ false }, number_{ 0 }, killTime_{ 9999 }, killTimeWait_{ 30 }, killTimeMax_{ 9999 }, vecKnockbackDirection_ {}
+    , playerState_{PLAYERSTATE::WAIT}, playerStatePrev_{PLAYERSTATE::WAIT}, gameState_{GAMESTATE::READY}
     , pParent_{ nullptr }, pPlayScene_{ nullptr }, pAttackPlayer_{ nullptr }, pCollision_{ nullptr }
     , pWoodBox_{ nullptr }, pText_{ nullptr }, pStage_{ nullptr }, pStageBlock_{ nullptr }, pFloor_{ nullptr }, pSceneManager_{ nullptr },pItemObjectManager_{nullptr}
 {
@@ -127,7 +128,7 @@ void CollectPlayer::Initialize()
     std::string modelName = modelFolderName + collectPlayerName + modelModifierName;
     hModel_ = Model::Load(modelName);
     assert(hModel_ >= initZeroInt);
-    transform_.scale_ = { 0.4,0.4,0.4 };
+    transform_.scale_ = { 0.4f,0.4f,0.4f};
     positionY_ = transform_.position_.y;
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 2.0f);
     AddCollider(pCollision_);
@@ -223,6 +224,7 @@ void CollectPlayer::UpdatePlay()
         }
     }
     playerStatePrev_ = playerState_;
+    PlayerFall();
     PlayerJump();
     PlayerRayCast();
     PlayerKnockback();
@@ -244,8 +246,8 @@ void CollectPlayer::UpdatePlay()
     }
     if (score_ >= scoreMax_)
     {
-        pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
-        Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFTVIEW);
+        pPlayScene_->SetGameStop();
+        gameState_ = GAMESTATE::GAMEOVER;
     }
     if (IsMoving() && !isJump_ && !isDash_)
     {
@@ -277,25 +279,34 @@ void CollectPlayer::UpdatePlay()
     {
         playerState_ = PLAYERSTATE::STUN;
     }
-
+    //ImGui::Text("My int variable: %d", killTime_);
     if (isBoneTatch_)
     {
-        ++time_;
-        if (time_ >= timeWait_)
+        if (killTime_ > initZeroInt)
         {
-            score_ += scoreAmount_;
-            isBoneTatch_ = false;
-            Audio::Stop(hSound_[((int)SOUNDSTATE::CollectBone)]);
-            time_ = initZeroInt;
+            --killTime_;
         }
+    }
+
+    if (killTime_ <= initZeroInt && isBoneTatch_)
+    {
+        score_ += scoreAmount_;
+        pPlayScene_->AddBoneCount(decBoneCount_);
+        isBoneDeath_ = true;
+        isBoneTatch_ = false;
+        Audio::Stop(hSound_[((int)SOUNDSTATE::CollectBone)]);
+        killTime_ = killTimeMax_;
     }
 }
 
 void CollectPlayer::UpdateGameOver()
 {
-    if (Input::IsKey(DIK_SPACE))
+    if (Input::IsKey(DIK_SPACE) || Input::IsPadButton(XINPUT_GAMEPAD_A, padID_))
     {
         pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
+        Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFTVIEW);
+        PlayerScore_[collectPlayerNumber] = this->GetScore();
+        PlayerScore_[attackPlayerNumber] = pAttackPlayer_->GetScore();
     }
 }
 
@@ -334,8 +345,9 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
             transform_.position_ = positionPrev_;
         }
     }
-    if (_pTarget->GetObjectName() == boneName)
+    if (_pTarget->GetObjectName() == boneName && killTime_ == killTimeMax_)
     {
+        SetKillTime(killTimeWait_);
         isBoneTatch_ = true;
         Audio::Play(hSound_[((int)SOUNDSTATE::CollectBone)]);
     }
@@ -351,6 +363,19 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
         isKnockBack_ = true;
         vecKnockbackDirection_ = (XMLoadFloat3(&transform_.position_) - pAttackPlayer_->GetVecPos());
         vecKnockbackDirection_ = XMVector3Normalize(vecKnockbackDirection_);
+    }
+}
+
+void CollectPlayer::PlayerFall()
+{
+    if (isJump_)
+    {
+        //ï˙ï®ê¸Ç…â∫Ç™ÇÈèàóù
+        positionTempY_ = positionY_;
+        positionY_ += (positionY_ - positionPrevY_) - gravity_;
+        positionPrevY_ = positionTempY_;
+        isJump_ = (positionY_ <= -rayFloorDistDown_ + playerInitPosY_) ? false : isJump_;
+        isJump_ = (positionY_ <= -rayStageDistDown_ + playerInitPosY_) ? false : isJump_;
     }
 }
 
@@ -451,15 +476,7 @@ void CollectPlayer::PlayerMove()
 
 void CollectPlayer::PlayerJump()
 {
-    if (isJump_)
-    {
-        //ï˙ï®ê¸Ç…â∫Ç™ÇÈèàóù
-        positionTempY_ = positionY_;
-        positionY_ += (positionY_ - positionPrevY_) - gravity_;
-        positionPrevY_ = positionTempY_;
-        isJump_ = (positionY_ <= -rayFloorDistDown_ + playerInitPosY_) ? false : isJump_;
-        isJump_ = (positionY_ <= -rayStageDistDown_ + playerInitPosY_) ? false : isJump_;
-    }
+
 }
 
 void CollectPlayer::PlayerJumpPower()

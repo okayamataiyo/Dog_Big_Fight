@@ -112,6 +112,8 @@ public:
 	/// <param name="_pTarget">“–‚½‚Á‚½‘Šè</param>
 	void OnCollision(GameObject* _pTarget) override;
 
+	void PlayerFall() override;
+
 	/// <summary>
 	/// ƒvƒŒƒCƒ„[‚ÌˆÚ“®ŠÖ”
 	/// </summary>

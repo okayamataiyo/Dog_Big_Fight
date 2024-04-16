@@ -8,13 +8,15 @@
 #include "../Player/CollectPlayer.h"
 #include "../ItemObject/WoodBox.h"
 #include "../ItemObject/FrameBox.h"
+#include "../ItemObject/BoneSuck.h"
 #include "../ItemObject/Bone.h"
 #include "../StageObject/StageObjectManager.h"
 #include "PlayScene.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
-	:GameObject(_pParent, playSceneName), hSound_{-1,-1,-1},random_value_{0}, soundVolume_{0.05f,},soundVolumeLow_{soundVolume_ / 2}, length_{30}, boneCount_{0}, isCreateBone_{false}, woodBoxCount_{0}
-	, attackPlayerPosition_{}, attackPlayerDirection_{},frontPosition_{10.0f}, blockOrCollect_{0}
+	:GameObject(_pParent, playSceneName), hSound_{ -1,-1,-1 }, random_value_{ 0 }, soundVolume_{ 0.05f, }, soundVolumeLow_{ soundVolume_ / 2 }, length_{ 30 }, boneCount_{ 0 }, isCreateBone_{ false }
+	, collectPlayerPosition_{}, collectPlayerDirection_{},boneFrontPosition_{2.0f}, woodBoxCount_{0}
+	, attackPlayerPosition_{}, attackPlayerDirection_{},woodBoxFrontPosition_{10.0f}, blockOrCollect_{0},isGameStop_{false}
 	,pSceneManager_{nullptr}, pAttackPlayer_{nullptr}, pCollectPlayer_{nullptr}, pItemObjectManager_{nullptr}, pStageObjectManager_{nullptr}
 {
 
@@ -35,7 +37,7 @@ void PlayScene::Initialize()
 	pStageObjectManager_ = new StageObjectManager(this);
 	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::SKY);
 	pStageObjectManager_->CreateStageObjectOrigin(STAGEOBJECTSTATE::STAGE);
-	for (int i = 0; i <= 2; i++)
+	for (int i = initZeroInt; i <= 2; i++)
 	{
 		pStageObjectManager_->CreateStageObject(STAGEOBJECTSTATE::STAGEBLOCK, -100.0f, 100.0f, -100.0f, 100.0f);
 	}
@@ -87,18 +89,29 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
-	Audio::Play(hSound_[(int)SOUNDSTATE::BGM], soundVolumeLow_);
-	if (pAttackPlayer_->GetScore() >= 100 || pCollectPlayer_->GetScore() >= 100)
+	if ((!isGameStop_ && pAttackPlayer_->GetScore() >= 100) || (!isGameStop_ && pCollectPlayer_->GetScore() >= 100))
 	{
 		Audio::Stop(hSound_[(int)SOUNDSTATE::BGM]);
 		Audio::Play(hSound_[random_value_],soundVolume_);
 	}
+	if((!isGameStop_ && pAttackPlayer_->GetScore() < 100) || (!isGameStop_ && pCollectPlayer_->GetScore() < 100))
+	{
+		Audio::Play(hSound_[(int)SOUNDSTATE::BGM], soundVolumeLow_);
+	}
+	//–Ø” ‚ªŽ×–‚‘¤‚ÌŒ¢‚ÌŒû‚É‚­‚é‚½‚ß‚ÌŒvŽZ
 	attackPlayerPosition_ = pAttackPlayer_->GetPosition();
-	attackPlayerDirection_ = XMLoadFloat3(&attackPlayerPosition_) - Camera::VecGetPosition(1);
-	attackPlayerDirection_ = XMVectorSetY(attackPlayerDirection_, 0);
+	attackPlayerDirection_ = XMLoadFloat3(&attackPlayerPosition_) - Camera::VecGetPosition(attackPlayerNumber);
+	attackPlayerDirection_ = XMVectorSetY(attackPlayerDirection_, initZeroFloat);
 	attackPlayerDirection_ = XMVector3Normalize(attackPlayerDirection_);
-	attackPlayerPosition_.x = attackPlayerPosition_.x + frontPosition_ * XMVectorGetX(attackPlayerDirection_);
-	attackPlayerPosition_.z = attackPlayerPosition_.z + frontPosition_ * XMVectorGetZ(attackPlayerDirection_);
+	attackPlayerPosition_.x = attackPlayerPosition_.x + woodBoxFrontPosition_ * XMVectorGetX(attackPlayerDirection_);
+	attackPlayerPosition_.z = attackPlayerPosition_.z + woodBoxFrontPosition_ * XMVectorGetZ(attackPlayerDirection_);
+	//œ‚ªŽûW‘¤‚ÌŒ¢‚ÌŒû‚É‚­‚é‚½‚ß‚ÌŒvŽZ
+	collectPlayerPosition_ = pCollectPlayer_->GetPosition();
+	collectPlayerDirection_ = XMLoadFloat3(&collectPlayerPosition_) - Camera::VecGetPosition(collectPlayerNumber);
+	collectPlayerDirection_ = XMVectorSetY(collectPlayerDirection_, initZeroFloat);
+	collectPlayerDirection_ = XMVector3Normalize(collectPlayerDirection_);
+	collectPlayerPosition_.x = collectPlayerPosition_.x + boneFrontPosition_ * XMVectorGetX(collectPlayerDirection_);
+	collectPlayerPosition_.z = collectPlayerPosition_.z + boneFrontPosition_ * XMVectorGetZ(collectPlayerDirection_);
 	SetCursorPos(600, 600);
 	HideCursor();
 	isCreateBone_ = (boneCount_ == 0) ? true : isCreateBone_;
@@ -221,7 +234,6 @@ void PlayScene::Update()
 	{
 		pSceneManager_->ChangeScene(SCENE_ID_SELECT);
 	}
-
 }
 
 void PlayScene::Draw()
@@ -230,4 +242,13 @@ void PlayScene::Draw()
 
 void PlayScene::Release()
 {
+}
+
+void PlayScene::SetGameStop()
+{
+	isGameStop_ = true;
+	Audio::Stop(hSound_[(int)SOUNDSTATE::BGM]);
+	Audio::Stop(hSound_[(int)SOUNDSTATE::LASTBGM]);
+	Audio::Stop(hSound_[(int)SOUNDSTATE::LASTBGM2]);
+	Audio::Play(hSound_[(int)SOUNDSTATE::GAMESTOP],soundVolume_);
 }

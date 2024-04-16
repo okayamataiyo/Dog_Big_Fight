@@ -16,6 +16,9 @@ public:
 	//引数：radius	当たり判定のサイズ（半径）
 	SphereCollider(XMFLOAT3 center, float radius);
 
+	// コリジョンのサイズを設定
+	// 引数：半径
+	void SetRadius(float radius);
 private:
 	//接触判定
 	//引数：target	相手の当たり判定

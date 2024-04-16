@@ -6,39 +6,40 @@ class PlayScene;
 class SphereCollider;
 class Stage;
 class CollectPlayer;
+class Bone;
 
 namespace
 {
-	std::string boneName = "Bone";
+	std::string boneSuckName = "Bone";
 }
 
 /// <summary>
 /// アイテムを管理するクラス
 /// </summary>
-class Bone : public ItemObjectBase
+class BoneSuck : public ItemObjectBase
 {
 protected:
 	int hModel_;
 	float rayDist_;
 	float positionRotate_;
-	float boneInitPosY_;
-	bool isBoneDeath_;
-	XMFLOAT3 pickUpBoneScale_;
+	float BoneSuckInitPosY_;
+	XMFLOAT3 pickUpBoneSuckScale_;
 	PlayScene* pPlayScene_;
 	SphereCollider* pCollision_;
 	Stage* pStage_;
 	CollectPlayer* pCollectPlayer_;
+	Bone* pBone_;
 public:
 	/// <summary>
 	/// コンストラクタ関数
 	/// </summary>
 	/// <param name="_parent">親の名前</param>
-	Bone(GameObject* _parent);
+	BoneSuck(GameObject* _parent);
 
 	/// <summary>
 	/// デストラクタ関数
 	/// </summary>
-	~Bone();
+	~BoneSuck();
 
 	/// <summary>
 	/// 初期化関数
@@ -60,11 +61,11 @@ public:
 	/// </summary>
 	void Release() override;
 
-	void BoneDeath();
+	void PlayerSuckBoneSuck();
+
+	void BoneSuckDeath();
 
 	int GetModelHandle() { return hModel_; }
-
-	bool GetIsBoneDeath() { return isBoneDeath_; }
 
 	/// <summary>
 	/// 何かに当たった時の関数

@@ -128,6 +128,8 @@ protected:
 
 	virtual void UpdateGameOver() = 0;
 
+	virtual void PlayerFall() = 0;
+
 	virtual void PlayerMove() = 0;
 
 	virtual void PlayerJump() = 0;

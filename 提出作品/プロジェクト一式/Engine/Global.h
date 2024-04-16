@@ -3,6 +3,11 @@
 #include <string>
 #include "Direct3D.h"
 
+namespace
+{
+	int PlayerScore_[2] = { 0,0 };
+}
+
 //安全にメモリを開放するためのマクロ
 #define SAFE_DELETE(p) {if ((p)!=nullptr) { delete (p); (p)=nullptr;}}
 #define SAFE_DELETE_ARRAY(p) {if ((p)!=nullptr) { delete[] (p); (p)=nullptr;}}

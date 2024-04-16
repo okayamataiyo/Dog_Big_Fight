@@ -186,6 +186,9 @@
     <ClCompile Include="Engine\Json\JsonReader.cpp">
       <Filter>Engine\ResourceManager\Json</Filter>
     </ClCompile>
+    <ClCompile Include="ItemObject\BoneSuck.cpp">
+      <Filter>ItemObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -344,6 +347,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Json\JsonReader.h">
       <Filter>Engine\ResourceManager\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemObject\BoneSuck.h">
+      <Filter>ItemObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

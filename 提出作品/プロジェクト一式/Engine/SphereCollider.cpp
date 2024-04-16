@@ -28,3 +28,8 @@ bool SphereCollider::IsHit(Collider* target)
 	else
 		return IsHitCircleVsCircle((SphereCollider*)target, this);
 }
+
+void SphereCollider::SetRadius(float radius)
+{
+	size_ = XMFLOAT3(radius, radius, radius);
+}

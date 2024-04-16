@@ -224,6 +224,7 @@ void AttackPlayer::UpdatePlay()
         score_ += scoreAmount_;
     }
     playerStatePrev_ = playerState_;
+    PlayerFall();
     PlayerJump();
     PlayerRayCast();
     PlayerKnockback();
@@ -245,8 +246,8 @@ void AttackPlayer::UpdatePlay()
     }
     if (score_ >= scoreMax_)
     {
-        pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
-        Direct3D::SetIsChangeView(((int)Direct3D::VIEWSTATE::LEFTVIEW));
+        pPlayScene_->SetGameStop();
+        gameState_ = GAMESTATE::GAMEOVER;
     }
     if (IsMoving() && !isJump_ && !isDash_)
     {
@@ -282,9 +283,12 @@ void AttackPlayer::UpdatePlay()
 
 void AttackPlayer::UpdateGameOver()
 {
-    if (Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padID_))
+    if (Input::IsKey(DIK_SPACE) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padID_))
     {
         pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
+        Direct3D::SetIsChangeView(((int)Direct3D::VIEWSTATE::LEFTVIEW));
+        PlayerScore_[collectPlayerNumber] = pCollectPlayer_->GetScore();
+        PlayerScore_[attackPlayerNumber] = this->GetScore();
     }
 }
 
@@ -333,6 +337,19 @@ void AttackPlayer::OnCollision(GameObject* _pTarget)
         isKnockBack_ = true;
         vecKnockbackDirection_ = (XMLoadFloat3(&transform_.position_) - pCollectPlayer_->GetVecPos());
         vecKnockbackDirection_ = XMVector3Normalize(vecKnockbackDirection_);
+    }
+}
+
+void AttackPlayer::PlayerFall()
+{
+    if (isJump_)
+    {
+        //•ú•¨ü‚É‰º‚ª‚éˆ—
+        positionTempY_ = positionY_;
+        positionY_ += (positionY_ - positionPrevY_) - gravity_;
+        positionPrevY_ = positionTempY_;
+        isJump_ = (positionY_ <= -rayFloorDistDown_ + playerInitPosY_) ? false : isJump_;
+        isJump_ = (positionY_ <= -rayStageDistDown_ + playerInitPosY_) ? false : isJump_;
     }
 }
 
@@ -433,15 +450,7 @@ void AttackPlayer::PlayerMove()
 
 void AttackPlayer::PlayerJump()
 {
-    if (isJump_)
-    {
-        //•ú•¨ü‚É‰º‚ª‚éˆ—
-        positionTempY_ = positionY_;
-        positionY_ += (positionY_ - positionPrevY_) - gravity_;
-        positionPrevY_ = positionTempY_;
-        isJump_ = (positionY_ <= -rayFloorDistDown_ + playerInitPosY_) ? false : isJump_;
-        isJump_ = (positionY_ <= -rayStageDistDown_ + playerInitPosY_) ? false : isJump_;
-    }
+
 }
 
 void AttackPlayer::PlayerJumpPower()

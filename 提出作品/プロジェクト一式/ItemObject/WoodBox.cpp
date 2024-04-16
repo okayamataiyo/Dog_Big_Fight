@@ -12,7 +12,7 @@
 #include "WoodBox.h"
 
 WoodBox::WoodBox(GameObject* _pParent)
-    :ItemObjectBase(_pParent, woodBoxName), hModel_{ -1 }, hSound_{ -1 }
+    :ItemObjectBase(_pParent, woodBoxName), hModel_{ -1 }, hSound_{ -1 },soundVolume_{0.3f}
     , isBreak_{ false }, woodBoxs_{}, gravity_{ 0.007 },woodBoxInitposY_{0.6}, positionY_{0.0f}, positionPrevY_{0.0f}, positionTempY_{0.0f}
     , isJump_{ false },isOnWoodBox_ {false}, rayWoodBoxDist_{ 0.0f }, rayStageDistDown_{ 0.0f }, isFling_{ 2.0f }
     ,pParent_{nullptr},pPlayScene_{nullptr}, pAttackPlayer_{ nullptr },pCollision_{nullptr}
@@ -45,7 +45,7 @@ void WoodBox::Update()
 {
     transform_.position_.y = positionY_;
     woodBoxs_ = pPlayScene_->GetWoodBoxs();
-    WoodBoxJump();
+    WoodBoxFall();
     WoodBoxMove();
     WoodBoxRayCast();
 }
@@ -60,7 +60,7 @@ void WoodBox::Release()
 {
 }
 
-void WoodBox::WoodBoxJump()
+void WoodBox::WoodBoxFall()
 {
     if (isJump_)
     {
@@ -86,40 +86,6 @@ void WoodBox::WoodBoxRayCast()
     Stage* pStage           = (Stage*)FindObject(stageName);      //ステージオブジェクト
     int stageHModel         = pStage->GetModelHandle();         //モデル番号を取得
 
-    if (isBreak_)
-    {
-        Audio::Play(hSound_,0.3f);
-        this->KillMe();
-    }
-
-    for (int i = 0; i < woodBoxs_.size(); i++)
-    {
-        ////▼木箱の法線(木箱の上に木箱が乗るため)
-        //woodBoxDataDown.start       = transform_.position_;
-        ////woodBoxDataDown.start.y     = 0;
-        //woodBoxDataDown.dir         = XMFLOAT3(0, -1, 0);
-        //if (woodBoxs_.at(i) != woodBoxHModelNow)
-        //{
-        //    int nowData = woodBoxs_.at(i);
-        //    Model::RayCast(nowData, &woodBoxDataDown);
-        //}
-        //rayWoodBoxDist_         = woodBoxDataDown.dist;
-        //if (rayWoodBoxDist_ <= woodBoxFling)
-        //{
-        //    if (!isJump_)
-        //    {
-        //        //positionY_ = -woodBoxDataDown.dist + 0.6;
-        //        isOnWoodBox_ = 1;
-        //        positionTempY_ = positionY_;
-        //        positionPrevY_ = positionTempY_;
-        //        positionY_ = positionPrevY_;
-        //    }
-        //}
-        //else
-        //{
-        //    isOnWoodBox_ = 0;
-        //}
-    }
     //▼ステージの法線(地面に張り付き)
     stageDataDown.start = transform_.position_;         //レイの発射位置
     XMStoreFloat3(&stageDataDown.dir, vecDown);         //レイの方向
@@ -129,14 +95,23 @@ void WoodBox::WoodBoxRayCast()
     {
         if (!isJump_ && !isOnWoodBox_)
         {
-            positionY_ = -stageDataDown.dist + woodBoxInitposY_;  //地面の張り付き
-            positionTempY_ = positionY_;
-            positionPrevY_ = positionTempY_;
+            //positionY_ = -stageDataDown.dist + woodBoxInitposY_;  //地面の張り付き
+            transform_.position_.y = -stageDataDown.dist + woodBoxInitposY_;
         }
     }
-    else if(!isOnWoodBox_)
+    if(rayStageDistDown_ >= isFling_ && !isOnWoodBox_)
     {
         isJump_ = true;
+    }
+    positionY_ = transform_.position_.y;
+}
+
+void WoodBox::WoodBoxDeath()
+{
+    if (isBreak_)
+    {
+        Audio::Play(hSound_, soundVolume_);
+        this->KillMe();
     }
 }
 

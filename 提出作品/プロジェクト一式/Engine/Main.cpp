@@ -20,7 +20,6 @@
 //定数宣言
 const char* WIN_CLASS_NAME = "Dog Big Run";	//ウィンドウクラス名
 
-
 //プロトタイプ宣言
 HWND InitApp(HINSTANCE hInstance, int screenWidth, int screenHeight, int nCmdShow);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

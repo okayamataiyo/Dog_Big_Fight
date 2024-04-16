@@ -50,10 +50,13 @@ private:
 	int stageBlockHModel_;			//ステージブロックモデル番号
 	int stageHModel_;				//ステージモデル番号
 	int floorHModel_;				//すり抜け床
+	int decBoneCount_;
+	bool isBoneDeath_;				//骨を消すか
 	bool isBoneTatch_;
 	int number_;
-	int time_;
-	int timeWait_;
+	int killTime_;
+	int killTimeWait_;
+	int killTimeMax_;
 	XMVECTOR vecKnockbackDirection_;
 	PLAYERSTATE playerState_;
 	PLAYERSTATE playerStatePrev_;
@@ -117,6 +120,8 @@ public:
 	/// <param name="_pTarget">当たった相手</param>
 	void OnCollision(GameObject* _pTarget) override;
 
+	void PlayerFall() override;
+
 	/// <summary>
 	/// プレイヤーの移動関数
 	/// </summary>
@@ -146,16 +151,26 @@ public:
 
 	void SetAttackPlayer(AttackPlayer* _pAttackPlayer) { pAttackPlayer_ = _pAttackPlayer; }
 
+	void SetIsBoneDeath(bool _isBoneDeath) { isBoneDeath_ = _isBoneDeath; }
+
+	void SetKillTime(int _killTime) { killTime_ = _killTime; }
+
 	XMVECTOR GetVecPos() override { return XMLoadFloat3(&transform_.position_); }
 
 	PLAYERSTATE GetPlayerState() override { return playerState_; }
 
 	int GetPadID()override { return padID_; }
 
+	int GetModelHandle() override { return hModel_; }
+
+	bool GetIsBoneDeath() { return isBoneDeath_; }
+
+	float GetAngle() { return angle_; }
+
 	int GetScore() { return score_; }
 
-	bool IsMoving() override;
+	bool GetIsBoneTatch() { return isBoneTatch_; }
 
-	int GetModelHandle() override { return hModel_; };
+	bool IsMoving() override;
 };
 

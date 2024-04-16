@@ -23,6 +23,7 @@ class WoodBox : public ItemObjectBase
 private:
     int hModel_;            //モデル
     int hSound_;            //サウンドデータ
+    float soundVolume_;
     bool isBreak_;            //木箱が壊されたか
     std::vector<int> woodBoxs_;
 
@@ -65,11 +66,13 @@ public:
     //開放
     void Release() override;
 
-    void WoodBoxJump();
+    void WoodBoxFall();
 
     void WoodBoxMove();
 
     void WoodBoxRayCast();
+
+    void WoodBoxDeath();
 
     void OnCollision(GameObject* _pTarget);
 
