@@ -14,7 +14,7 @@
 #include "PlayScene.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
-	:GameObject(_pParent, playSceneName), hSound_{ -1,-1,-1 }, random_value_{ 0 }, soundVolume_{ 0.05f, }, soundVolumeLow_{ soundVolume_ / 2 }, length_{ 30 }, boneCount_{ 0 }, isCreateBone_{ false }
+	:GameObject(_pParent, playSceneName), hSound_{ -1,-1,-1 }, random_value_{ 0 }, soundVolume_{ 0.05f, }, soundVolumeHalf_{ soundVolume_ / 2 }, length_{ 30 }, boneCount_{ 0 }, isCreateBone_{ false }
 	, collectPlayerPosition_{}, collectPlayerDirection_{},boneFrontPosition_{2.0f}, woodBoxCount_{0}
 	, attackPlayerPosition_{}, attackPlayerDirection_{},woodBoxFrontPosition_{10.0f}, blockOrCollect_{0},isGameStop_{false}
 	,pSceneManager_{nullptr}, pAttackPlayer_{nullptr}, pCollectPlayer_{nullptr}, pItemObjectManager_{nullptr}, pStageObjectManager_{nullptr}
@@ -96,7 +96,7 @@ void PlayScene::Update()
 	}
 	if((!isGameStop_ && pAttackPlayer_->GetScore() < 100) || (!isGameStop_ && pCollectPlayer_->GetScore() < 100))
 	{
-		Audio::Play(hSound_[(int)SOUNDSTATE::BGM], soundVolumeLow_);
+		Audio::Play(hSound_[(int)SOUNDSTATE::BGM], soundVolumeHalf_);
 	}
 	//–Ø” ‚ªŽ×–‚‘¤‚ÌŒ¢‚ÌŒû‚É‚­‚é‚½‚ß‚ÌŒvŽZ
 	attackPlayerPosition_ = pAttackPlayer_->GetPosition();

@@ -42,7 +42,7 @@ CollectPlayer::CollectPlayer(GameObject* _pParent)
     playerInitPosY_ = 0.6f;
     //▼サウンドに関する基底クラスメンバ変数
     soundVolume_ = 0.5f;
-    soundVolumeLow_ = soundVolume_ / 2;
+    soundVolumeHalf_ = soundVolume_ / 2;
     //▼収集側プレイヤー移動に関する基底クラスメンバ変数
     CamPositionVec_ = {};
     positionPrev_ = { 0.0f,0.0f,0.0f };
@@ -264,7 +264,7 @@ void CollectPlayer::UpdatePlay()
     {
         playerState_ = PLAYERSTATE::RUN;
         Audio::Stop(hSound_[((int)SOUNDSTATE::WALK)]);
-        Audio::Play(hSound_[((int)SOUNDSTATE::RUN)], soundVolumeLow_);
+        Audio::Play(hSound_[((int)SOUNDSTATE::RUN)], soundVolumeHalf_);
         isDash_ = true;
     }
     else
@@ -459,7 +459,7 @@ void CollectPlayer::PlayerMove()
         PlayerJumpPower();
         Audio::Stop(hSound_[((int)SOUNDSTATE::WALK)]);
         Audio::Stop(hSound_[((int)SOUNDSTATE::RUN)]);
-        Audio::Play(hSound_[((int)SOUNDSTATE::JUMP)], soundVolumeLow_);
+        Audio::Play(hSound_[((int)SOUNDSTATE::JUMP)], soundVolumeHalf_);
     }
     if (transform_.position_.z <= outerWallPosBack_ || transform_.position_.z >= outerWallPosFront_)
     {

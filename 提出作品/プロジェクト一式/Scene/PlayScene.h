@@ -55,7 +55,7 @@ private:
     int hSound_[(int)SOUNDSTATE::MAX];
     int random_value_;
     float soundVolume_;
-    float soundVolumeLow_;
+    float soundVolumeHalf_;
     //¥œ‚ÉŠÖ‚·‚éƒƒ“ƒo•Ï”
     int boneCount_;         //¡‚ ‚éœ‚Ì”
     bool isCreateBone_;     //œ‚ğì‚Á‚½‚©‚Ç‚¤‚©
