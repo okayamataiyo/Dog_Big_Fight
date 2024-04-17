@@ -525,21 +525,21 @@ namespace Direct3D
 		case 0:
 			prevVP_ = vp[1].Width;
 			break;
-		case 1:
+		case (int)VIEWSTATE::LEFTVIEW:
 			if (vPSize_[0] <= screenWidthHaif_)
 			{
 				vPSize_[0] += 10;
 				vPSize_[1] += 10;
 			}
 			break;
-		case 2:
+		case (int)VIEWSTATE::LEFT_BOTHVIEW:
 			if (vPSize_[0] >= 10)
 			{
 				vPSize_[0] -= 10;
 				vPSize_[1] -= 10;
 			}
 			break;
-		case 3:
+		case (int)VIEWSTATE::RIGHTVIEW:
 			if (vPSize_[3] <= screenWidthHaif_)
 			{
 				vPSize_[1] -= 10;
@@ -547,7 +547,7 @@ namespace Direct3D
 				vPSize_[3] += 10;
 			}
 			break;
-		case 4:
+		case (int)VIEWSTATE::RIGHT_BOTHVIEW:
 			if (vPSize_[3] >= 10)
 			{
 				vPSize_[1] += 10;
@@ -698,6 +698,11 @@ namespace Direct3D
 		{
 			pContext_->OMSetRenderTargets(1, &pRenderTargetView_, nullptr);
 		}
+	}
+
+	int GetIsChangeView()
+	{
+		return isChangeView_;
 	}
 
 }

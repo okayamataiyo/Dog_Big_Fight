@@ -18,7 +18,6 @@ SelectScene::SelectScene(GameObject* _pParent)
 void SelectScene::Initialize()
 {
 	ShowCursor();
-	Direct3D::SetIsChangeView(1);
 	pSolidText_ = Instantiate<SolidText>(this);
 	pSolidText_->SetMode(1);
 	pSceneManager_ = (SceneManager*)FindObject(sceneManagerName);
@@ -41,7 +40,14 @@ void SelectScene::Update()
 	XMFLOAT3 pos = Input::GetMousePosition();
 	if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown((int)MOUSESTATE::LEFTCLICK) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, attackPlayerNumber) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, collectPlayerNumber))
 	{
-		Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFT_BOTHVIEW);
+		if (Direct3D::GetIsChangeView() == (int)Direct3D::VIEWSTATE::LEFTVIEW)
+		{
+			Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFT_BOTHVIEW);
+		}
+		if (Direct3D::GetIsChangeView() == (int)Direct3D::VIEWSTATE::RIGHTVIEW)
+		{
+			Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::RIGHT_BOTHVIEW);
+		}
 		pSceneManager_->ChangeScene(SCENE_ID_PLAY);
 	}
 	if (Input::IsKeyDown(DIK_R))

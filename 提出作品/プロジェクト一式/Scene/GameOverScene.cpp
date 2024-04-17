@@ -48,7 +48,6 @@ void GameOverScene::Update()
 	{
 		if (Input::IsKeyDown(DIK_E) || Input::IsMouseButtonDown((int)MOUSESTATE::LEFTCLICK) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, attackPlayerNumber) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, collectPlayerNumber))
 		{
-			Direct3D::SetIsChangeView(((int)Direct3D::VIEWSTATE::LEFT_BOTHVIEW));
 			pSceneManager_->ChangeScene(SCENE_ID_GAMETITLE);
 			inputWait_ = initZeroInt;
 		}

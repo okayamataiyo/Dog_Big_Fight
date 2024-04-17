@@ -300,10 +300,10 @@ void CollectPlayer::UpdatePlay()
 
 void CollectPlayer::UpdateGameOver()
 {
-    if (Input::IsKey(DIK_SPACE) || Input::IsPadButton(XINPUT_GAMEPAD_A, padID_))
+    Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFTVIEW);
+    if (Input::IsKey(DIK_SPACE) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, attackPlayerNumber) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, collectPlayerNumber))
     {
         pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
-        Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFTVIEW);
         PlayerScore_[collectPlayerNumber] = this->GetScore();
         PlayerScore_[attackPlayerNumber] = pAttackPlayer_->GetScore();
     }
@@ -320,28 +320,31 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
 {
     std::vector<int> woodBoxs = pPlayScene_->GetWoodBoxs();
     woodBoxNumber_ = woodBoxName + std::to_string(number_);
-    pWoodBox_ = (WoodBox*)FindObject(_pTarget->GetObjectName());
-
-    XMVECTOR vecPos = XMLoadFloat3(&transform_.position_) - pWoodBox_->GetVecPos();
-    vecPos = XMVector3Normalize(vecPos);
-    dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos, vecUp));
-    float angleRadians = acosf(dotProduct_);
-    angleDegrees_ = XMConvertToDegrees(angleRadians);
-    if (angleDegrees_ <= angleDegreesMax_)
+    if (_pTarget->GetObjectName() == woodBoxNumber_)
     {
-        PlayerJumpPower();
-        pWoodBox_->SetWoodBoxBreak();
-        pPlayScene_->AddWoodBoxCount(-woodBoxDeath_);
+        pWoodBox_ = (WoodBox*)FindObject(woodBoxNumber_);
+        XMVECTOR vecPos = XMLoadFloat3(&transform_.position_) - pWoodBox_->GetVecPos();
+        vecPos = XMVector3Normalize(vecPos);
+        dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos, vecUp));
+        float angleRadians = acosf(dotProduct_);
+        angleDegrees_ = XMConvertToDegrees(angleRadians);
+        if (angleDegrees_ <= angleDegreesMax_)
+        {
+            PlayerJumpPower();
+            pWoodBox_->SetWoodBoxBreak();
+            pPlayScene_->AddWoodBoxCount(-woodBoxDeath_);
 
+        }
     }
-
     //WoodBoxという名前を持つ全てのオブジェクトを参照
-    //if (_pTarget->GetObjectName().find(woodBoxName) != std::string::npos)
-    if (angleDegrees_ > angleDegreesMax_)
+    if (_pTarget->GetObjectName().find(woodBoxName) != std::string::npos)
     {
-        transform_.position_ = positionPrev_;
+        if (angleDegrees_ > angleDegreesMax_)
+        {
+            transform_.position_ = positionPrev_;
+        }
     }
-    
+
     if (_pTarget->GetObjectName() == boneName && killTime_ == killTimeMax_)
     {
         SetKillTime(killTimeWait_);

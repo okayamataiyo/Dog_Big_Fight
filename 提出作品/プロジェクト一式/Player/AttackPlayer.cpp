@@ -283,10 +283,10 @@ void AttackPlayer::UpdatePlay()
 
 void AttackPlayer::UpdateGameOver()
 {
-    if (Input::IsKey(DIK_SPACE) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, padID_))
+    Direct3D::SetIsChangeView(((int)Direct3D::VIEWSTATE::RIGHTVIEW));
+    if (Input::IsKey(DIK_SPACE) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, attackPlayerNumber) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, collectPlayerNumber))
     {
         pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
-        Direct3D::SetIsChangeView(((int)Direct3D::VIEWSTATE::LEFTVIEW));
         PlayerScore_[collectPlayerNumber] = pCollectPlayer_->GetScore();
         PlayerScore_[attackPlayerNumber] = this->GetScore();
     }
@@ -547,7 +547,6 @@ void AttackPlayer::PlayerRayCast()
     Model::RayCast(stageHModel_, &stageDataDown); //レイを発射
     rayStageDistDown_ = stageDataDown.dist;
     //プレイヤーが浮いていないとき
-    //ImGui::Text("rayGravityDist_=%f", rayGravityDist_);
     if (rayStageDistDown_ + positionY_ <= isFling_)
     {
         //ジャンプしてない＆すり抜け床の上にいない
