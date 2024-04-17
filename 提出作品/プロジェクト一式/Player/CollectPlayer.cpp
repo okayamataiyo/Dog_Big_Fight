@@ -320,30 +320,28 @@ void CollectPlayer::OnCollision(GameObject* _pTarget)
 {
     std::vector<int> woodBoxs = pPlayScene_->GetWoodBoxs();
     woodBoxNumber_ = woodBoxName + std::to_string(number_);
-    if (_pTarget->GetObjectName() == woodBoxNumber_)
-    {
-        pWoodBox_ = (WoodBox*)FindObject(woodBoxNumber_);
-        XMVECTOR vecPos = XMLoadFloat3(&transform_.position_) - pWoodBox_->GetVecPos();
-        vecPos = XMVector3Normalize(vecPos);
-        dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos, vecUp));
-        float angleRadians = acosf(dotProduct_);
-        angleDegrees_ = XMConvertToDegrees(angleRadians);
-        if (angleDegrees_ <= angleDegreesMax_)
-        {
-            PlayerJumpPower();
-            pWoodBox_->SetWoodBoxBreak();
-            pPlayScene_->AddWoodBoxCount(-woodBoxDeath_);
+    pWoodBox_ = (WoodBox*)FindObject(_pTarget->GetObjectName());
 
-        }
-    }
-    //WoodBoxという名前を持つ全てのオブジェクトを参照
-    if (_pTarget->GetObjectName().find(woodBoxName) != std::string::npos)
+    XMVECTOR vecPos = XMLoadFloat3(&transform_.position_) - pWoodBox_->GetVecPos();
+    vecPos = XMVector3Normalize(vecPos);
+    dotProduct_ = XMVectorGetX(XMVector3Dot(vecPos, vecUp));
+    float angleRadians = acosf(dotProduct_);
+    angleDegrees_ = XMConvertToDegrees(angleRadians);
+    if (angleDegrees_ <= angleDegreesMax_)
     {
-        if (angleDegrees_ > angleDegreesMax_)
-        {
-            transform_.position_ = positionPrev_;
-        }
+        PlayerJumpPower();
+        pWoodBox_->SetWoodBoxBreak();
+        pPlayScene_->AddWoodBoxCount(-woodBoxDeath_);
+
     }
+
+    //WoodBoxという名前を持つ全てのオブジェクトを参照
+    //if (_pTarget->GetObjectName().find(woodBoxName) != std::string::npos)
+    if (angleDegrees_ > angleDegreesMax_)
+    {
+        transform_.position_ = positionPrev_;
+    }
+    
     if (_pTarget->GetObjectName() == boneName && killTime_ == killTimeMax_)
     {
         SetKillTime(killTimeWait_);
