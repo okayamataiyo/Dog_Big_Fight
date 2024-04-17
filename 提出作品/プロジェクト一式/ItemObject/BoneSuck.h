@@ -23,6 +23,9 @@ protected:
 	float rayDist_;
 	float positionRotate_;
 	float BoneSuckInitPosY_;
+	int killTime_;
+	int killTimeWait_;
+	int killTimeMax_;
 	XMFLOAT3 pickUpBoneSuckScale_;
 	PlayScene* pPlayScene_;
 	SphereCollider* pCollision_;
@@ -65,13 +68,9 @@ public:
 
 	void BoneSuckDeath();
 
-	int GetModelHandle() { return hModel_; }
+	void SetKillTime(int _killTime) { killTime_ = _killTime; }
 
-	/// <summary>
-	/// âΩÇ©Ç…ìñÇΩÇ¡ÇΩéûÇÃä÷êî
-	/// </summary>
-	/// <param name="_pTarget">ìñÇΩÇ¡ÇΩëäéË</param>
-	void OnCollision(GameObject* _pTarget) override;
+	int GetModelHandle() { return hModel_; }
 
 
 };

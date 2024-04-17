@@ -22,7 +22,6 @@ protected:
 	float rayDist_;
 	float positionRotate_;
 	float boneInitPosY_;
-	bool isBoneDeath_;
 	XMFLOAT3 pickUpBoneScale_;
 	PlayScene* pPlayScene_;
 	SphereCollider* pCollision_;
@@ -63,8 +62,6 @@ public:
 	void BoneDeath();
 
 	int GetModelHandle() { return hModel_; }
-
-	bool GetIsBoneDeath() { return isBoneDeath_; }
 
 	/// <summary>
 	/// âΩÇ©Ç…ìñÇΩÇ¡ÇΩéûÇÃä÷êî

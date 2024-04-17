@@ -10,7 +10,7 @@
 #include "Bone.h"
 BoneSuck::BoneSuck(GameObject* _parent)
 	:ItemObjectBase(_parent, boneSuckName), hModel_{ -1 }, rayDist_{ 0.0f }, positionRotate_{ 1.0f }
-	, BoneSuckInitPosY_{ 0.6f }, pickUpBoneSuckScale_{ 0.2f,0.2f,0.2f }
+	, BoneSuckInitPosY_{ 0.6f },killTime_{9999},killTimeWait_{30},killTimeMax_{9999}, pickUpBoneSuckScale_{0.2f,0.2f,0.2f}
 	, pPlayScene_{ nullptr }, pCollision_{ nullptr }, pStage_{ nullptr }, pCollectPlayer_{ nullptr },pBone_{nullptr}
 {
 }
@@ -30,17 +30,22 @@ void BoneSuck::Initialize()
 	pBone_ = (Bone*)FindObject(boneName);
 	transform_.scale_ = { 0.5,0.5,0.5 };
 	transform_.position_ = { 10,0,0 };
+	SetKillTime(killTimeWait_);
 }
 
 void BoneSuck::Update()
 {
-	if (!pCollectPlayer_->GetIsBoneTatch())
+	transform_.rotate_.y += positionRotate_;
+	PlayerSuckBoneSuck();
+	if (killTime_ > initZeroInt)
 	{
-		transform_.rotate_.y += positionRotate_;
+		--killTime_;
 	}
-	if (pBone_->GetIsBoneDeath())
+
+	if (killTime_ <= initZeroInt)
 	{
-		PlayerSuckBoneSuck();
+		killTime_ = killTimeMax_;
+		BoneSuckDeath();
 	}
 }
 
@@ -64,12 +69,5 @@ void BoneSuck::PlayerSuckBoneSuck()
 
 void BoneSuck::BoneSuckDeath()
 {
-	if (pCollectPlayer_->GetIsBoneDeath())
-	{
-		this->KillMe();
-	}
-}
-
-void BoneSuck::OnCollision(GameObject* _pTarget)
-{
+	this->KillMe();
 }

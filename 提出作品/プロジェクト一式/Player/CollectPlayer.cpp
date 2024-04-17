@@ -279,7 +279,6 @@ void CollectPlayer::UpdatePlay()
     {
         playerState_ = PLAYERSTATE::STUN;
     }
-    //ImGui::Text("My int variable: %d", killTime_);
     if (isBoneTatch_)
     {
         if (killTime_ > initZeroInt)

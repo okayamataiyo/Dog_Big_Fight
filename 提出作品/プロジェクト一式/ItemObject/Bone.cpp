@@ -11,14 +11,14 @@
 
 Bone::Bone(GameObject* _parent)
 	:ItemObjectBase(_parent, boneName), hModel_{-1},rayDist_{0.0f},positionRotate_{1.0f}
-	, boneInitPosY_{ 0.6f },isBoneDeath_{false}, pickUpBoneScale_{0.2f,0.2f,0.2f}
+	, boneInitPosY_{ 0.6f },pickUpBoneScale_{0.2f,0.2f,0.2f}
 	,pPlayScene_{nullptr},pCollision_{nullptr},pStage_{nullptr},pCollectPlayer_{nullptr}
 {
 }
 
 Bone::~Bone()
 {
-	pCollectPlayer_->SetIsBoneDeath(false);
+
 }
 
 void Bone::Initialize()
@@ -66,15 +66,15 @@ void Bone::Release()
 }
 void Bone::BoneDeath()
 {
-	isBoneDeath_ = true;
 	this->KillMe();
+	pCollectPlayer_->SetIsBoneDeath(false);
 }
 
 void Bone::OnCollision(GameObject* _pTarget)
 {
 	if(_pTarget->GetObjectName() == collectPlayerName)
 	{
-		Instantiate<Bone>(pPlayScene_);
+		Instantiate<BoneSuck>(pPlayScene_);
 		BoneDeath();
 	}
 }
