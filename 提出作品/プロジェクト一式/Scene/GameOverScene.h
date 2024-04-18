@@ -6,6 +6,7 @@
 class SolidText;
 class StageObjectManager;
 class SceneManager;
+class Stage;
 
 namespace
 {
@@ -21,9 +22,11 @@ private:
 	int inputWait_;
 	int inputWaitTime_;
 	XMFLOAT3 camPos_;
+	XMFLOAT3 camTargetPos_;
 	SolidText* pSolidText_;
 	StageObjectManager* pStageObjectManager_;
 	SceneManager* pSceneManager_;
+	Stage* pStage_;
 public:
 	GameOverScene(GameObject* _pParent);
 	void Initialize() override;

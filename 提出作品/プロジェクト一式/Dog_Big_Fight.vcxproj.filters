@@ -189,6 +189,12 @@
     <ClCompile Include="ItemObject\BoneSuck.cpp">
       <Filter>ItemObject</Filter>
     </ClCompile>
+    <ClCompile Include="Player\ActorAttackPlayer.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\ActorCollectPlayer.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -350,6 +356,12 @@
     </ClInclude>
     <ClInclude Include="ItemObject\BoneSuck.h">
       <Filter>ItemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\ActorAttackPlayer.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\ActorCollectPlayer.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

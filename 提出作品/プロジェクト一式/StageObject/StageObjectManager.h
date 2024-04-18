@@ -24,5 +24,6 @@ public:
     void CreateStageObject(STAGEOBJECTSTATE _stageObjectState, float _minX, float _maxX, float _minZ, float _maxZ);
     void SetRotate(XMFLOAT3 _rotate);
     void SetPosition(XMFLOAT3 _position);
+    StageObjectBase* GetStageObjectBase() { return pStageObjectBase_; }
 };
 

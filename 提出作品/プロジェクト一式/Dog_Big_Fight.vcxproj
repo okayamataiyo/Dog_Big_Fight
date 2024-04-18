@@ -169,6 +169,8 @@
     <ClCompile Include="ItemObject\FrameBox.cpp" />
     <ClCompile Include="ItemObject\ItemObjectManager.cpp" />
     <ClCompile Include="ItemObject\WoodBox.cpp" />
+    <ClCompile Include="Player\ActorAttackPlayer.cpp" />
+    <ClCompile Include="Player\ActorCollectPlayer.cpp" />
     <ClCompile Include="Player\AttackPlayer.cpp" />
     <ClCompile Include="Player\CollectPlayer.cpp" />
     <ClCompile Include="Scene\GameOverScene.cpp" />
@@ -223,6 +225,8 @@
     <ClInclude Include="ItemObject\ItemObjectBase.h" />
     <ClInclude Include="ItemObject\ItemObjectManager.h" />
     <ClInclude Include="ItemObject\WoodBox.h" />
+    <ClInclude Include="Player\ActorAttackPlayer.h" />
+    <ClInclude Include="Player\ActorCollectPlayer.h" />
     <ClInclude Include="Player\AttackPlayer.h" />
     <ClInclude Include="Player\CollectPlayer.h" />
     <ClInclude Include="Player\PlayerBase.h" />

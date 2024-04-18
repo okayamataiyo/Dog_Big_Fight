@@ -32,6 +32,7 @@ public:
     void CreateObject(ITEMOBJECTSTATE _objectState, float _minX, float _maxX, float _minZ, float _maxZ);
     void SetRotate(XMFLOAT3 _rotate);
     void SetPosition(XMFLOAT3 _position);
+    ItemObjectBase* GetObjectBase() { return pObjectBase_; }
     std::vector<int> GetWoodBoxs() { return woodBoxs_; }
     std::vector<int> GetFloors() { return floors_; }
 };

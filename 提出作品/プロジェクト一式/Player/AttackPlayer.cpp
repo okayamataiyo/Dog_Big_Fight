@@ -124,7 +124,7 @@ void AttackPlayer::Initialize()
     std::string modelName = modelFolderName + attackPlayerName + modelModifierName;
     hModel_ = Model::Load(modelName);
     assert(hModel_ >= initZeroInt);
-    transform_.scale_ = { 0.4,0.4,0.4 };
+    transform_.scale_ = { 0.4f,0.4f,0.4f };
     positionY_ = transform_.position_.y;
     pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), 2.0f);
     AddCollider(pCollision_);
@@ -522,19 +522,18 @@ void AttackPlayer::PlayerRayCast()
         floorDataDown.start = transform_.position_;    //レイの発射位置
         floorDataDown.start.y = initZeroFloat;
         XMStoreFloat3(&floorDataDown.dir, vecDown);     //レイの方向
-        if (floorDataUp.dist == distMax_)
+        if (rayFloorDistUp_ == distMax_)
         {
             Model::RayCast(floorHModel_ + i, &floorDataDown);  //レイを発射
         }
         rayFloorDistDown_ = floorDataDown.dist;
-        //ImGui::Text("rayFloorDist_=%f", rayFloorDist_);
         if (rayFloorDistDown_ + positionY_ <= isFling_)
         {
             if (!isJump_)
             {
                 isOnFloor_ = true;
                 isDived_ = false;
-                positionY_ = -floorDataDown.dist + playerInitPosY_;
+                positionY_ = -rayFloorDistDown_ + playerInitPosY_;
                 positionTempY_ = positionY_;
                 positionPrevY_ = positionTempY_;
             }
@@ -559,7 +558,7 @@ void AttackPlayer::PlayerRayCast()
         {
             //地面に張り付き
             isDived_ = false;
-            positionY_ = -stageDataDown.dist + playerInitPosY_;
+            positionY_ = -rayStageDistDown_ + playerInitPosY_;
             positionTempY_ = positionY_;
             positionPrevY_ = positionTempY_;
         }
