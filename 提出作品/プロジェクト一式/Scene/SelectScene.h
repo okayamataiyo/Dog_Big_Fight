@@ -7,12 +7,13 @@
 namespace
 {
 	std::string selectSceneName = "SelectScene";
+	std::string manualName = "Manual";
 }
 
 class SceneManager;
 class StageObjectManager;
 class SolidText;
-
+class Sky;
 
 class SelectScene : public GameObject
 {
@@ -26,12 +27,18 @@ private:
 		FOUR,
 	};
 
+	int hPict_;
+	Transform pictureTrans_;
 	float solidTextRotate_;
+	bool isViewPicture_;
+	XMFLOAT3 skyPos_;
+	XMFLOAT3 skyPosFly_;
 	SceneManager* pSceneManager_;
 	StageObjectManager* pStageObjectManager_;
 	SolidText* pSolidText_;
 	Button* buttonStart_;
 	Button* buttonBack_;
+	Sky* pSky_;
 	XMFLOAT3 camPos_;
 public:
 	SelectScene(GameObject* _pParent);

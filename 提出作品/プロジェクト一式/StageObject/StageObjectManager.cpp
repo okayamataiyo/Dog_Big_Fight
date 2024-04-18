@@ -10,7 +10,7 @@ void StageObjectManager::CreateStageObjectOrigin(STAGEOBJECTSTATE _stageObjectSt
 	switch (_stageObjectState)
 	{
 	case STAGEOBJECTSTATE::SKY:
-		pStageObjectBase_ = Instantiate<Sky>(pParent_);
+		pStageObjectBase_ = InstantiateFront<Sky>(pParent_);
 		break;
 	case STAGEOBJECTSTATE::STAGE:
 		pStageObjectBase_ = Instantiate<Stage>(pParent_);
@@ -26,7 +26,7 @@ void StageObjectManager::CreateStageObject(STAGEOBJECTSTATE _stageObjectState, X
 	switch (_stageObjectState)
 	{
 	case STAGEOBJECTSTATE::SKY:
-		pStageObjectBase_ = Instantiate<Sky>(pParent_);
+		pStageObjectBase_ = InstantiateFront<Sky>(pParent_);
 		break;
 	case STAGEOBJECTSTATE::STAGE:
 		pStageObjectBase_ = Instantiate<Stage>(pParent_);

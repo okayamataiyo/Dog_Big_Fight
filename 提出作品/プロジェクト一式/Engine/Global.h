@@ -53,6 +53,7 @@ static std::string soundModifierName = ".wav";
 static std::string modelFolderName = "Model&Picture/";
 static std::string modelModifierName = ".fbx";
 static std::string debugCollisionName = "DebugCollision/";
+static std::string imageModifierName = ".png";
 
 // INIƒtƒ@ƒCƒ‹‚©‚çfloat‚ğæ“¾‚·‚éŠÖ”
 static float GetPrivateProfileFloat(LPCTSTR lpAppName, LPCTSTR lpKeyName, LPCTSTR lpDefault, LPCTSTR lpFileName)
