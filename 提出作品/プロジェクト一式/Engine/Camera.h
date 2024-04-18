@@ -18,6 +18,8 @@ namespace Camera
 	//焦点（見る位置）を設定
 	void SetTarget(XMFLOAT3 _target, int _type);
 
+	void SetIsChangeView(int _isChangeView);
+
 	//位置を取得
 	XMFLOAT3 GetPosition(int _type);
 

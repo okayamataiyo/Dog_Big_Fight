@@ -2,6 +2,7 @@
 #include "Direct3D.h"
 #include "Global.h"
 #include "Transform.h"
+#include "Camera.h"
 
 //画面の描画に関する処理
 namespace Direct3D
@@ -46,7 +47,7 @@ namespace Direct3D
 	int						screenWidthHaif_ = 0;
 	float					vPSize_[4] = { 0,0,0,0 };
 	float					prevVP_ = 0;
-	int						isChangeView_ = 0;
+	int						isChangeView_ = (int)VIEWSTATE::LEFTVIEW;
 	bool					isFinishView_ = false;
 
 
@@ -526,6 +527,7 @@ namespace Direct3D
 			prevVP_ = vp[1].Width;
 			break;
 		case (int)VIEWSTATE::LEFTVIEW:
+			Camera::SetIsChangeView((int)VIEWSTATE::LEFTVIEW);
 			if (vPSize_[0] <= screenWidthHaif_)
 			{
 				vPSize_[0] += 10;
@@ -533,6 +535,7 @@ namespace Direct3D
 			}
 			break;
 		case (int)VIEWSTATE::LEFT_BOTHVIEW:
+			Camera::SetIsChangeView((int)VIEWSTATE::LEFT_BOTHVIEW);
 			if (vPSize_[0] >= 10)
 			{
 				vPSize_[0] -= 10;
@@ -540,6 +543,7 @@ namespace Direct3D
 			}
 			break;
 		case (int)VIEWSTATE::RIGHTVIEW:
+			Camera::SetIsChangeView((int)VIEWSTATE::RIGHTVIEW);
 			if (vPSize_[3] <= screenWidthHaif_)
 			{
 				vPSize_[1] -= 10;
@@ -548,6 +552,7 @@ namespace Direct3D
 			}
 			break;
 		case (int)VIEWSTATE::RIGHT_BOTHVIEW:
+			Camera::SetIsChangeView((int)VIEWSTATE::RIGHT_BOTHVIEW);
 			if (vPSize_[3] >= 10)
 			{
 				vPSize_[1] += 10;
@@ -579,14 +584,12 @@ namespace Direct3D
 		pContext_->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);	
 	}
 
-
 	//描画終了
 	void EndDraw()
 	{
 		//スワップ（バックバッファを表に表示する）
 		pSwapChain_->Present(0, 0);
 	}
-
 
 	//開放処理
 	void Release()

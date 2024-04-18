@@ -35,6 +35,7 @@ static XMVECTOR vecRightUp = { 1.0f,1.0f,0.0f };
 static XMVECTOR vecLeftUp = { -1.0f,1.0f,0.0f };
 static XMFLOAT3 initZeroXMFLOAT3 = {0.0f,0.0f,0.0f};
 static XMVECTOR initZeroXMVECTOR = { 0.0f,0.0f,0.0f,0.0f };
+static float initOneFloat = { 1.0f };
 static float initZeroFloat = { 0.0f };
 static int initZeroInt = { 0 };
 static int initOneInt = { 1 };
