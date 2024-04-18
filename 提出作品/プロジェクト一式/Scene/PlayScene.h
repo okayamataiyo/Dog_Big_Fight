@@ -47,7 +47,23 @@ private:
         THIRD,
         FOUR,
     };
-
+    int lengthRecedes_;
+    float degreesMin_;
+    float degreesMax_;
+    float degreesToRadians_;
+    float vecLengthRecedes_;
+    float vecLengthApproach_;
+    float boneSummonsPosLimitMinX_;
+    float boneSummonsPosLimitMaxX_;
+    float boneSummonsPosLimitMinZ_;
+    float boneSummonsPosLimitMaxZ_;
+    int woodBoxCountMax_;
+    int boneCountNone_;
+    int boneCountMax_;
+    int addBoneCountAmount_;
+    int mousePosX_;
+    int mousePosY_;
+    int changeScore_;
     XMFLOAT3 camVec_[2];
     Transform floorPosition_[3];
     float length_;

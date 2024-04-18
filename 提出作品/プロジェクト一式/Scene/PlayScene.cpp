@@ -14,7 +14,7 @@
 #include "PlayScene.h"
 
 PlayScene::PlayScene(GameObject* _pParent)
-	:GameObject(_pParent, playSceneName), hSound_{ -1,-1,-1 }, random_value_{ 0 }, soundVolume_{ 0.05f, }, soundVolumeHalf_{ soundVolume_ / 2 }, length_{ 30 }, boneCount_{ 0 }, isCreateBone_{ false }
+	:GameObject(_pParent, playSceneName),lengthRecedes_{5}, degreesMin_{0.0f}, degreesMax_{-88.0f}, degreesToRadians_{3.14f / 180.0f}, vecLengthRecedes_{1.0f}, vecLengthApproach_{1.0f}, boneSummonsPosLimitMinX_{100.0f}, boneSummonsPosLimitMaxX_{100.0f}, boneSummonsPosLimitMinZ_{100.0f}, boneSummonsPosLimitMaxZ_{100.0f}, woodBoxCountMax_{5}, boneCountNone_{0}, boneCountMax_{3}, addBoneCountAmount_{1}, mousePosX_{600}, mousePosY_{600}, changeScore_{100}, hSound_{-1,-1,-1}, random_value_{0}, soundVolume_{0.05f,}, soundVolumeHalf_{soundVolume_ / 2}, length_{30}, boneCount_{0}, isCreateBone_{false}
 	, collectPlayerPosition_{}, collectPlayerDirection_{},boneFrontPosition_{2.0f}, woodBoxCount_{0}
 	, attackPlayerPosition_{}, attackPlayerDirection_{},woodBoxFrontPosition_{10.0f}, blockOrCollect_{0},isGameStop_{false}
 	,pSceneManager_{nullptr}, pAttackPlayer_{nullptr}, pCollectPlayer_{nullptr}, pItemObjectManager_{nullptr}, pStageObjectManager_{nullptr}
@@ -89,12 +89,12 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
-	if ((!isGameStop_ && pAttackPlayer_->GetScore() >= 100) || (!isGameStop_ && pCollectPlayer_->GetScore() >= 100))
+	if((!isGameStop_ && pAttackPlayer_->GetScore() >= changeScore_) || (!isGameStop_ && pCollectPlayer_->GetScore() >= changeScore_))
 	{
 		Audio::Stop(hSound_[(int)SOUNDSTATE::BGM]);
 		Audio::Play(hSound_[random_value_],soundVolume_);
 	}
-	if((!isGameStop_ && pAttackPlayer_->GetScore() < 100) || (!isGameStop_ && pCollectPlayer_->GetScore() < 100))
+	if((!isGameStop_ && pAttackPlayer_->GetScore() < changeScore_) || (!isGameStop_ && pCollectPlayer_->GetScore() < 100))
 	{
 		Audio::Play(hSound_[(int)SOUNDSTATE::BGM], soundVolumeHalf_);
 	}
@@ -112,20 +112,20 @@ void PlayScene::Update()
 	collectPlayerDirection_ = XMVector3Normalize(collectPlayerDirection_);
 	collectPlayerPosition_.x = collectPlayerPosition_.x + boneFrontPosition_ * XMVectorGetX(collectPlayerDirection_);
 	collectPlayerPosition_.z = collectPlayerPosition_.z + boneFrontPosition_ * XMVectorGetZ(collectPlayerDirection_);
-	SetCursorPos(600, 600);
+	SetCursorPos(mousePosX_, mousePosY_);
 	HideCursor();
-	isCreateBone_ = (boneCount_ == 0) ? true : isCreateBone_;
-	isCreateBone_ = (boneCount_ == 3) ? false : isCreateBone_;
+	isCreateBone_ = (boneCount_ == boneCountNone_) ? true : isCreateBone_;
+	isCreateBone_ = (boneCount_ == boneCountMax_) ? false : isCreateBone_;
 
 	if (isCreateBone_)
 	{
 		for (int i = 0u; i <= 2u; i++)
 		{
-			pItemObjectManager_->CreateObject(ITEMOBJECTSTATE::BONE, -100, 100, -100, 100);
-			boneCount_ += 1;
+			pItemObjectManager_->CreateObject(ITEMOBJECTSTATE::BONE, -boneSummonsPosLimitMinX_, boneSummonsPosLimitMaxX_, -boneSummonsPosLimitMinZ_, boneSummonsPosLimitMaxZ_);
+			boneCount_ += addBoneCountAmount_;
 		}
 	}
-	if (woodBoxCount_ <= 5)
+	if (woodBoxCount_ <= woodBoxCountMax_)
 	{
 		if (Input::IsPadButtonDown(XINPUT_GAMEPAD_Y,pAttackPlayer_->GetPadID()) && !pAttackPlayer_->GetIsJump())
 		{
@@ -151,19 +151,19 @@ void PlayScene::Update()
 	RotationY[attackPlayerNumber] = -controller[((int)PADIDSTATE::SECONDS)].y;
 	if (Input::IsPadButton(XINPUT_GAMEPAD_DPAD_UP,pAttackPlayer_->GetPadID()))
 	{
-		vecLength[1] -= 1.0f;
+		vecLength[attackPlayerNumber] -= vecLengthRecedes_;
 	}
 	if (Input::IsPadButton(XINPUT_GAMEPAD_DPAD_DOWN,pAttackPlayer_->GetPadID()))
 	{
-		vecLength[1] += 1.0f;
+		vecLength[attackPlayerNumber] += vecLengthApproach_;
 	}
 	if (Input::IsPadButton(XINPUT_GAMEPAD_DPAD_UP, pCollectPlayer_->GetPadID()))
 	{
-		vecLength[collectPlayerNumber] -= 1.0f;
+		vecLength[collectPlayerNumber] -= vecLengthRecedes_;
 	}
 	if (Input::IsPadButton(XINPUT_GAMEPAD_DPAD_DOWN, pCollectPlayer_->GetPadID()))
 	{
-		vecLength[collectPlayerNumber] += 1.0f;
+		vecLength[collectPlayerNumber] += vecLengthApproach_;
 	}
 
 	vPos[collectPlayerNumber] = pCollectPlayer_->GetVecPos();
@@ -185,15 +185,15 @@ void PlayScene::Update()
 		sigmaRotY[i]				= camVec_[i].y;
 		sigmaRotX[i]				= -camVec_[i].x;
 
-		if (sigmaRotX[i] > initZeroInt * (3.14 / 180))
+		if (sigmaRotX[i] > degreesMin_ * degreesToRadians_)
 		{
-			sigmaRotX[i]			= initZeroFloat;
+			sigmaRotX[i]			= degreesMin_;
 			camVec_[attackPlayerNumber].x -= RotationY[attackPlayerNumber] / controllerSens;
 			camVec_[collectPlayerNumber].x -= RotationY[collectPlayerNumber] / controllerSens;
 		}
-		if (sigmaRotX[i] < -88 * (3.14 / 180))
+		if (sigmaRotX[i] < degreesMax_ * degreesToRadians_)
 		{
-			sigmaRotX[i] = -87.9 * (3.14 / 180);
+			sigmaRotX[i] = degreesMax_ * degreesToRadians_;
 			camVec_[attackPlayerNumber].x -= RotationY[attackPlayerNumber] / controllerSens;
 			camVec_[collectPlayerNumber].x -= RotationY[collectPlayerNumber] / controllerSens;
 		}
@@ -209,7 +209,7 @@ void PlayScene::Update()
 		if (pAttackPlayer_->GetIsStun())
 		{
 			static int lengthPrev = length_;
-			if (length_ <= lengthPrev + 5)
+			if (length_ <= lengthPrev + lengthRecedes_)
 			{
 				++length_;
 			}
@@ -217,7 +217,7 @@ void PlayScene::Update()
 		else
 		{
 			static int lengthPrev = length_;
-			if (length_ >= lengthPrev - 5)
+			if (length_ >= lengthPrev - lengthRecedes_)
 			{
 				--length_;
 			}
