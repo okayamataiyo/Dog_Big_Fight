@@ -17,7 +17,14 @@ void Camera::Initialize()
 		target_[i] = XMFLOAT3(0, 0, 0);	//カメラの焦点
 	}
 	//プロジェクション行列
-	proj_ = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)(Direct3D::screenWidth_/2) / (FLOAT)Direct3D::screenHeight_, 0.1f, 1000.0f);
+	if (Direct3D::GetIsChangeView() == (int)Direct3D::VIEWSTATE::LEFT_BOTHVIEW || Direct3D::GetIsChangeView() == (int)Direct3D::VIEWSTATE::RIGHT_BOTHVIEW)
+	{
+		proj_ = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)(Direct3D::screenWidth_ / 1) / (FLOAT)Direct3D::screenHeight_, 0.1f, 1000.0f);
+	}
+	else
+	{
+		proj_ = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)(Direct3D::screenWidth_ / 2) / (FLOAT)Direct3D::screenHeight_, 0.1f, 1000.0f);
+	}
 }
 
 //更新（ビュー行列作成）
