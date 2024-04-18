@@ -189,13 +189,8 @@ void AttackPlayer::UpdatePlay()
 {
     if (Input::IsKeyDown(DIK_A))
     {
-        Direct3D::SetIsChangeView(((int)Direct3D::VIEWSTATE::RIGHTVIEW));
-        if (Input::IsKey(DIK_SPACE) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, attackPlayerNumber) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, collectPlayerNumber))
-        {
-            pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
-            PlayerScore_[collectPlayerNumber] = pCollectPlayer_->GetScore();
-            PlayerScore_[attackPlayerNumber] = this->GetScore();
-        }
+        pPlayScene_->SetGameStop();
+        gameState_ = GAMESTATE::GAMEOVER;
     }
     //—‚¿‚½‚Ìˆ—
     if (transform_.position_.y <= -fallLimit_)
@@ -294,7 +289,7 @@ void AttackPlayer::UpdatePlay()
 void AttackPlayer::UpdateGameOver()
 {
     Direct3D::SetIsChangeView(((int)Direct3D::VIEWSTATE::RIGHTVIEW));
-    if (Input::IsKey(DIK_SPACE) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, attackPlayerNumber) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, collectPlayerNumber))
+    if (Input::IsMouseButtonDown((int)MOUSESTATE::LEFTCLICK) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, attackPlayerNumber) || Input::IsPadButtonDown(XINPUT_GAMEPAD_A, collectPlayerNumber))
     {
         pSceneManager_->ChangeScene(SCENE_ID_GAMEOVER);
         PlayerScore_[collectPlayerNumber] = pCollectPlayer_->GetScore();
