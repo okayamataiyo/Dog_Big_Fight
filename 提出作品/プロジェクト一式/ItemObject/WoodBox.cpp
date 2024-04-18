@@ -68,8 +68,6 @@ void WoodBox::Release()
 
 void WoodBox::WoodBoxFall()
 {
-    ImGui::Text("Integer Value: %f", positionY_);
-    ImGui::Text("Bool Variable: %s", isJump_ ? "true" : "false");
     if (isJump_)
     {
         //•ú•¨ü‚É‰º‚ª‚éˆ—

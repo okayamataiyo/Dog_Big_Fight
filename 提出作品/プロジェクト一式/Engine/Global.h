@@ -5,7 +5,14 @@
 
 namespace
 {
+	enum class WINORLOSE
+	{
+		WIN = 0,
+		LOSE,
+	};
+
 	int PlayerScore_[2] = { 0,0 };
+	int winOrLose_ = (int)WINORLOSE::WIN;
 }
 
 //安全にメモリを開放するためのマクロ
@@ -33,6 +40,7 @@ static XMVECTOR vecFrontUp = { 0.0f,1.0f,1.0f };
 static XMVECTOR vecBackUp = { 0.0f,1.0f,-1.0f };
 static XMVECTOR vecRightUp = { 1.0f,1.0f,0.0f };
 static XMVECTOR vecLeftUp = { -1.0f,1.0f,0.0f };
+static XMVECTOR vecBackLeft = { -1.0f,0.0f,-1.0f };
 static XMFLOAT3 initZeroXMFLOAT3 = {0.0f,0.0f,0.0f};
 static XMVECTOR initZeroXMVECTOR = { 0.0f,0.0f,0.0f,0.0f };
 static float initOneFloat = { 1.0f };

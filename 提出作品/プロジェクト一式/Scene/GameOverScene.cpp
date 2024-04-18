@@ -10,11 +10,14 @@
 #include "../StageObject/Stage.h"
 #include "../Player/AttackPlayer.h"
 #include "../Player/CollectPlayer.h"
+#include "../Player/ActorAttackPlayer.h"
+#include "../Player/ActorCollectPlayer.h"
 #include "GameOverScene.h"
 
 GameOverScene::GameOverScene(GameObject* _pParent)
 	:GameObject(_pParent, gameOverSceneName), hSound_{ -1 }, soundVolume_{0.1f},inputWait_{ 0 }, inputWaitTime_{ 60 },camPos_{0.0f,0.0f,0.0f}
 	,pSolidText_{nullptr}, pStageObjectManager_{nullptr}, pSceneManager_{nullptr},pStage_{nullptr}
+	,pActorAttackPlayer_{nullptr},pActorCollectPlayer_{nullptr}
 {
 
 }
@@ -33,6 +36,8 @@ void GameOverScene::Initialize()
 	XMFLOAT3 positionSolidText = { 0.0f,0.0f,0.0f };
 	XMFLOAT3 scaleSolidText = { 0.5f,0.5f,0.5f };
 	XMFLOAT3 positionStage = { 0.0f,25.0f,20.0f };
+	XMFLOAT3 positionActorAttackPlayer = { 0.0f,0.0f,20.0f };
+	XMFLOAT3 positionActorCollectPlayer = { 0.0f,0.0f,25.0f };
 	pSolidText_->SetPosition(positionSolidText);
 	pSolidText_->SetScale(scaleSolidText);
 	pSolidText_->SetRotateX(15.0f);
@@ -45,7 +50,10 @@ void GameOverScene::Initialize()
 	camPos_.y -= 2.5f;
 	camPos_.z -= 10.0f;
 	camTargetPos_ = pSolidText_->GetPosition();
-
+	pActorAttackPlayer_ = Instantiate<ActorAttackPlayer>(this);
+	pActorCollectPlayer_ = Instantiate<ActorCollectPlayer>(this);
+	pActorAttackPlayer_->SetPosition(positionActorAttackPlayer);
+	pActorCollectPlayer_->SetPosition(positionActorCollectPlayer);
 }
 
 void GameOverScene::Update()

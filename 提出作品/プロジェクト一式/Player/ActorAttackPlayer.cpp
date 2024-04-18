@@ -1,5 +1,8 @@
+//インクルード
 #include "../Engine/Global.h"
 #include "../Engine/Model.h"
+#include "../Engine/Input.h"
+#include "../Engine/ImGui/imgui.h"
 #include "../Scene/PlayScene.h"
 #include "../StageObject/Stage.h"
 #include "ActorAttackPlayer.h"
@@ -7,7 +10,7 @@
 #include "CollectPlayer.h"
 
 ActorAttackPlayer::ActorAttackPlayer(GameObject* _pParent)
-    :PlayerBase(_pParent, actorAttackPlayerName),hModel_{-1},stageHModel_{-1},playerState_{PLAYERSTATE::WAIT},playerStatePrev_{PLAYERSTATE::WAIT},gameState_{GAMESTATE::READY}
+    :PlayerBase(_pParent, actorAttackPlayerName), hModel_{ -1 }, stageHModel_{ -1 }, playerState_{ PLAYERSTATE::WAIT }, playerStatePrev_{ PLAYERSTATE::WAIT }, gameState_{ GAMESTATE::READY }
     ,pPlayScene_{nullptr},pStage_{nullptr}
 {
     //▼UIに関する基底クラスメンバ変数
@@ -57,7 +60,7 @@ ActorAttackPlayer::ActorAttackPlayer(GameObject* _pParent)
     isJump_ = false;
     //▼飛びつきに関する基底クラスメンバ変数
     divePower_ = 0.1f;
-    diveSpeed_ = 0.6f;
+    diveSpeed_ = 0.2f;
     isDive_ = false;
     isDived_ = false;
     diveTime_ = 0;
@@ -112,6 +115,65 @@ void ActorAttackPlayer::Initialize()
 
 void ActorAttackPlayer::Update()
 {
+    //落ちた時の処理
+    if (transform_.position_.y <= -fallLimit_)
+    {
+        transform_.position_ = initZeroXMFLOAT3;
+    }
+
+    isDive_ = true;
+
+    if (isDive_ && !isDived_)
+    {
+        ++diveTime_;
+        if (diveTime_ <= diveDuration_)
+        {
+            PlayerDivePower();
+        }
+        PlayerDive();
+    }
+
+    if (playerStatePrev_ != playerState_)
+    {
+        switch (playerState_)
+        {
+        case PLAYERSTATE::WAIT:       Model::SetAnimFrame(hModel_, 0, 0, 1.0f); break;
+        case PLAYERSTATE::WALK:       Model::SetAnimFrame(hModel_, 20, 60, 0.5f); break;
+        case PLAYERSTATE::RUN:        Model::SetAnimFrame(hModel_, 80, 120, 0.5f); break;
+        case PLAYERSTATE::JUMP:       Model::SetAnimFrame(hModel_, 120, 120, 1.0f); break;
+        case PLAYERSTATE::STUN:       Model::SetAnimFrame(hModel_, 140, 200, 0.5f); break;
+        }
+    }
+    playerStatePrev_ = playerState_;
+    PlayerFall();
+    PlayerMove();
+    PlayerRayCast();
+    transform_.position_.y = positionY_;
+    if (IsMoving() && !isJump_ && !isDash_)
+    {
+        playerState_ = PLAYERSTATE::WALK;
+    }
+    if (!IsMoving() && !isJump_)
+    {
+        playerState_ = PLAYERSTATE::WAIT;
+    }
+    if (Input::IsPadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER, padID_) && !isJump_ && IsMoving())
+    {
+        playerState_ = PLAYERSTATE::RUN;
+        isDash_ = true;
+    }
+    else
+    {
+        isDash_ = false;
+    }
+    if (isJump_)
+    {
+        playerState_ = PLAYERSTATE::JUMP;
+    }
+    if (isStun_)
+    {
+        playerState_ = PLAYERSTATE::STUN;
+    }
 }
 
 void ActorAttackPlayer::Stun(int _timeLimit)
@@ -130,6 +192,18 @@ void ActorAttackPlayer::Release()
 {
 }
 
+void ActorAttackPlayer::UpdateReady()
+{
+}
+
+void ActorAttackPlayer::UpdatePlay()
+{
+}
+
+void ActorAttackPlayer::UpdateGameOver()
+{
+}
+
 void ActorAttackPlayer::OnCollision(GameObject* _pTarget)
 {
 }
@@ -142,13 +216,56 @@ void ActorAttackPlayer::PlayerFall()
         positionTempY_ = positionY_;
         positionY_ += (positionY_ - positionPrevY_) - gravity_;
         positionPrevY_ = positionTempY_;
-        isJump_ = (positionY_ <= -rayFloorDistDown_ + playerInitPosY_) ? false : isJump_;
         isJump_ = (positionY_ <= -rayStageDistDown_ + playerInitPosY_) ? false : isJump_;
     }
 }
 
 void ActorAttackPlayer::PlayerMove()
 {
+    if (!isDash_)
+    {
+        controllerMoveSpeed_ = walkSpeed_;
+    }
+    else
+    {
+        controllerMoveSpeed_ = dashSpeed_;
+    }
+    //向き変更
+    vecLength_ = XMVector3Length(vecMove_);
+    length_ = XMVectorGetX(vecLength_);
+    if (length_ != initZeroInt)
+    {
+        //プレイヤーが入力キーに応じて、その向きに変える(左向きには出来ない)
+        vecMove_ = XMVector3Normalize(vecMove_);
+
+        vecDot_ = XMVector3Dot(vecFront, vecMove_);
+        dot_ = XMVectorGetX(vecDot_);
+        angle_ = acos(dot_);
+
+        //右向きにしか向けなかったものを左向きにする事ができる
+        vecCross_ = XMVector3Cross(vecFront, vecMove_);
+        if (XMVectorGetY(vecCross_) < initZeroInt)
+        {
+            angle_ *= -initOneInt;
+        }
+    }
+    transform_.rotate_.y = XMConvertToDegrees(angle_);
+    if (transform_.position_.z <= outerWallPosBack_ || transform_.position_.z >= outerWallPosFront_)
+    {
+        transform_.position_.z = positionPrev_.z;
+    }
+    if (transform_.position_.x <= outerWallPosRight_ || transform_.position_.x >= outerWallPosLeft_)
+    {
+        transform_.position_.x = positionPrev_.x;
+    }
+
+    XMMATRIX rotmat = XMMatrixRotationY(halfPi_);
+    XMVECTOR vecDirection = vecBackLeft;//XMLoadFloat3(&transform_.position_) - Camera::VecGetPosition(attackPlayerNumber);
+    vecDirection = XMVectorSetY(vecDirection, initZeroFloat);
+    vecDirection = XMVector3Normalize(vecDirection);
+    XMVECTOR tempvec = XMVector3Transform(vecDirection, rotmat);
+    transform_.position_.x = transform_.position_.x + controllerMoveSpeed_ * XMVectorGetX(tempvec);
+    transform_.position_.z = transform_.position_.z + controllerMoveSpeed_ * XMVectorGetZ(tempvec);
 }
 
 void ActorAttackPlayer::PlayerJump()
@@ -221,5 +338,5 @@ void ActorAttackPlayer::SetKnockback(XMVECTOR _vecKnockbackDirection, float _kno
 
 bool ActorAttackPlayer::IsMoving()
 {
-    return false;
+    return (transform_.position_.x != positionPrev_.x || transform_.position_.z != positionPrev_.z);
 }

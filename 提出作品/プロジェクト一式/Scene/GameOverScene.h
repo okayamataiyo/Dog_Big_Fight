@@ -7,6 +7,8 @@ class SolidText;
 class StageObjectManager;
 class SceneManager;
 class Stage;
+class ActorAttackPlayer;
+class ActorCollectPlayer;
 
 namespace
 {
@@ -27,6 +29,8 @@ private:
 	StageObjectManager* pStageObjectManager_;
 	SceneManager* pSceneManager_;
 	Stage* pStage_;
+	ActorAttackPlayer* pActorAttackPlayer_;
+	ActorCollectPlayer* pActorCollectPlayer_;
 public:
 	GameOverScene(GameObject* _pParent);
 	void Initialize() override;

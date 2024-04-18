@@ -37,6 +37,10 @@ public:
 
 	void Release() override;
 
+	void UpdateReady() override;
+	void UpdatePlay() override;
+	void UpdateGameOver() override;
+
 	void OnCollision(GameObject* _pTarget)override;
 
 	void PlayerFall() override;

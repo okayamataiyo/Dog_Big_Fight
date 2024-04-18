@@ -24,7 +24,7 @@ void GameTitleScene::Initialize()
 	std::string soundName = soundFolderName + soundGameTitleSceneName + soundModifierName;
 	hSound_ = Audio::Load(soundName);
 	assert(hSound_ >= 0);
-	Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFTVIEW);
+	//Direct3D::SetIsChangeView((int)Direct3D::VIEWSTATE::LEFTVIEW);
 	pSolidText_ = Instantiate<SolidText>(this);
 	pSolidText_->SetMode(2);
 	XMFLOAT3 positionStage = { 0.0f,0.0f,120.0f };

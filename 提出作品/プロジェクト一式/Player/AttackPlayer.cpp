@@ -230,7 +230,6 @@ void AttackPlayer::UpdatePlay()
     }
     playerStatePrev_ = playerState_;
     PlayerFall();
-    PlayerJump();
     PlayerRayCast();
     PlayerKnockback();
     transform_.position_.y = positionY_;
